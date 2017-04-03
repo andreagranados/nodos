@@ -26,13 +26,15 @@ class dt_cargo extends toba_datos_tabla
             }else{
                 $where='';
             }
-        $sql="select case when n.id_novedad is not null then 'L' else 'A' end as puesto,p.tipo,no.id_nodo,case when no.desc_abrev is not null then no.desc_abrev else no.descripcion end as dep,pe.legajo,pe.apellido,pe.nombre,p.id_puesto,p.categ as catpuesto,c.id_cargo,codc_categ,fec_alta,fec_baja,n.tipo_nov,s.categ, case when s.categ is not null then coss.costo_basico else null end as costosub,cos.costo_basico
+        $sql="select case when n.id_novedad is not null then 'L' else 'A' end as puesto,p.tipo,no.id_nodo,case when no.desc_abrev is not null then no.desc_abrev else no.descripcion end as dep,pe.legajo,pe.apellido,pe.nombre,p.id_puesto,p.categ as catpuesto,c.id_cargo,codc_categ,fec_alta,fec_baja,n.tipo_nov,s.categ, case when s.categ is not null then coss.costo_basico else null end as costosub,cos.costo_basico,case when nod.desc_abrev is null then nod.descripcion else nod.descripcion end as pase
                 from puesto p
                 left outer join cargo c on (p.id_puesto=c.id_puesto)
                 left outer join nodo no on (no.id_nodo=c.pertenece_a)
                 left outer join persona pe on (pe.id_persona=c.id_persona)
                 left outer join subroga s on (s.id_cargo=c.id_cargo and s.desde <='".$udia."' and (s.hasta>='".$pdia."' or s.hasta is null))
                 left outer join novedad n on (n.id_cargo=c.id_cargo and n.desde <='".$udia."' and (n.hasta>='".$pdia."' or n.hasta is null))
+                left outer join pase pa on (pa.id_cargo=c.id_cargo and pa.desde <='".$udia."' and (pa.hasta>='".$pdia."' or pa.hasta is null))
+                left outer join nodo nod on (nod.id_nodo=pa.destino)
                 left outer join (select c.codigo_categ,c.desde,costo_basico from costo_categoria c,
                                  (select codigo_categ,max(desde) as desde from costo_categoria
                                  group by codigo_categ)sub
@@ -47,12 +49,14 @@ class dt_cargo extends toba_datos_tabla
                 ".$where
                 
                 . " UNION "//cargos que no estan asociados a puestos
-                ."select '' as puesto,null,no.id_nodo,case when no.desc_abrev is not null then no.desc_abrev else no.descripcion end as dep,pe.legajo,pe.apellido,pe.nombre,null,null,c.id_cargo,codc_categ,fec_alta,fec_baja,n.tipo_nov,s.categ,null as costosub,cos.costo_basico
+                ."select '' as puesto,null,no.id_nodo,case when no.desc_abrev is not null then no.desc_abrev else no.descripcion end as dep,pe.legajo,pe.apellido,pe.nombre,null,null,c.id_cargo,codc_categ,fec_alta,fec_baja,n.tipo_nov,s.categ,null as costosub,cos.costo_basico,case when nod.desc_abrev is null then nod.descripcion else nod.descripcion end as pase
                 from cargo c
                 left outer join nodo no on (no.id_nodo=c.pertenece_a)
                 left outer join persona pe on (pe.id_persona=c.id_persona)
                 left outer join subroga s on (s.id_cargo=c.id_cargo and s.desde <='".$udia."' and (s.hasta>='".$pdia."' or s.hasta is null))
                 left outer join novedad n on (n.id_cargo=c.id_cargo and n.desde <='".$udia."' and (n.hasta>='".$pdia."' or n.hasta is null))
+                left outer join pase pa on (pa.id_cargo=c.id_cargo and pa.desde <='".$udia."' and (pa.hasta>='".$pdia."' or pa.hasta is null))
+                    left outer join nodo nod on (nod.id_nodo=pa.destino)
                 left outer join (select c.codigo_categ,c.desde,costo_basico from costo_categoria c,
                                  (select codigo_categ,max(desde) as desde from costo_categoria
                                  group by codigo_categ)sub
@@ -65,6 +69,7 @@ class dt_cargo extends toba_datos_tabla
                             on (s.categ=coss.codigo_categ)                             
                 where c.id_puesto is null 
                 and c.fec_alta <='".$udia."' and (c.fec_baja>='".$pdia."' or c.fec_baja is null)"
+                .$where
                 ." order by apellido,nombre";
 	
 	return toba::db('nodos')->consultar($sql);
