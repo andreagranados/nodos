@@ -13,11 +13,11 @@ INSERT INTO apex_fuente_datos (proyecto, fuente_datos, descripcion, descripcion_
 	NULL, --subclase_archivo
 	NULL, --subclase_nombre
 	NULL, --orden
-	NULL, --schema
+	'public', --schema
 	'nodos', --instancia_id
 	NULL, --administrador
 	'1', --link_instancia
-	'0', --tiene_auditoria
+	'1', --tiene_auditoria
 	'0', --parsea_errores
 	'0', --permisos_por_tabla
 	NULL, --usuario
