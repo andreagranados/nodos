@@ -5,6 +5,7 @@ class ci_cargo extends nodos_ci
     protected $s__mostrar_p;
     protected $s__mostrar_s;
     protected $s__pantalla;
+    protected $s__mostrar_d;
 	//-----------------------------------------------------------------------------------
 	//---- form_cargo -------------------------------------------------------------------
 	//-----------------------------------------------------------------------------------
@@ -104,7 +105,7 @@ class ci_cargo extends nodos_ci
             
             switch ($this->s__pantalla){
                 case 'pant_novedades':$this->dep('datos')->tabla('novedad')->resetear();$this->s__mostrar=1;break;
-                case 'pant_desempenio':break;
+                case 'pant_desempenio':$this->dep('datos')->tabla('desempenio')->resetear();$this->s__mostrar_d=1;break;
                 case 'pant_pases':$this->dep('datos')->tabla('pase')->resetear();$this->s__mostrar_p=1;break;
                 case 'pant_subrogancia':$this->dep('datos')->tabla('subroga')->resetear();$this->s__mostrar_s=1;break;
             }
@@ -177,13 +178,7 @@ class ci_cargo extends nodos_ci
             toba::notificacion()->agregar('El pase ha eliminado correctamente', 'info');
             $this->s__mostrar_p=0;
 	}
-	//-----------------------------------------------------------------------------------
-	//---- cuadro_desem -----------------------------------------------------------------
-	//-----------------------------------------------------------------------------------
-
-	function conf__cuadro_desem(toba_ei_cuadro $cuadro)
-	{
-	}
+	
 
 	//-----------------------------------------------------------------------------------
 	//---- cuadro_sub -------------------------------------------------------------------
@@ -235,6 +230,59 @@ class ci_cargo extends nodos_ci
             $this->dep('datos')->tabla('subroga')->resetear();
             toba::notificacion()->agregar('La subrogancia ha sido eliminada correctamente', 'info');
             $this->s__mostrar_s=0;
+	}
+        //-----------------------------------------------------------------------------------
+	//---- cuadro_desem -----------------------------------------------------------------
+	//-----------------------------------------------------------------------------------
+
+	function conf__cuadro_desem(toba_ei_cuadro $cuadro)
+	{
+	 if ($this->controlador()->dep('datos')->tabla('cargo')->esta_cargada()) {
+                $car=$this->controlador()->dep('datos')->tabla('cargo')->get();
+                $cuadro->set_datos($this->dep('datos')->tabla('desempenio')->get_depdesemp($car['id_cargo']));
+             }
+	}
+        function evt__cuadro_desem__seleccion($seleccion)
+	{
+            $this->dep('datos')->tabla('desempenio')->cargar($seleccion);
+            $this->s__mostrar_d=1;
+	}
+	//-----------------------------------------------------------------------------------
+	//---- form_desemp ------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------
+
+	function conf__form_desemp(toba_ei_formulario $form)
+	{
+            if($this->s__mostrar_d==1){
+                 if($this->dep('datos')->tabla('desempenio')->esta_cargada()){
+                     $datos=$this->dep('datos')->tabla('desempenio')->get();
+                     $form->set_datos($datos);
+                 }  
+            }else{
+                $this->dep('form_desemp')->colapsar();
+            }
+	}
+
+	function evt__form_desemp__baja($datos)
+	{
+            $this->dep('datos')->tabla('desempenio')->eliminar_todo();
+            $this->dep('datos')->tabla('desempenio')->resetear();
+            toba::notificacion()->agregar('La dependencia de desempenio asociada al cargo ha sido eliminada correctamente', 'info');
+            $this->s__mostrar_d=0;
+	}
+
+	function evt__form_desemp__modificacion($datos)
+	{
+            $car=$this->controlador()->dep('datos')->tabla('cargo')->get();
+            $datos['id_cargo']=$car['id_cargo'];
+            $this->dep('datos')->tabla('desempenio')->set($datos);
+            $this->dep('datos')->tabla('desempenio')->sincronizar();
+	}
+
+	function evt__form_desemp__cancelar($datos)
+	{
+            $this->s__mostrar_d=0;
+            $datos=$this->dep('datos')->tabla('desempenio')->resetear();
 	}
 
 }
