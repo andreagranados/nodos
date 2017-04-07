@@ -209,7 +209,8 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'1', --orden
 	'Tipo', --etiqueta
 	NULL, --etiqueta_estilo
-	NULL, --descripcion
+	'T: Transitorio<br>
+P:Permanente', --descripcion
 	'0', --colapsado
 	'0', --desactivado
 	NULL, --estilo
@@ -289,7 +290,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'2', --orden
 	'Origen', --etiqueta
 	NULL, --etiqueta_estilo
-	NULL, --descripcion
+	'Debe ser el nodo presupuestario más cercano', --descripcion
 	'0', --colapsado
 	'0', --desactivado
 	NULL, --estilo
@@ -300,10 +301,10 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --estado_defecto
 	'0', --solo_lectura
 	'0', --solo_lectura_modificacion
-	'get_descripciones', --carga_metodo
+	'get_origen', --carga_metodo
 	NULL, --carga_clase
 	NULL, --carga_include
-	'3921', --carga_dt
+	NULL, --carga_dt
 	NULL, --carga_consulta_php
 	NULL, --carga_sql
 	'nodos', --carga_fuente
@@ -380,7 +381,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --estado_defecto
 	'0', --solo_lectura
 	'0', --solo_lectura_modificacion
-	'get_descripciones', --carga_metodo
+	'get_presupuestarios', --carga_metodo
 	NULL, --carga_clase
 	NULL, --carga_include
 	'3921', --carga_dt
@@ -690,15 +691,15 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'Expediente', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
-	NULL, --colapsado
-	NULL, --desactivado
+	'0', --colapsado
+	'0', --desactivado
 	NULL, --estilo
 	NULL, --total
 	NULL, --inicializacion
-	NULL, --permitir_html
-	NULL, --deshabilitar_rest_func
+	'0', --permitir_html
+	'0', --deshabilitar_rest_func
 	NULL, --estado_defecto
-	NULL, --solo_lectura
+	'0', --solo_lectura
 	'0', --solo_lectura_modificacion
 	NULL, --carga_metodo
 	NULL, --carga_clase

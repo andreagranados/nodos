@@ -8,16 +8,32 @@ class dt_puesto extends toba_datos_tabla
 		$sql = "SELECT id_puesto, categ FROM puesto ORDER BY categ";
 		return toba::db('nodos')->consultar($sql);
 	}
+        
         //retorna los puestos del nodo que ingresa como argumento
         function get_puestos($id_nodo=null){
+            $mes=  date("m"); 
+            $anio=  date("Y"); 
+            $pdia=$anio."-".$mes."-"."01";
+            if($mes=="01" or $mes=="03" or $mes=="05" or $mes=="07" or $mes=="09" or $mes=="11"){
+                $udia=$anio."-".$mes."-"."31";
+            }else{if($mes=="04" or $mes="06" or $mes=="08" or $mes=="10"     ){
+                    $udia=$anio."-".$mes."-"."30";
+                    }
+                  else {
+                    $udia=$anio."-".$mes."-"."28";
+                    }
+            }
             $where ="";
                             
             if(isset($id_nodo)){
-                    $where=" WHERE pertenece_a=".$id_nodo;
+                    $where=" WHERE p.pertenece_a=".$id_nodo;
                 }
-            $sql="select id_puesto,case when tipo=1 then 'P_' else 'T_' end ||categ  as descripcion "
-                    . "from puesto ".$where
+            $sql="select p.id_puesto,case when tipo=1 then 'P_' else 'T_' end ||p.id_puesto||case when c.id_cargo is null then 'libre' else 'ocupado' end||'_cat'||categ  as descripcion "
+                    . "from puesto p "
+                    . " left outer join cargo c on (c.fec_alta<='".$udia."' and (c.fec_baja is null or c.fec_baja>='".$pdia."') and c.id_puesto=p.id_puesto)".$where
+                    //." and not exists (select * from cargo c where c.fec_alta<='".$udia."' and (c.fec_baja is null or c.fec_baja>='".$pdia."') and c.id_puesto=p.id_puesto)"
                     ." order by descripcion";
+           
             return toba::db('nodos')->consultar($sql);
             
         }

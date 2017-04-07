@@ -16,8 +16,8 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	'toba', --clase_proyecto
 	'toba_datos_tabla', --clase
 	'24', --punto_montaje
-	NULL, --subclase
-	NULL, --subclase_archivo
+	'dt_tipo_novedad', --subclase
+	'datos/dt_tipo_novedad.php', --subclase_archivo
 	NULL, --objeto_categoria_proyecto
 	NULL, --objeto_categoria
 	'DT - tipo_novedad', --nombre
@@ -80,7 +80,7 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'4', --largo
 	NULL, --no_nulo
 	'1', --no_nulo_db
-	NULL, --externa
+	'0', --externa
 	'tipo_novedad'  --tabla
 );
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
@@ -91,10 +91,10 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'C', --tipo
 	'0', --pk
 	'', --secuencia
-	'30', --largo
+	'50', --largo
 	NULL, --no_nulo
 	'0', --no_nulo_db
-	NULL, --externa
+	'0', --externa
 	'tipo_novedad'  --tabla
 );
 --- FIN Grupo de desarrollo 0

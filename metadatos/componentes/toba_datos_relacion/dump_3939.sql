@@ -77,6 +77,18 @@ INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objet
 );
 INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
 	'nodos', --proyecto
+	'2821', --dep_id
+	'3939', --objeto_consumidor
+	'3921', --objeto_proveedor
+	'nodo', --identificador
+	'1', --parametros_a
+	'1', --parametros_b
+	NULL, --parametros_c
+	NULL, --inicializar
+	'4'  --orden
+);
+INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
+	'nodos', --proyecto
 	'2775', --dep_id
 	'3939', --objeto_consumidor
 	'3926', --objeto_proveedor
@@ -86,5 +98,17 @@ INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objet
 	NULL, --parametros_c
 	NULL, --inicializar
 	'1'  --orden
+);
+INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
+	'nodos', --proyecto
+	'2820', --dep_id
+	'3939', --objeto_consumidor
+	'3929', --objeto_proveedor
+	'puesto', --identificador
+	'1', --parametros_a
+	'1', --parametros_b
+	NULL, --parametros_c
+	NULL, --inicializar
+	'3'  --orden
 );
 --- FIN Grupo de desarrollo 0

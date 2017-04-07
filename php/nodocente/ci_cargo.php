@@ -6,7 +6,26 @@ class ci_cargo extends nodos_ci
     protected $s__mostrar_s;
     protected $s__pantalla;
     protected $s__mostrar_d;
-	//-----------------------------------------------------------------------------------
+	
+        function get_origen(){
+            if($this->controlador()->dep('datos')->tabla('cargo')->esta_cargada()){
+                $datos = $this->controlador()->dep('datos')->tabla('cargo')->get();
+                return $this->controlador()->dep('datos')->tabla('nodo')->get_origen($datos['id_cargo']); 
+            }
+        }
+        function get_puestos(){
+            $salida=array();
+            if($this->controlador()->dep('datos')->tabla('cargo')->esta_cargada()){
+                $datos = $this->controlador()->dep('datos')->tabla('cargo')->get();
+                $id_nodo=$this->controlador()->dep('datos')->tabla('cargo')->get_nodo($datos['id_cargo']);    
+                if($id_nodo<>0){
+                    $salida=$this->controlador()->dep('datos')->tabla('puesto')->get_puestos($id_nodo);
+                }
+                
+                return $salida;
+             }
+        }
+        //-----------------------------------------------------------------------------------
 	//---- form_cargo -------------------------------------------------------------------
 	//-----------------------------------------------------------------------------------
 
@@ -151,10 +170,16 @@ class ci_cargo extends nodos_ci
         function conf__form_pase(toba_ei_formulario $form)
 	{
             if($this->s__mostrar_p==1){
-                 if($this->dep('datos')->tabla('pase')->esta_cargada()){
+                
+                if($this->dep('datos')->tabla('pase')->esta_cargada()){
                      $datos=$this->dep('datos')->tabla('pase')->get();
-                     $form->set_datos($datos);
+                     //$form->set_datos($datos);
                  }  
+                if ($this->controlador()->dep('datos')->tabla('cargo')->esta_cargada()) {
+                    $car=$this->controlador()->dep('datos')->tabla('cargo')->get();
+                    $datos['id_cargo']=$car['id_cargo'];
+                 } 
+                 $form->set_datos($datos);
             }else{
                 $this->dep('form_pase')->colapsar();
             }
@@ -206,11 +231,17 @@ class ci_cargo extends nodos_ci
             if($this->s__mostrar_s==1){
                  if($this->dep('datos')->tabla('subroga')->esta_cargada()){
                      $datos=$this->dep('datos')->tabla('subroga')->get();
-                     $form->set_datos($datos);
+                     //$form->set_datos($datos);
                  }  
+                 if ($this->controlador()->dep('datos')->tabla('cargo')->esta_cargada()) {
+                    $car=$this->controlador()->dep('datos')->tabla('cargo')->get();
+                    $datos['id_cargo']=$car['id_cargo'];
+                 } 
+                 $form->set_datos($datos);
             }else{
                 $this->dep('form_sub')->colapsar();
             }
+                        
 	}
         function evt__form_sub__cancelar()
 	{
@@ -254,7 +285,9 @@ class ci_cargo extends nodos_ci
 	function conf__form_desemp(toba_ei_formulario $form)
 	{
             if($this->s__mostrar_d==1){
+                
                  if($this->dep('datos')->tabla('desempenio')->esta_cargada()){
+                     
                      $datos=$this->dep('datos')->tabla('desempenio')->get();
                      $form->set_datos($datos);
                  }  
@@ -282,7 +315,7 @@ class ci_cargo extends nodos_ci
 	function evt__form_desemp__cancelar($datos)
 	{
             $this->s__mostrar_d=0;
-            $datos=$this->dep('datos')->tabla('desempenio')->resetear();
+            //$this->dep('datos')->tabla('desempenio')->resetear();
 	}
 
 }
