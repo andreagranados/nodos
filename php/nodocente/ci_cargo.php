@@ -114,9 +114,7 @@ class ci_cargo extends nodos_ci
                  }
                 
             }else{
-                $dat['desde']='';
-                $dat['tipo_nov']='';
-                $form->set_datos($dat);
+               
                 $this->dep('form_nov')->colapsar();
                 
             }
