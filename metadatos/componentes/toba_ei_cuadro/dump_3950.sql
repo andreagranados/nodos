@@ -446,7 +446,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'3960', --objeto_cuadro_col
 	'pase', --clave
 	'9', --orden
-	'Pase', --titulo
+	'Pase a', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'4', --estilo
 	NULL, --ancho

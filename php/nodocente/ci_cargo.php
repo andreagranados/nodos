@@ -48,6 +48,7 @@ class ci_cargo extends nodos_ci
 
 	function evt__form_cargo__modificacion($datos)
 	{
+            $datos['generado_x_pase']=0;
             $this->controlador()->dep('datos')->tabla('cargo')->set($datos);
             $this->controlador()->dep('datos')->tabla('cargo')->sincronizar();
 	}
@@ -56,14 +57,8 @@ class ci_cargo extends nodos_ci
 	{
 	}
         
-        function conf__form_encabezado(toba_ei_formulario $form)
-	{
-             if ($this->controlador()->dep('datos')->tabla('persona')->esta_cargada()) {
-                $agente=$this->controlador()->dep('datos')->tabla('persona')->get();
-                $texto='Legajo: '.$agente['legajo']." Nombre: ".$agente['apellido'].", ".$agente['nombre'];
-                $form->set_titulo($texto);
-            }
-	}
+        
+        
 
 	//-----------------------------------------------------------------------------------
 	//---- cuadro_nov -------------------------------------------------------------------
@@ -191,13 +186,56 @@ class ci_cargo extends nodos_ci
 	}
         function evt__form_pase__modificacion($datos)
 	{
+            //busco los datos del cargo previamente seleccionado
             $car=$this->controlador()->dep('datos')->tabla('cargo')->get();
             $datos['id_cargo']=$car['id_cargo'];
-            $this->dep('datos')->tabla('pase')->set($datos);
-            $this->dep('datos')->tabla('pase')->sincronizar();
+            
+            
+            //print_r($pase_nuevo);exit;
+            if($this->dep('datos')->tabla('pase')->esta_cargada()){//es modificacion
+                $pas=$this->dep('datos')->tabla('pase')->get();
+                if($pas['tipo']<>$datos['tipo']){
+                   toba::notificacion()->agregar('no puede cambiar el tipo del pase', 'info'); 
+                }else{
+                    $this->dep('datos')->tabla('pase')->set($datos);
+                    $this->dep('datos')->tabla('pase')->sincronizar();
+                }
+            }else{//es alta de un pase nuevo
+                $this->dep('datos')->tabla('pase')->set($datos);
+                $this->dep('datos')->tabla('pase')->sincronizar();
+                $pase_nuevo=$this->dep('datos')->tabla('pase')->get();
+                if($datos['tipo']=='T'){//si el pase es temporal
+                //ingreso un cargo en la unidad destino
+                //la ingresa con fecha de alta = desde
+                $nuevo_cargo['id_persona']=$car['id_persona'];
+                $nuevo_cargo['codc_carac']=$car['codc_carac'];
+                $nuevo_cargo['codc_categ']=$car['codc_categ'];
+                $nuevo_cargo['codc_agrup']=$car['codc_agrup'];
+                $nuevo_cargo['chkstopliq']=$car['chkstopliq'];
+                $nuevo_cargo['fec_alta']=$datos['desde'];
+                $nuevo_cargo['pertenece_a']=$datos['destino'];
+                $nuevo_cargo['generado_x_pase']=$pase_nuevo['id_pase'];        
+                $res=$this->controlador()->dep('datos')->tabla('cargo')->agregar_cargo($nuevo_cargo);
+                if($res=1){
+                    toba::notificacion()->agregar('Se ha creado un nuevo cargo en el destino del pase', 'info');
+                }
+            
+                }else{//pase definitivo entonces tengo que modificar la fecha del cargo en la unidad destino con la fecha de alta del definitivo
+                    $this->controlador()->dep('datos')->tabla('cargo')->modificar_alta($pase_nuevo['id_cargo'],$datos['desde']);
+                    toba::notificacion()->agregar('Se ha modificado la fecha del cargo generado a partir del pase temporal', 'info');
+                } 
+            }
+           
+           
+                 
+           
+            
+            
+   
 	}
         function evt__form_pase__baja()
 	{
+            //aqui tengo que borrar tambien el cargo??
             $this->dep('datos')->tabla('pase')->eliminar_todo();
             $this->dep('datos')->tabla('pase')->resetear();
             toba::notificacion()->agregar('El pase ha eliminado correctamente', 'info');
@@ -318,5 +356,6 @@ class ci_cargo extends nodos_ci
             //$this->dep('datos')->tabla('desempenio')->resetear();
 	}
 
+	
 }
 ?>

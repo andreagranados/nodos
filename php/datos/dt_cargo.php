@@ -13,6 +13,7 @@ class dt_cargo extends toba_datos_tabla
     }
     function get_listado($id_nodo=null)
     {
+       $actual=date("Y-m-d");
        $mes=  date("m"); 
        $anio=  date("Y"); 
        $pdia=$anio."-".$mes."-"."01";
@@ -43,7 +44,7 @@ class dt_cargo extends toba_datos_tabla
             }
             //algunos puestos pueden no estar ocupados en el mes actual, por eso no tenia c.pertenece_a recupero la dependencia del puesto en algunos casos
         $sql="select distinct * ,costosub-costo_basico as dif from (
-             select case when c.id_cargo is null then 'M' else case when n.id_novedad is not null then 'P' else 'A' end end as puesto,c.id_cargo,p.tipo,no.id_nodo,case when no.desc_abrev is null and no.descripcion is null then nop.descripcion else case when no.desc_abrev is not null then no.desc_abrev else no.descripcion end end as dep ,pe.legajo,pe.apellido,pe.nombre,p.id_puesto,p.categ as catpuesto,c.id_cargo,codc_categ,fec_alta,fec_baja,n.tipo_nov,s.categ, case when s.categ is not null then coss.costo_basico else null end as costosub,cos.costo_basico,case when nod.desc_abrev is null then nod.descripcion else nod.descripcion end as pase
+             select case when c.id_cargo is null then 'V' else case when n.id_novedad is not null then 'P' else 'A' end end as puesto,c.id_cargo,p.tipo,no.id_nodo,case when no.desc_abrev is null and case when nop.desc_abrev is null then nop.descripcion else nop.desc_abrev end is null then nop.descripcion else case when no.desc_abrev is not null then no.desc_abrev else no.descripcion end end as dep,pe.legajo,pe.apellido,pe.nombre,p.id_puesto,p.categ as catpuesto,c.id_cargo,codc_categ,fec_alta,fec_baja,n.tipo_nov,s.categ, case when s.categ is not null then coss.costo_basico else null end as costosub,cos.costo_basico,case when nod.desc_abrev is null then nod.descripcion else nod.descripcion end as pase
                 from puesto p
                 left outer join cargo c on (p.id_puesto=c.id_puesto and  c.fec_alta <='".$udia."' and (c.fec_baja>='".$pdia."' or c.fec_baja is null))
                 left outer join nodo no on (no.id_nodo=c.pertenece_a)
@@ -51,7 +52,7 @@ class dt_cargo extends toba_datos_tabla
                 left outer join persona pe on (pe.id_persona=c.id_persona)
                 left outer join subroga s on (s.id_cargo=c.id_cargo and s.desde <='".$udia."' and (s.hasta>='".$pdia."' or s.hasta is null))
                 left outer join novedad n on (n.id_cargo=c.id_cargo and n.desde <='".$udia."' and (n.hasta>='".$pdia."' or n.hasta is null))
-                left outer join pase pa on (pa.id_cargo=c.id_cargo and pa.desde <='".$udia."' and (pa.hasta>='".$pdia."' or pa.hasta is null))
+                left outer join pase pa on (pa.id_cargo=c.id_cargo and '".$actual."' <=pa.hasta and '".$actual."'>=pa.desde )
                 left outer join nodo nod on (nod.id_nodo=pa.destino)
                 left outer join (select c.codigo_categ,c.desde,costo_basico from costo_categoria c,
                                  (select codigo_categ,max(desde) as desde from costo_categoria
@@ -73,7 +74,7 @@ class dt_cargo extends toba_datos_tabla
                 left outer join persona pe on (pe.id_persona=c.id_persona)
                 left outer join subroga s on (s.id_cargo=c.id_cargo and s.desde <='".$udia."' and (s.hasta>='".$pdia."' or s.hasta is null))
                 left outer join novedad n on (n.id_cargo=c.id_cargo and n.desde <='".$udia."' and (n.hasta>='".$pdia."' or n.hasta is null))
-                left outer join pase pa on (pa.id_cargo=c.id_cargo and pa.desde <='".$udia."' and (pa.hasta>='".$pdia."' or pa.hasta is null))
+                left outer join pase pa on (pa.id_cargo=c.id_cargo and '".$actual."' <=pa.hasta and '".$actual."'>=pa.desde)
                 left outer join nodo nod on (nod.id_nodo=pa.destino)
                 left outer join (select c.codigo_categ,c.desde,costo_basico from costo_categoria c,
                                  (select codigo_categ,max(desde) as desde from costo_categoria
@@ -92,6 +93,7 @@ class dt_cargo extends toba_datos_tabla
     }
     function get_cargos($filtro=array())
     {
+       $actual=date("Y-m-d");
        $mes=  date("m"); 
        $anio=  date("Y"); 
        $pdia=$anio."-".$mes."-"."01";
@@ -113,7 +115,7 @@ class dt_cargo extends toba_datos_tabla
                 . " from cargo c"
                 . " left outer join puesto p on (c.id_puesto=p.id_puesto)"
                 . " left outer join nodo n on (c.pertenece_a=n.id_nodo)"
-                . " left outer join pase pa on (pa.id_cargo=c.id_cargo and pa.tipo='T' and pa.desde <='".$udia."' and (pa.hasta>='".$pdia."' or pa.hasta is null))"
+                . " left outer join pase pa on (pa.id_cargo=c.id_cargo and pa.tipo='T' and '".$actual."' <=pa.hasta and '".$actual."'>=pa.desde)"
                 . " left outer join nodo nod on (nod.id_nodo=pa.destino)"
                 .$where
                 ." order by fec_alta desc";
@@ -121,6 +123,7 @@ class dt_cargo extends toba_datos_tabla
         return toba::db('nodos')->consultar($sql);
     }
    function armar_consulta($id_nodo=null){
+       $actual=date("Y-m-d");
        $mes=  date("m"); 
        $anio=  date("Y"); 
        $pdia=$anio."-".$mes."-"."01";
@@ -140,8 +143,9 @@ class dt_cargo extends toba_datos_tabla
                 toba::db('nodos')->consultar($sql);
                 $sql="select depende_de(".$id_nodo.");";
                 toba::db('nodos')->consultar($sql);
-                $where1=" WHERE (p.pertenece_a=".$id_nodo." or p.pertenece_a in (select id_nodo from auxiliar))";
                 
+                $where1=" WHERE (p.pertenece_a=".$id_nodo." or p.pertenece_a in (select id_nodo from auxiliar)"
+                        . " or c.pertenece_a=".$id_nodo. " or c.pertenece_a in (select id_nodo from auxiliar))";
                 $where2=" and (c.pertenece_a=".$id_nodo." or c.pertenece_a in (select id_nodo from auxiliar))";
             }else{
                 $where1='';
@@ -149,7 +153,7 @@ class dt_cargo extends toba_datos_tabla
             }
             //algunos puestos pueden no estar ocupados en el mes actual, por eso recupero la dependencia del puesto en algunos casos
         $sql="select distinct * ,costosub-costo_basico as dif from (
-             select case when c.id_cargo is null then 'M' else case when n.id_novedad is not null then 'P' else 'A' end end as puesto,c.id_cargo,p.tipo,no.id_nodo,case when no.desc_abrev is null and no.descripcion is null then nop.descripcion else case when no.desc_abrev is not null then no.desc_abrev else no.descripcion end end as dep ,pe.legajo,pe.apellido,pe.nombre,p.id_puesto,p.categ as catpuesto,c.id_cargo,codc_categ,fec_alta,fec_baja,n.tipo_nov,s.categ, case when s.categ is not null then coss.costo_basico else null end as costosub,cos.costo_basico,case when nod.desc_abrev is null then nod.descripcion else nod.desc_abrev end as pase
+             select case when c.id_cargo is null then 'V' else case when n.id_novedad is not null then 'P' else 'A' end end as puesto,c.id_cargo,p.tipo,no.id_nodo,case when no.desc_abrev is null and no.descripcion is null then nop.descripcion else case when no.desc_abrev is not null then no.desc_abrev else no.descripcion end end as dep ,pe.legajo,pe.apellido,pe.nombre,p.id_puesto,p.categ as catpuesto,c.id_cargo,codc_categ,fec_alta,fec_baja,n.tipo_nov,s.categ, case when s.categ is not null then coss.costo_basico else null end as costosub,cos.costo_basico,case when nod.desc_abrev is null then nod.descripcion else nod.desc_abrev end as pase
                 from puesto p
                 left outer join cargo c on (p.id_puesto=c.id_puesto and  c.fec_alta <='".$udia."' and (c.fec_baja>='".$pdia."' or c.fec_baja is null))
                 left outer join nodo no on (no.id_nodo=c.pertenece_a)
@@ -157,7 +161,7 @@ class dt_cargo extends toba_datos_tabla
                 left outer join persona pe on (pe.id_persona=c.id_persona)
                 left outer join subroga s on (s.id_cargo=c.id_cargo and s.desde <='".$udia."' and (s.hasta>='".$pdia."' or s.hasta is null))
                 left outer join novedad n on (n.id_cargo=c.id_cargo and n.desde <='".$udia."' and (n.hasta>='".$pdia."' or n.hasta is null))
-                left outer join pase pa on (pa.id_cargo=c.id_cargo and pa.tipo='T' and pa.desde <='".$udia."' and (pa.hasta>='".$pdia."' or pa.hasta is null))
+                left outer join pase pa on (pa.id_cargo=c.id_cargo and pa.tipo='T' and '".$actual."' <=pa.hasta and '".$actual."'>=pa.desde)
                 left outer join nodo nod on (nod.id_nodo=pa.destino)
                 left outer join (select c.codigo_categ,c.desde,costo_basico from costo_categoria c,
                                  (select codigo_categ,max(desde) as desde from costo_categoria
@@ -179,7 +183,7 @@ class dt_cargo extends toba_datos_tabla
                 left outer join persona pe on (pe.id_persona=c.id_persona)
                 left outer join subroga s on (s.id_cargo=c.id_cargo and s.desde <='".$udia."' and (s.hasta>='".$pdia."' or s.hasta is null))
                 left outer join novedad n on (n.id_cargo=c.id_cargo and n.desde <='".$udia."' and (n.hasta>='".$pdia."' or n.hasta is null))
-                left outer join pase pa on (pa.id_cargo=c.id_cargo and pa.tipo='T' and pa.desde <='".$udia."' and (pa.hasta>='".$pdia."' or pa.hasta is null))
+                left outer join pase pa on (pa.id_cargo=c.id_cargo and pa.tipo='T' and '".$actual."' <=pa.hasta and '".$actual."'>=pa.desde)
                 left outer join nodo nod on (nod.id_nodo=pa.destino)
                 left outer join (select c.codigo_categ,c.desde,costo_basico from costo_categoria c,
                                  (select codigo_categ,max(desde) as desde from costo_categoria
@@ -201,12 +205,39 @@ class dt_cargo extends toba_datos_tabla
    function get_listado2($id_nodo=null){
        $sql=dt_cargo::armar_consulta($id_nodo);
        $sql="select *,gasto+difer as gastotot from ("
-               . "select *,case when costosub is not null then costosub-costo_basico else 0 end as difer,case when puesto='A' and pase is not null then costo_basico*2 else case when puesto='A' or puesto='P' or puesto='M' then costo_basico else 0 end end as credito ,"
-               . " case when puesto='A' or puesto ='' then costo_basico else 0 end as gasto"
+               . "select *,case when costosub is not null then costosub-costo_basico else 0 end as difer,case when puesto='A' or puesto='P' or puesto='V' then costo_basico else 0 end as credito ,"
+               . " case when ((puesto='A' and pase is null) or puesto ='') then costo_basico else 0 end as gasto"
                . " from (".$sql.") sub"
                .") sub2";
-      
+      //si el puesto es A y no tien pase temporal vigente entonces gasta
+       //si el puesto es A y no tienen pase temporal vigente entonces gasta
        return toba::db('nodos')->consultar($sql);
+   }
+   function agregar_cargo($datos=array()){
+       $sql="select * from cargo where id_persona=".$datos['id_persona']." and fec_alta='".$datos['fec_alta']."'";
+       $res=toba::db('nodos')->consultar($sql);
+       if(count($res)==0){
+           $sql="INSERT INTO cargo( nro_cargo, id_persona, fec_alta, fec_baja, pertenece_a, 
+            codc_carac, codc_categ, codc_agrup, forma_modif, chkstopliq, 
+            id_puesto, generado_x_pase)
+    VALUES ( null,". $datos['id_persona'].",'". $datos['fec_alta']."',null,". $datos['pertenece_a'].",'". 
+            $datos['codc_carac']."','". $datos['codc_categ']."','". $datos['codc_agrup']."',"."null,0,null,". $datos['generado_x_pase'].")";
+            toba::db('nodos')->consultar($sql);
+            return 1;//devuelve 1 si realizo la insercion y 0 en caso contrario
+       }else{
+           return 0;
+       }
+       
+   }
+   //modifica la fecha desde del cargo generado por el pase transitorio
+   function modificar_alta($id_cargo,$desde){
+       $sql="select * from pase where id_cargo=".$id_cargo." and tipo='T'";
+       $res=toba::db('nodos')->consultar($sql);
+       print_r($res);
+       if(count($res)>0){
+          $sql="update cargo set fec_alta='".$desde."' where generado_x_pase=".$res[0]['id_pase']; 
+          toba::db('nodos')->consultar($sql);
+       }
    }
 }
 ?>

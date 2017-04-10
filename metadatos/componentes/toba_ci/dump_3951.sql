@@ -198,10 +198,10 @@ INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objet
 );
 INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
 	'nodos', --proyecto
-	'2792', --dep_id
+	'2824', --dep_id
 	'3951', --objeto_consumidor
-	'3954', --objeto_proveedor
-	'form_encabezado', --identificador
+	'3984', --objeto_proveedor
+	'form_encabezado2', --identificador
 	NULL, --parametros_a
 	NULL, --parametros_b
 	NULL, --parametros_c
@@ -355,15 +355,8 @@ INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id)
 	'nodos', --proyecto
 	'1646', --pantalla
 	'3951', --objeto_ci
-	'1', --orden
-	'2788'  --dep_id
-);
-INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
-	'nodos', --proyecto
-	'1646', --pantalla
-	'3951', --objeto_ci
 	'0', --orden
-	'2792'  --dep_id
+	'2788'  --dep_id
 );
 INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
 	'nodos', --proyecto
@@ -384,20 +377,13 @@ INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id)
 	'1648', --pantalla
 	'3951', --objeto_ci
 	'0', --orden
-	'2792'  --dep_id
-);
-INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
-	'nodos', --proyecto
-	'1648', --pantalla
-	'3951', --objeto_ci
-	'1', --orden
 	'2794'  --dep_id
 );
 INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
 	'nodos', --proyecto
 	'1648', --pantalla
 	'3951', --objeto_ci
-	'2', --orden
+	'1', --orden
 	'2801'  --dep_id
 );
 INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
@@ -405,20 +391,13 @@ INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id)
 	'1649', --pantalla
 	'3951', --objeto_ci
 	'0', --orden
-	'2792'  --dep_id
-);
-INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
-	'nodos', --proyecto
-	'1649', --pantalla
-	'3951', --objeto_ci
-	'1', --orden
 	'2795'  --dep_id
 );
 INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
 	'nodos', --proyecto
 	'1649', --pantalla
 	'3951', --objeto_ci
-	'2', --orden
+	'1', --orden
 	'2806'  --dep_id
 );
 INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
@@ -426,20 +405,13 @@ INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id)
 	'1650', --pantalla
 	'3951', --objeto_ci
 	'0', --orden
-	'2792'  --dep_id
-);
-INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
-	'nodos', --proyecto
-	'1650', --pantalla
-	'3951', --objeto_ci
-	'1', --orden
 	'2802'  --dep_id
 );
 INSERT INTO apex_objetos_pantalla (proyecto, pantalla, objeto_ci, orden, dep_id) VALUES (
 	'nodos', --proyecto
 	'1650', --pantalla
 	'3951', --objeto_ci
-	'2', --orden
+	'1', --orden
 	'2804'  --dep_id
 );
 

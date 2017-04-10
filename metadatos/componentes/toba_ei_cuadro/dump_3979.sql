@@ -563,7 +563,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'17', --orden
 	'Credito', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
-	'4', --estilo
+	'col-tex-p4', --estilo
 	NULL, --ancho
 	'2', --formateo
 	NULL, --vinculo_indice
@@ -656,7 +656,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'20', --orden
 	'Gasto Total', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
-	'4', --estilo
+	'col-tex-p4', --estilo
 	NULL, --ancho
 	'2', --formateo
 	NULL, --vinculo_indice
@@ -685,7 +685,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'3958', --objeto_cuadro_col
 	'pase', --clave
 	'14', --orden
-	'Pase', --titulo
+	'Pase a', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'4', --estilo
 	NULL, --ancho
