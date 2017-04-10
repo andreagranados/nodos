@@ -204,7 +204,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'fec_alta', --identificador
 	'ef_editable_fecha', --elemento_formulario
 	'fec_alta', --columnas
-	'0', --obligatorio
+	'1', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'4', --orden
 	'Desde', --etiqueta
@@ -364,7 +364,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'codc_carac', --identificador
 	'ef_combo', --elemento_formulario
 	'codc_carac', --columnas
-	'0', --obligatorio
+	'1', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'3', --orden
 	'Carácter', --etiqueta
@@ -444,7 +444,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'codc_categ', --identificador
 	'ef_combo', --elemento_formulario
 	'codc_categ', --columnas
-	'0', --obligatorio
+	'1', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'2', --orden
 	'Categoría', --etiqueta
@@ -524,7 +524,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'codc_agrup', --identificador
 	'ef_combo', --elemento_formulario
 	'codc_agrup', --columnas
-	'0', --obligatorio
+	'1', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'6', --orden
 	'Agrupamiento', --etiqueta
@@ -764,7 +764,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'pertenece_a', --identificador
 	'ef_combo', --elemento_formulario
 	'pertenece_a', --columnas
-	'0', --obligatorio
+	'1', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'1', --orden
 	'Pertenece a', --etiqueta

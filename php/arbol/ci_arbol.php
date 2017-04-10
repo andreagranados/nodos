@@ -102,6 +102,7 @@ class ci_arbol extends nodos_ci
 
 	function evt__agregar()
 	{
+           $this->dep('datos')->tabla('nodo')->resetear();
            $this->set_pantalla('pant_edicion'); 
            $this->s__mostrar=1;
 	}

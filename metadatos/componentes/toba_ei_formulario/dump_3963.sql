@@ -204,7 +204,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'tipo_nov', --identificador
 	'ef_combo', --elemento_formulario
 	'tipo_nov', --columnas
-	'1', --obligatorio
+	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'1', --orden
 	'Tipo nov', --etiqueta
@@ -284,7 +284,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'desde', --identificador
 	'ef_editable_fecha', --elemento_formulario
 	'desde', --columnas
-	'1', --obligatorio
+	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'2', --orden
 	'Desde', --etiqueta

@@ -1,11 +1,12 @@
 <?php
 class ci_cargo extends nodos_ci
 {
-    protected $s__mostrar;
+    protected $s__mostrar;//para novedades
     protected $s__mostrar_p;
     protected $s__mostrar_s;
-    protected $s__pantalla;
     protected $s__mostrar_d;
+    protected $s__pantalla;
+    
 	
         function get_origen(){
             if($this->controlador()->dep('datos')->tabla('cargo')->esta_cargada()){
@@ -21,9 +22,8 @@ class ci_cargo extends nodos_ci
                 if($id_nodo<>0){
                     $salida=$this->controlador()->dep('datos')->tabla('puesto')->get_puestos($id_nodo);
                 }
-                
-                return $salida;
              }
+             return $salida;
         }
         //-----------------------------------------------------------------------------------
 	//---- form_cargo -------------------------------------------------------------------
@@ -34,7 +34,14 @@ class ci_cargo extends nodos_ci
              if($this->controlador()->dep('datos')->tabla('cargo')->esta_cargada()){
                 $datos = $this->controlador()->dep('datos')->tabla('cargo')->get();              
                 return $datos;
+              }else{//no esta cargado el cargo
+                   $this->pantalla()->tab("pant_desempenio")->desactivar();	
+                   $this->pantalla()->tab("pant_novedades")->desactivar();	
+                   $this->pantalla()->tab("pant_subrogancia")->desactivar();	
+                   $this->pantalla()->tab("pant_pases")->desactivar();	
+                  
               }
+             
 	}
 
 	
@@ -48,13 +55,27 @@ class ci_cargo extends nodos_ci
 
 	function evt__form_cargo__modificacion($datos)
 	{
-            $datos['generado_x_pase']=0;
-            $this->controlador()->dep('datos')->tabla('cargo')->set($datos);
-            $this->controlador()->dep('datos')->tabla('cargo')->sincronizar();
+             if($this->controlador()->dep('datos')->tabla('cargo')->esta_cargada()){//es una modificacion
+                $this->controlador()->dep('datos')->tabla('cargo')->set($datos);
+                $this->controlador()->dep('datos')->tabla('cargo')->sincronizar();
+             }else{//es un alta
+                $pers=$this->controlador()->dep('datos')->tabla('persona')->get();  
+                $datos['generado_x_pase']=0;
+                $datos['id_persona']=$pers['id_persona'];
+                $this->controlador()->dep('datos')->tabla('cargo')->set($datos);
+                $this->controlador()->dep('datos')->tabla('cargo')->sincronizar();
+                $car=$this->controlador()->dep('datos')->tabla('cargo')->get();
+                $cargo['id_cargo']=$car['id_cargo'];
+                $this->controlador()->dep('datos')->tabla('cargo')->cargar($cargo);
+             }
+            
+            
 	}
 
 	function evt__form_cargo__cancelar()
 	{
+            $this->controlador()->dep('datos')->tabla('cargo')->resetear();
+            $this->controlador()->set_pantalla('pant_cargos');
 	}
         
         
@@ -84,13 +105,23 @@ class ci_cargo extends nodos_ci
 	function conf__form_nov(toba_ei_formulario $form)
 	{
             if($this->s__mostrar==1){
-                 if($this->dep('datos')->tabla('novedad')->esta_cargada()){
+                $this->dep('form_nov')->descolapsar();
+                $form->ef('desde')->set_obligatorio('true');
+                $form->ef('tipo_nov')->set_obligatorio('true');
+                if($this->dep('datos')->tabla('novedad')->esta_cargada()){
                      $datos=$this->dep('datos')->tabla('novedad')->get();
                      $form->set_datos($datos);
-                 }  
+                 }
+                
             }else{
+                $dat['desde']='';
+                $dat['tipo_nov']='';
+                $form->set_datos($dat);
                 $this->dep('form_nov')->colapsar();
+                
             }
+            
+                
 	}
 
 	function evt__form_nov__modificacion($datos)
@@ -111,8 +142,9 @@ class ci_cargo extends nodos_ci
 
 	function evt__form_nov__cancelar()
 	{
-            $this->s__mostrar=0;
             $datos=$this->dep('datos')->tabla('novedad')->resetear();
+            $this->s__mostrar=0;
+            
 	}
         //----------
         function evt__agregar(){
@@ -125,7 +157,13 @@ class ci_cargo extends nodos_ci
             }
         }
         //pantallas
-       
+        function conf__pant_inicial(toba_ei_pantalla $pantalla)
+	{
+            $this->s__mostrar=0;
+            $this->s__mostrar_s=0;
+            $this->s__mostrar_p=0;
+            $this->s__mostrar_d=0;
+	}
         function conf__pant_desempenio(toba_ei_pantalla $pantalla)
 	{
             $this->s__pantalla='pant_desempenio';

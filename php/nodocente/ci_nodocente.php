@@ -143,10 +143,12 @@ class ci_nodocente extends nodos_ci
 	function conf__form_encabezado2(toba_ei_formulario $form)
 	{
             if ($this->controlador()->dep('datos')->tabla('persona')->esta_cargada()) {
+                if ($this->controlador()->dep('datos')->tabla('cargo')->esta_cargada()) {
                 $cargo=$this->controlador()->dep('datos')->tabla('cargo')->get();
                 $fecha=date_format(date_create($cargo['fec_alta']),'d-m-Y');
                 $texto='Cargo: '.$cargo['id_cargo']." Categoria: ".$cargo['codc_categ']." Caracter ".$cargo['codc_carac']." desde: ".$fecha;
                 $form->set_titulo($texto);
+                }
             }
 	}
 

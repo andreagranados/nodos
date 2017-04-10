@@ -8,7 +8,7 @@ class dt_nodo extends toba_datos_tabla
 	}
     function get_dependientes()
 	{
-	 $sql = "SELECT * FROM nodo ";
+	 $sql = "SELECT * FROM nodo order by descripcion";
 	 return toba::db('nodos')->consultar($sql);
 	}  
     function get_presupuestarios(){
