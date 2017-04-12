@@ -14,7 +14,9 @@ class ci_cargo extends nodos_ci
                 return $this->controlador()->dep('datos')->tabla('nodo')->get_origen($datos['id_cargo']); 
             }
         }
+        //recupera los puestos del nodo al que corresponde el cargo
         function get_puestos(){
+
             $salida=array();
             if($this->controlador()->dep('datos')->tabla('cargo')->esta_cargada()){
                 $datos = $this->controlador()->dep('datos')->tabla('cargo')->get();
@@ -151,7 +153,7 @@ class ci_cargo extends nodos_ci
                 case 'pant_novedades':$this->dep('datos')->tabla('novedad')->resetear();$this->s__mostrar=1;break;
                 case 'pant_desempenio':$this->dep('datos')->tabla('desempenio')->resetear();$this->s__mostrar_d=1;break;
                 case 'pant_pases':$this->dep('datos')->tabla('pase')->resetear();$this->s__mostrar_p=1;break;
-                case 'pant_subrogancia':$this->dep('datos')->tabla('subroga')->resetear();$this->s__mostrar_s=1;break;
+                case 'pant_subrogancia':PRINT_R('GOLA');$this->dep('datos')->tabla('subroga')->resetear();$this->s__mostrar_s=1;break;
             }
         }
         //pantallas
@@ -204,13 +206,10 @@ class ci_cargo extends nodos_ci
                 
                 if($this->dep('datos')->tabla('pase')->esta_cargada()){
                      $datos=$this->dep('datos')->tabla('pase')->get();
-                     //$form->set_datos($datos);
+                     $form->set_datos($datos);
                  }  
-                if ($this->controlador()->dep('datos')->tabla('cargo')->esta_cargada()) {
-                    $car=$this->controlador()->dep('datos')->tabla('cargo')->get();
-                    $datos['id_cargo']=$car['id_cargo'];
-                 } 
-                 $form->set_datos($datos);
+                
+                 
             }else{
                 $this->dep('form_pase')->colapsar();
             }
@@ -240,6 +239,8 @@ class ci_cargo extends nodos_ci
                 $this->dep('datos')->tabla('pase')->set($datos);
                 $this->dep('datos')->tabla('pase')->sincronizar();
                 $pase_nuevo=$this->dep('datos')->tabla('pase')->get();
+                $p['id_pase']=$pase_nuevo['id_pase'];
+                $this->dep('datos')->tabla('pase')->cargar($p);//lo cargo para que se sigan viendo los datos en el formulario
                 if($datos['tipo']=='T'){//si el pase es temporal
                 //ingreso un cargo en la unidad destino
                 //la ingresa con fecha de alta = desde
@@ -257,20 +258,29 @@ class ci_cargo extends nodos_ci
                 }
             
                 }else{//pase definitivo entonces tengo que modificar la fecha del cargo en la unidad destino con la fecha de alta del definitivo
-                    $this->controlador()->dep('datos')->tabla('cargo')->modificar_alta($pase_nuevo['id_cargo'],$datos['desde']);
-                    toba::notificacion()->agregar('Se ha modificado la fecha del cargo generado a partir del pase temporal', 'info');
+                    $salida=$this->controlador()->dep('datos')->tabla('cargo')->modificar_alta($datos['id_cargo'],$datos['destino'],$datos['desde']);
+                    //le coloca fecha de baja al cargo de la unidad origen
+                    $this->controlador()->dep('datos')->tabla('cargo')->finaliza_cargo($datos['id_cargo'],$datos['desde']);
+                    if($salida==1){
+                        toba::notificacion()->agregar('Se ha modificado la fecha del cargo generado a partir del pase temporal', 'info');
+                    }
+                    
                 } 
             }
-           
-           
-                 
-           
-            
-            
-   
+     
 	}
         function evt__form_pase__baja()
 	{
+            $pase=$this->dep('datos')->tabla('pase')->get();
+            
+            if($pase['tipo']=='T'){//transitorio
+                //debe eliminar el cargo generado a partir del pase
+                $this->controlador()->dep('datos')->tabla('cargo')->eliminar($pase['id_pase']);
+            }else{//definitivo
+                $cargo=$this->controlador()->dep('datos')->tabla('cargo')->get();
+                $this->controlador()->dep('datos')->tabla('cargo')->abrir($cargo['id_cargo']);
+            }
+            
             //aqui tengo que borrar tambien el cargo??
             $this->dep('datos')->tabla('pase')->eliminar_todo();
             $this->dep('datos')->tabla('pase')->resetear();
@@ -303,15 +313,11 @@ class ci_cargo extends nodos_ci
         function conf__form_sub(toba_ei_formulario $form)
 	{
             if($this->s__mostrar_s==1){
+                $this->dep('form_sub')->descolapsar();
                  if($this->dep('datos')->tabla('subroga')->esta_cargada()){
                      $datos=$this->dep('datos')->tabla('subroga')->get();
-                     //$form->set_datos($datos);
+                     $form->set_datos($datos);
                  }  
-                 if ($this->controlador()->dep('datos')->tabla('cargo')->esta_cargada()) {
-                    $car=$this->controlador()->dep('datos')->tabla('cargo')->get();
-                    $datos['id_cargo']=$car['id_cargo'];
-                 } 
-                 $form->set_datos($datos);
             }else{
                 $this->dep('form_sub')->colapsar();
             }

@@ -1,6 +1,9 @@
 <?php
 class dt_cargo extends toba_datos_tabla
 {
+     function get_subrogancias(){
+         $sql="";
+     }
     //retorna el id del nodo al que pertenece y 0 sino pertenece a ningun nada
     function get_nodo($id_cargo){
        $sql="select pertenece_a from cargo where id_cargo=".$id_cargo;
@@ -230,14 +233,31 @@ class dt_cargo extends toba_datos_tabla
        
    }
    //modifica la fecha desde del cargo generado por el pase transitorio
-   function modificar_alta($id_cargo,$desde){
-       $sql="select * from pase where id_cargo=".$id_cargo." and tipo='T'";
+   function modificar_alta($id_cargo,$destino,$desde){
+       //busco el pase transitorio del cargo al destino
+       $sql="select * from pase where id_cargo=".$id_cargo." and destino=".$destino." and tipo='T'";
        $res=toba::db('nodos')->consultar($sql);
-       print_r($res);
+       
        if(count($res)>0){
           $sql="update cargo set fec_alta='".$desde."' where generado_x_pase=".$res[0]['id_pase']; 
           toba::db('nodos')->consultar($sql);
+          return 1;
+       }else{
+           return 0;
        }
    }
+   function finaliza_cargo($id_cargo,$desde){
+       $sql="update cargo set fec_baja='".$desde."' where id_cargo=".$id_cargo;
+       toba::db('nodos')->consultar($sql);
+   }
+   function eliminar($id_pase){//elimina el cargo o los cargos generados por el pase
+       $sql="delete from cargo where generado_x_pase=".$id_pase;
+       toba::db('nodos')->consultar($sql);
+   }
+   function abrir($id_cargo){//elimina el cargo o los cargos generados por el pase
+       $sql="update cargo set fec_baja=null where id_cargo=".$id_cargo;
+       toba::db('nodos')->consultar($sql);
+   }
 }
+
 ?>

@@ -18,7 +18,29 @@ class dt_subroga extends toba_datos_tabla
                 sub
                 left outer join cargo ca on (sub.surge_de=ca.id_puesto and ca.fec_alta=sub.fec_alta )
                 left outer join persona pe on (pe.id_persona=ca.id_persona)";
-            
+        return toba::db('nodos')->consultar($sql);
+    }
+    function get_subrogancias_($filtro=array()){
+        $where = "";
+       
+        if (isset($filtro['id_nodo'])) {
+	   $where.= " WHERE id_nodo=".$filtro['id_nodo']['valor'];
+		}
+        $sql=" 
+            select sub.*,pe.apellido as ap,pe.nombre as nom,pe.legajo from                
+            (select pe.apellido,pe.nombre,pe.legajo,c.codc_carac,c.codc_categ,s.categ,s.desde,s.hasta,s.motivo,s.resol,c.pertenece_a,surge_de,max(ca.fec_alta)as alta
+            from subroga s
+            left outer join cargo c on (c.id_cargo=s.id_cargo)                
+            left outer join persona pe on (pe.id_persona=c.id_persona)                
+            left outer join cargo ca on (ca.id_puesto=s.surge_de)                
+            group by pe.apellido,pe.nombre,pe.legajo,c.codc_carac,c.codc_categ,s.categ,s.desde,s.hasta,s.motivo,s.resol,c.pertenece_a,surge_de
+            )sub
+            left outer join cargo c on (sub.alta=c.fec_alta and c.id_puesto=sub.surge_de)
+            left outer join persona pe on (pe.id_persona=c.id_persona)
+            left outer join nodo n on (sub.pertenece_a=n.id_nodo)
+            $where
+            order by apellido,nombre";
+         
         return toba::db('nodos')->consultar($sql);
     }
 }
