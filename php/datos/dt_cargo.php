@@ -113,16 +113,30 @@ class dt_cargo extends toba_datos_tabla
         $where = "";
         if (isset($filtro['id_persona'])) {
 	   $where.= " WHERE id_persona=".$filtro['id_persona'];
-		}
-        $sql="select c.id_cargo,c.codc_carac,c.codc_categ ,c.codc_agrup,c.fec_alta,c.fec_baja,case when c.chkstopliq=0 then 'NO' else 'SI' end as chkstopliq ,n.descripcion as pertenece_a,case when p.tipo=1 then 'P_' else 'T_' end ||p.id_puesto||'_categ'|| p.categ as puesto,nod.descripcion as pase"
-                . " from cargo c"
-                . " left outer join puesto p on (c.id_puesto=p.id_puesto)"
-                . " left outer join nodo n on (c.pertenece_a=n.id_nodo)"
-                . " left outer join pase pa on (pa.id_cargo=c.id_cargo and pa.tipo='T' and '".$actual."' <=pa.hasta and '".$actual."'>=pa.desde)"
-                . " left outer join nodo nod on (nod.id_nodo=pa.destino)"
-                .$where
-                ." order by fec_alta desc";
+         }
+       
         
+//        $sql="select c.id_cargo,c.codc_carac,c.codc_categ ,c.codc_agrup,c.fec_alta,c.fec_baja,case when c.chkstopliq=0 then 'NO' else 'SI' end as chkstopliq ,n.descripcion as pertenece_a,case when p.tipo=1 then 'P_' else 'T_' end ||p.id_puesto||'_categ'|| p.categ as puesto,nod.descripcion as pase"
+//                . " from cargo c"
+//                . " left outer join puesto p on (c.id_puesto=p.id_puesto)"
+//                . " left outer join nodo n on (c.pertenece_a=n.id_nodo)"
+//                . " left outer join pase pa on (pa.id_cargo=c.id_cargo and pa.tipo='T' and '".$actual."' <=pa.hasta and '".$actual."'>=pa.desde)"
+//                . " left outer join nodo nod on (nod.id_nodo=pa.destino)"
+//                .$where
+//                ." order by fec_alta desc";
+        $sql="select sub.*,s.categ as subroga,nod.descripcion as pase from (
+                select c.id_persona,c.id_cargo,c.codc_carac,c.codc_categ ,c.codc_agrup,c.fec_alta,c.fec_baja,case when c.chkstopliq=0 then 'NO' else 'SI' end as chkstopliq ,n.descripcion as pertenece_a,case when p.tipo=1 then 'P_' else 'T_' end ||p.id_puesto||'_categ'|| p.categ as puesto,max(pa.desde) as pase_desde
+                 from cargo c
+                 left outer join puesto p on (c.id_puesto=p.id_puesto)
+                 left outer join nodo n on (c.pertenece_a=n.id_nodo)
+                 left outer join pase pa on (pa.id_cargo=c.id_cargo)
+                 group by c.id_persona,c.id_cargo,codc_carac,codc_categ,codc_agrup,fec_alta,fec_baja,c.chkstopliq,n.descripcion ,c.pertenece_a, puesto
+                 )sub
+                left outer join pase p on (sub.id_cargo=p.id_cargo and p.desde=sub.pase_desde)                                       
+                left outer join nodo nod on (nod.id_nodo=p.destino)                      
+                left outer join subroga s on (s.id_cargo=sub.id_cargo and s.desde <='".$udia."' and (s.hasta>='".$pdia."' or s.hasta is null))                      
+                    $where
+                order by fec_alta desc";
         return toba::db('nodos')->consultar($sql);
     }
    function armar_consulta($id_nodo=null){

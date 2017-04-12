@@ -12,7 +12,7 @@ class dt_nodo extends toba_datos_tabla
 	 return toba::db('nodos')->consultar($sql);
 	}  
     function get_presupuestarios(){
-        $sql="select * from nodo where presupuestario=1";
+        $sql="select * from nodo where presupuestario=1 order by descripcion";
         $salida=toba::db('nodos')->consultar($sql);
         return $salida;
     } 

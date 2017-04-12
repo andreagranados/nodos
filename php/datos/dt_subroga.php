@@ -27,7 +27,7 @@ class dt_subroga extends toba_datos_tabla
 	   $where.= " WHERE id_nodo=".$filtro['id_nodo']['valor'];
 		}
         $sql=" 
-            select sub.*,pe.apellido as ap,pe.nombre as nom,pe.legajo from                
+            select sub.*,pe.apellido as ap,pe.nombre as nom,pe.legajo as leg from                
             (select pe.apellido,pe.nombre,pe.legajo,c.codc_carac,c.codc_categ,s.categ,s.desde,s.hasta,s.motivo,s.resol,c.pertenece_a,surge_de,max(ca.fec_alta)as alta
             from subroga s
             left outer join cargo c on (c.id_cargo=s.id_cargo)                
