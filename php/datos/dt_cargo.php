@@ -260,6 +260,10 @@ class dt_cargo extends toba_datos_tabla
            return 0;
        }
    }
+    function modificar_baja($id_cargo,$desde){
+         $sql="update cargo set fec_baja='".$desde."' where id_cargo=".$id_cargo;
+         toba::db('nodos')->consultar($sql);
+     }
    function finaliza_cargo($id_cargo,$desde){
        $sql="update cargo set fec_baja='".$desde."' where id_cargo=".$id_cargo;
        toba::db('nodos')->consultar($sql);

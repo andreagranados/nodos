@@ -128,8 +128,16 @@ class ci_cargo extends nodos_ci
 	{
             $car=$this->controlador()->dep('datos')->tabla('cargo')->get();
             $datos['id_cargo']=$car['id_cargo'];
+            if($datos['tipo_nov']=='BAJA' or $datos['tipo_nov']=='RENU' or $datos['tipo_nov']=='JUBI'){
+                $this->controlador()->dep('datos')->tabla('cargo')->modificar_baja($datos['id_cargo'],$datos['desde']);
+                toba::notificacion()->agregar('Se ha modificado la fecha de finalizacion del cargo', 'info');
+                $car=$this->controlador()->dep('datos')->tabla('cargo')->get();//vuelvo a recuperar el cargo
+                $dat['id_cargo']=$car['id_cargo'];
+                $this->controlador()->dep('datos')->tabla('cargo')->cargar($dat);
+            }
             $this->dep('datos')->tabla('novedad')->set($datos);
             $this->dep('datos')->tabla('novedad')->sincronizar();
+            $this->s__mostrar=0;
 	}
 
 	function evt__form_nov__baja()
