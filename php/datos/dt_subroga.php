@@ -14,7 +14,7 @@ class dt_subroga extends toba_datos_tabla
                     
                     left outer join cargo c on (c.id_puesto=s.surge_de)
                     ".$where
-                ." group by s.id_cargo,s.categ,desde,hasta, motivo,resol,surge_de)
+                ." group by s.id_cargo,s.categ,desde,hasta, motivo,s.resol,surge_de)
                 sub
                 left outer join cargo ca on (sub.surge_de=ca.id_puesto and ca.fec_alta=sub.fec_alta )
                 left outer join persona pe on (pe.id_persona=ca.id_persona)";

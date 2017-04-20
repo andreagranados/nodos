@@ -3,6 +3,33 @@ require_once 'dt_cargo.php';
 
 class dt_puesto extends toba_datos_tabla
 {
+        function get_listado_puestos($filtro=array()){
+            $where="";
+            $concat=0;
+            if (isset($filtro['id_nodo'])) {
+                $where.= " WHERE id_nodo=".$filtro['id_nodo']['valor'];
+                $concat=1;
+            }
+            if (isset($filtro['categ'])) {
+                if($concat==1){
+                    $where.=" and categ='".$filtro['categ']['valor']."'";
+                }else{
+                    $where.=" WHERE categ='".$filtro['categ']['valor']."'";
+                }
+                
+            }
+           
+            $sql="select p.id_puesto,p.categ,p.pertenece_a,n.id_nodo,n.descripcion as nodo,co.costo_basico
+                    from puesto p
+                    left outer join nodo n on (p.pertenece_a=n.id_nodo)
+                    left outer join (select codigo_categ,max(desde) as desde 
+                    from costo_categoria
+                    group by codigo_categ)sub on (sub.codigo_categ=p.categ)
+                    left outer join costo_categoria co on (co.codigo_categ=sub.codigo_categ)
+                    $where
+                    order by nodo,id_puesto";
+            return toba::db('nodos')->consultar($sql);
+        }
         function get_descripciones()
 	{
 		$sql = "SELECT id_puesto, categ FROM puesto ORDER BY categ";
@@ -23,10 +50,13 @@ class dt_puesto extends toba_datos_tabla
                     $udia=$anio."-".$mes."-"."28";
                     }
             }
+            $sql="select  origen_de(".$id_nodo.")";
+            $res=toba::db('nodos')->consultar($sql);
+            //print_r($res);exit;//( [0] => Array ( [origen_de] => 31 ) )
             $where ="";
                             
             if(isset($id_nodo)){
-                    $where=" WHERE p.pertenece_a=".$id_nodo;
+                    $where=" WHERE p.pertenece_a=".$res[0]['origen_de'];
                 }
             $sql="select p.id_puesto,case when tipo=1 then 'P_' else 'T_' end ||p.id_puesto||case when c.id_cargo is null then 'libre' else 'ocupado' end||'_cat'||categ  as descripcion "
                     . "from puesto p "
