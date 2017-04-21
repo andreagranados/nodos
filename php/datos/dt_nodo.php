@@ -11,6 +11,16 @@ class dt_nodo extends toba_datos_tabla
 	 $sql = "SELECT * FROM nodo order by descripcion";
 	 return toba::db('nodos')->consultar($sql);
 	}  
+    function get_escalonados(){
+        $sql="select sub.id_nodo, case when sub.id_nodo=sub.ori then sub.descripcion else sub.descripcion||'-'||no.descripcion end as descripcion from 
+            (select id_nodo,descripcion,origen_de(id_nodo)as ori
+            from nodo n)sub
+            left outer join nodo no on(no.id_nodo=sub.ori)
+            order by sub.descripcion
+            ";
+         return toba::db('nodos')->consultar($sql);
+    }    
+   //solo retorna los que son presupuestarios
     function get_presupuestarios(){
         $sql="select * from nodo where presupuestario=1 order by descripcion";
         $salida=toba::db('nodos')->consultar($sql);
