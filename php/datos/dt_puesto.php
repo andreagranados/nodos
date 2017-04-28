@@ -19,13 +19,27 @@ class dt_puesto extends toba_datos_tabla
                 
             }
            
-            $sql="select p.id_puesto,p.categ,p.pertenece_a,n.id_nodo,n.descripcion as nodo,co.costo_basico
+//            $sql="select p.id_puesto,p.categ,p.pertenece_a,n.id_nodo,n.descripcion as nodo,co.costo_basico
+//                    from puesto p
+//                    left outer join nodo n on (p.pertenece_a=n.id_nodo)
+//                    left outer join (select codigo_categ,max(desde) as desde 
+//                                    from costo_categoria
+//                                    group by codigo_categ)sub on (sub.codigo_categ=p.categ)
+//                    left outer join costo_categoria co on (co.codigo_categ=sub.codigo_categ)
+//                    $where
+//                    order by nodo,id_puesto";
+            $sql="select p.id_puesto,p.categ,p.pertenece_a,n.id_nodo,n.descripcion as nodo,co.costo_basico,pe.apellido||','||pe.nombre||' '||pe.legajo as ocupado_por
                     from puesto p
                     left outer join nodo n on (p.pertenece_a=n.id_nodo)
                     left outer join (select codigo_categ,max(desde) as desde 
-                    from costo_categoria
-                    group by codigo_categ)sub on (sub.codigo_categ=p.categ)
+                    			from costo_categoria
+                    			group by codigo_categ)sub on (sub.codigo_categ=p.categ)
                     left outer join costo_categoria co on (co.codigo_categ=sub.codigo_categ)
+                    left outer join (select ca.id_puesto,max(fec_alta)as desde
+                    			 from cargo ca 
+                    			 group by ca.id_puesto )c on (c.id_puesto=p.id_puesto)
+                    left outer join cargo cr on (cr.id_puesto=p.id_puesto and cr.fec_alta=c.desde)			 
+                    left outer join persona pe on (pe.id_persona=cr.id_persona)			
                     $where
                     order by nodo,id_puesto";
             return toba::db('nodos')->consultar($sql);
@@ -96,7 +110,41 @@ class dt_puesto extends toba_datos_tabla
             //print_r($sql);exit();
             return toba::db('nodos')->consultar($sql);
         }
-        
+        function get_ocupantes($id_puesto){
+            $sql="select p.apellido,p.nombre,p.legajo,c.codc_categ,c.fec_alta,c.fec_baja from cargo c"
+                    . " left outer join persona p on (c.id_persona=p.id_persona) "
+                    . " where c.id_puesto=".$id_puesto
+                    ." order by fec_alta ";
+          
+            return toba::db('nodos')->consultar($sql);
+        }
+        function hay_superposicion(){
+            $mes=  date("m"); 
+            $anio=  date("Y"); 
+            $pdia=$anio."-".$mes."-"."01";
+            if($mes=="01" or $mes=="03" or $mes=="05" or $mes=="07" or $mes=="09" or $mes=="11"){
+                $udia=$anio."-".$mes."-"."31";
+            }else{if($mes=="04" or $mes="06" or $mes=="08" or $mes=="10"     ){
+                    $udia=$anio."-".$mes."-"."30";
+                    }
+                  else {
+                    $udia=$anio."-".$mes."-"."28";
+                    }
+            }
+            $sql="select * from 
+                (select p.id_puesto,count(c.id_cargo) as cant from puesto p,
+                     cargo c 
+                     where c.id_puesto=p.id_puesto
+                     and c.fec_alta<='".$udia."' and (c.fec_baja is null or c.fec_baja>='".$pdia."')"
+                    . " group by p.id_puesto)sub"
+                    . " where cant>1";
+            $resul=toba::db('nodos')->consultar($sql);
+            if(count($resul)>0){
+                return 1;
+            }else{
+                return 0;
+            }
+        }
 
 }
 

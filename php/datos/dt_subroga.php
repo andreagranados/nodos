@@ -21,11 +21,24 @@ class dt_subroga extends toba_datos_tabla
         return toba::db('nodos')->consultar($sql);
     }
     function get_subrogancias_($filtro=array()){
-        $where = "";
-       
+        $where = " WHERE 1=1 ";
+        
         if (isset($filtro['id_nodo'])) {
-	   $where.= " WHERE id_nodo=".$filtro['id_nodo']['valor'];
+           $sql ="CREATE LOCAL TEMP TABLE auxiliar(
+               id_nodo	integer );";    
+           toba::db('nodos')->consultar($sql);
+           $sql="select depende_de(".$filtro['id_nodo']['valor'].");";
+           toba::db('nodos')->consultar($sql);
+           $where.=" and (id_nodo=".$filtro['id_nodo']['valor']." or id_nodo in (select id_nodo from auxiliar)) ";
+           
 		}
+        if (isset($filtro['categ'])) {
+            $where.=" and categ='".$filtro['categ']['valor']."'";
+            
+        }        
+        if (isset($filtro['codc_categ'])) {
+            $where.=" and sub.codc_categ='".$filtro['codc_categ']['valor']."'";
+        }
         $sql=" 
             select sub.*,pe.apellido as ap,pe.nombre as nom,pe.legajo as leg from                
             (select pe.apellido,pe.nombre,pe.legajo,c.codc_carac,c.codc_categ,s.categ,s.desde,s.hasta,s.motivo,s.resol,c.pertenece_a,surge_de,max(ca.fec_alta)as alta

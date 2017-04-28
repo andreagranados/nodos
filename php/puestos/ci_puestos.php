@@ -35,6 +35,11 @@ class ci_puestos extends nodos_ci
            }else{
                 $cuadro->set_datos($this->dep('datos')->tabla('puesto')->get_listado_puestos()) ;        
            }
+           $res=$this->dep('datos')->tabla('puesto')->hay_superposicion();
+           if($res==1){
+               $this->pantalla('pant_inicial')->agregar_notificacion('El porcentaje total debe sumar 100','error');    
+           }
+           
 	}
 
 	
@@ -42,6 +47,42 @@ class ci_puestos extends nodos_ci
 	{
             $this->dep('datos')->tabla('puesto')->cargar($seleccion);
             $this->set_pantalla('pant_detalle');
+	}
+
+	//-----------------------------------------------------------------------------------
+	//---- form_puesto ------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------
+
+	function conf__form_puesto(toba_ei_formulario $form)
+	{
+            if($this->dep('datos')->tabla('puesto')->esta_cargada()){
+                     $datos=$this->dep('datos')->tabla('puesto')->get();
+                     $form->set_datos($datos);
+            }
+	}
+
+	function evt__form_puesto__modificacion($datos)
+	{
+            $this->dep('datos')->tabla('puesto')->set($datos);
+            $this->dep('datos')->tabla('puesto')->sincronizar();
+	}
+
+	function evt__form_puesto__cancelar($datos)
+	{
+            $this->dep('datos')->tabla('puesto')->resetear();
+            $this->set_pantalla('pant_inicial');
+	}
+
+	//-----------------------------------------------------------------------------------
+	//---- cuadrod ----------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------
+
+	function conf__cuadrod(toba_ei_cuadro $cuadro)
+	{
+            if($this->dep('datos')->tabla('puesto')->esta_cargada()){
+                $datos=$this->dep('datos')->tabla('puesto')->get();
+                $cuadro->set_datos($this->dep('datos')->tabla('puesto')->get_ocupantes($datos['id_puesto'])) ;        
+            }
 	}
 
 }

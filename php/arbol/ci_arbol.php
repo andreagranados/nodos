@@ -133,5 +133,18 @@ class ci_arbol extends nodos_ci
 	}
 
 
+	//-----------------------------------------------------------------------------------
+	//---- form_encabezado --------------------------------------------------------------
+	//-----------------------------------------------------------------------------------
+
+	function conf__form_encabezado(nodos_ei_formulario $form)
+	{
+              if($this->dep('datos')->tabla('nodo')->esta_cargada()){
+                $nod = $this->dep('datos')->tabla('nodo')->get(); 
+                $texto=$this->dep('datos')->tabla('nodo')->buscar_camino($nod['id_nodo']);
+                $form->set_titulo($texto);
+              }
+	}
+
 }
 ?>

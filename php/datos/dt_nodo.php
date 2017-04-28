@@ -11,6 +11,11 @@ class dt_nodo extends toba_datos_tabla
 	 $sql = "SELECT * FROM nodo order by descripcion";
 	 return toba::db('nodos')->consultar($sql);
 	}  
+    function buscar_camino($id_nodo){
+        $sql = "SELECT camino(".$id_nodo.")";
+	$res= toba::db('nodos')->consultar($sql);
+        return ($res[0]['camino']);
+    }    
     function get_escalonados(){
         $sql="select sub.id_nodo, case when sub.id_nodo=sub.ori then sub.descripcion else sub.descripcion||'-'||no.descripcion end as descripcion from 
             (select id_nodo,descripcion,origen_de(id_nodo)as ori
