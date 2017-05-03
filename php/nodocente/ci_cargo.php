@@ -14,12 +14,13 @@ class ci_cargo extends nodos_ci
                 return $this->controlador()->dep('datos')->tabla('nodo')->get_origen($datos['id_cargo']); 
             }
         }
-        //recupera los puestos del nodo al que corresponde el cargo
+        //recupera los puestos del nodo presupuestario al que corresponde el cargo
         function get_puestos(){
 
             $salida=array();
             if($this->controlador()->dep('datos')->tabla('cargo')->esta_cargada()){
                 $datos = $this->controlador()->dep('datos')->tabla('cargo')->get();
+                //recupera el nodo al que pertenece el cargo
                 $id_nodo=$this->controlador()->dep('datos')->tabla('cargo')->get_nodo($datos['id_cargo']);    
                 if($id_nodo<>0){
                     $salida=$this->controlador()->dep('datos')->tabla('puesto')->get_puestos($id_nodo);
@@ -57,19 +58,48 @@ class ci_cargo extends nodos_ci
 
 	function evt__form_cargo__modificacion($datos)
 	{
-             if($this->controlador()->dep('datos')->tabla('cargo')->esta_cargada()){//es una modificacion
-                $this->controlador()->dep('datos')->tabla('cargo')->set($datos);
-                $this->controlador()->dep('datos')->tabla('cargo')->sincronizar();
-             }else{//es un alta
-                $pers=$this->controlador()->dep('datos')->tabla('persona')->get();  
-                $datos['generado_x_pase']=0;
-                $datos['id_persona']=$pers['id_persona'];
-                $this->controlador()->dep('datos')->tabla('cargo')->set($datos);
-                $this->controlador()->dep('datos')->tabla('cargo')->sincronizar();
+            //debe chequear que el puesto no este ocupado
+            if($this->controlador()->dep('datos')->tabla('cargo')->esta_cargada()){
                 $car=$this->controlador()->dep('datos')->tabla('cargo')->get();
-                $cargo['id_cargo']=$car['id_cargo'];
-                $this->controlador()->dep('datos')->tabla('cargo')->cargar($cargo);
-             }
+                $cargo=$car['id_cargo'];
+            }else{
+                $cargo=null;
+            }
+            if(isset($datos['id_puesto'])){
+                $res=$this->controlador()->dep('datos')->tabla('puesto')->hay_superposicion_con($cargo,$datos['id_puesto'],$datos['fec_alta'],$datos['fec_baja']);
+               
+                if($res==1){//hay otro puesto 
+                  toba::notificacion()->agregar('El puesto esta ocupado por otro cargo en ese periodo', 'error');  
+                }else{
+                    if($cargo ==null){//es un alta 
+                        $pers=$this->controlador()->dep('datos')->tabla('persona')->get();  
+                        $datos['generado_x_pase']=0;
+                        $datos['id_persona']=$pers['id_persona'];
+                        $this->controlador()->dep('datos')->tabla('cargo')->set($datos);
+                        $this->controlador()->dep('datos')->tabla('cargo')->sincronizar();
+                        $car=$this->controlador()->dep('datos')->tabla('cargo')->get();
+                        $cargo['id_cargo']=$car['id_cargo'];
+                        $this->controlador()->dep('datos')->tabla('cargo')->cargar($cargo);
+                    }else{//es una modificacion
+                        $this->controlador()->dep('datos')->tabla('cargo')->set($datos);
+                        $this->controlador()->dep('datos')->tabla('cargo')->sincronizar();
+                    }
+                    
+                }
+            }
+//            if($this->controlador()->dep('datos')->tabla('cargo')->esta_cargada()){//es una modificacion
+//                $this->controlador()->dep('datos')->tabla('cargo')->set($datos);
+//                $this->controlador()->dep('datos')->tabla('cargo')->sincronizar();
+//             }else{//es un alta
+//                $pers=$this->controlador()->dep('datos')->tabla('persona')->get();  
+//                $datos['generado_x_pase']=0;
+//                $datos['id_persona']=$pers['id_persona'];
+//                $this->controlador()->dep('datos')->tabla('cargo')->set($datos);
+//                $this->controlador()->dep('datos')->tabla('cargo')->sincronizar();
+//                $car=$this->controlador()->dep('datos')->tabla('cargo')->get();
+//                $cargo['id_cargo']=$car['id_cargo'];
+//                $this->controlador()->dep('datos')->tabla('cargo')->cargar($cargo);
+//             }
             
             
 	}

@@ -3,7 +3,7 @@ class dt_categoria extends toba_datos_tabla
 {
 	function get_descripciones()
 	{
-            $sql = "SELECT codigo_categ, descripcion FROM categoria ORDER BY descripcion";
+            $sql = "SELECT codigo_categ, descripcion, tipo_cat FROM categoria ORDER BY descripcion";
             return toba::db('nodos')->consultar($sql);
 	}
         function get_categorias_perm()

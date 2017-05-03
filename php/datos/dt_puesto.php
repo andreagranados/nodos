@@ -28,7 +28,7 @@ class dt_puesto extends toba_datos_tabla
 //                    left outer join costo_categoria co on (co.codigo_categ=sub.codigo_categ)
 //                    $where
 //                    order by nodo,id_puesto";
-            $sql="select p.id_puesto,p.categ,p.pertenece_a,n.id_nodo,n.descripcion as nodo,co.costo_basico,pe.apellido||','||pe.nombre||' '||pe.legajo as ocupado_por
+            $sql="select p.id_puesto,p.categ,p.pertenece_a,n.id_nodo,n.descripcion as nodo,co.costo_basico,pe.apellido||','||pe.nombre||' '||pe.legajo||'('||no.descripcion ||')' as ocupado_por
                     from puesto p
                     left outer join nodo n on (p.pertenece_a=n.id_nodo)
                     left outer join (select codigo_categ,max(desde) as desde 
@@ -39,6 +39,7 @@ class dt_puesto extends toba_datos_tabla
                     			 from cargo ca 
                     			 group by ca.id_puesto )c on (c.id_puesto=p.id_puesto)
                     left outer join cargo cr on (cr.id_puesto=p.id_puesto and cr.fec_alta=c.desde)			 
+                    left outer join nodo no on (cr.pertenece_a=no.id_nodo)	
                     left outer join persona pe on (pe.id_persona=cr.id_persona)			
                     $where
                     order by nodo,id_puesto";
@@ -64,7 +65,7 @@ class dt_puesto extends toba_datos_tabla
                     $udia=$anio."-".$mes."-"."28";
                     }
             }
-            $sql="select  origen_de(".$id_nodo.")";
+            $sql="select  origen_de(".$id_nodo.")";//recupera el primer nodo presupuestario en el arbol 
             $res=toba::db('nodos')->consultar($sql);
             //print_r($res);exit;//( [0] => Array ( [origen_de] => 31 ) )
             $where ="";
@@ -72,11 +73,21 @@ class dt_puesto extends toba_datos_tabla
             if(isset($id_nodo)){
                     $where=" WHERE p.pertenece_a=".$res[0]['origen_de'];
                 }
-            $sql="select p.id_puesto,case when tipo=1 then 'P_' else 'T_' end ||p.id_puesto||case when c.id_cargo is null then 'libre' else 'ocupado' end||'_cat'||categ  as descripcion "
-                    . "from puesto p "
-                    . " left outer join cargo c on (c.fec_alta<='".$udia."' and (c.fec_baja is null or c.fec_baja>='".$pdia."') and c.id_puesto=p.id_puesto)".$where
-                    //." and not exists (select * from cargo c where c.fec_alta<='".$udia."' and (c.fec_baja is null or c.fec_baja>='".$pdia."') and c.id_puesto=p.id_puesto)"
-                    ." order by descripcion";
+             //tomo la maxima fecha de alta de los cargos que ocupan el puesto para ver el ultimo que lo ocupo
+//            $sql="select p.id_puesto,case when tipo=1 then 'P_' else 'T_' end ||p.id_puesto||case when c.id_cargo is null then 'libre' else 'ocupado' end||'_cat'||categ  as descripcion "
+//                    . "from puesto p "
+//                    . " left outer join cargo c on (c.fec_alta<='".$udia."' and (c.fec_baja is null or c.fec_baja>='".$pdia."') and c.id_puesto=p.id_puesto)".$where
+//                    ." order by descripcion";
+            $sql="select sub.id_puesto,case when tipo=1 then 'P' else 'T' end ||sub.id_puesto||'_cat'||categ||'_'||pe.apellido||','||pe.nombre  as descripcion 
+                    from 
+                    (select p.id_puesto,p.tipo,p.categ,max(c.fec_alta) as alta
+                        from puesto p 
+                        left outer join cargo c on (c.id_puesto=p.id_puesto)
+                        $where
+                        group by p.id_puesto,p.tipo,p.categ)sub
+                    left outer join cargo ca on (ca.id_puesto=sub.id_puesto and sub.alta=ca.fec_alta)
+                    left outer join persona pe on (pe.id_persona=ca.id_persona)       
+                    order by sub.id_puesto";
            
             return toba::db('nodos')->consultar($sql);
             
@@ -145,6 +156,40 @@ class dt_puesto extends toba_datos_tabla
                 return 0;
             }
         }
+        function hay_superposicion_con($cargo,$puesto,$desde,$hasta){
+            
+            $mes=  date("m"); 
+            $anio=  date("Y"); 
+           
+            if($mes=="01" or $mes=="03" or $mes=="05" or $mes=="07" or $mes=="09" or $mes=="11"){
+                $udia=$anio."-".$mes."-"."31";
+            }else{if($mes=="04" or $mes="06" or $mes=="08" or $mes=="10"     ){
+                    $udia=$anio."-".$mes."-"."30";
+                    }
+                  else {
+                    $udia=$anio."-".$mes."-"."28";
+                    }
+            }
+            if($hasta ==null){
+                $fin=$udia;
+            }else{
+                $fin=$hasta;
+            }
+            $sql="select * from cargo "
+                    . " where id_puesto=".$puesto
+                    ." and fec_alta<='".$fin."' and (fec_baja is null or fec_baja>='".$desde."')"
+                    . " and id_cargo <>".$cargo
+                    ;
+           
+            $resul=toba::db('nodos')->consultar($sql);
+            
+            if(count($resul)>0){
+                return 1;
+            }else{
+                return 0;
+            }
+        }
+        
 
 }
 
