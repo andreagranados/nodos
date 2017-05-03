@@ -86,6 +86,20 @@ class ci_cargo extends nodos_ci
                     }
                     
                 }
+            }else{
+                 if($cargo ==null){//es un alta 
+                        $pers=$this->controlador()->dep('datos')->tabla('persona')->get();  
+                        $datos['generado_x_pase']=0;
+                        $datos['id_persona']=$pers['id_persona'];
+                        $this->controlador()->dep('datos')->tabla('cargo')->set($datos);
+                        $this->controlador()->dep('datos')->tabla('cargo')->sincronizar();
+                        $car=$this->controlador()->dep('datos')->tabla('cargo')->get();
+                        $cargo['id_cargo']=$car['id_cargo'];
+                        $this->controlador()->dep('datos')->tabla('cargo')->cargar($cargo);
+                    }else{//es una modificacion
+                        $this->controlador()->dep('datos')->tabla('cargo')->set($datos);
+                        $this->controlador()->dep('datos')->tabla('cargo')->sincronizar();
+                    }
             }
 //            if($this->controlador()->dep('datos')->tabla('cargo')->esta_cargada()){//es una modificacion
 //                $this->controlador()->dep('datos')->tabla('cargo')->set($datos);
