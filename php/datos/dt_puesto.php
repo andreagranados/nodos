@@ -122,8 +122,10 @@ class dt_puesto extends toba_datos_tabla
             return toba::db('nodos')->consultar($sql);
         }
         function get_ocupantes($id_puesto){
-            $sql="select p.apellido,p.nombre,p.legajo,c.codc_categ,c.fec_alta,c.fec_baja from cargo c"
+            $sql="select p.apellido,p.nombre,p.legajo,c.codc_categ,c.fec_alta,c.fec_baja,n.descripcion as nodo "
+                    . " from cargo c"
                     . " left outer join persona p on (c.id_persona=p.id_persona) "
+                    . " left outer join nodo n on (n.id_nodo=c.pertenece_a) "
                     . " where c.id_puesto=".$id_puesto
                     ." order by fec_alta ";
           
