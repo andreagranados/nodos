@@ -533,7 +533,10 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'6', --orden
 	'Agrupamiento', --etiqueta
 	NULL, --etiqueta_estilo
-	NULL, --descripcion
+	'TEPR (TECNICO PROFESIONAL)<br>
+ADMI (ADMINISTRATIVO)<br>
+ASIS (ASISTENCIAL)<br>
+MASE (MANTENIMIENTO, PRODUCCION Y SERVICIOS GENERALES)<br>', --descripcion
 	'0', --colapsado
 	'0', --desactivado
 	NULL, --estilo
@@ -544,16 +547,16 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --estado_defecto
 	'0', --solo_lectura
 	'0', --solo_lectura_modificacion
-	NULL, --carga_metodo
+	'get_descripciones', --carga_metodo
 	NULL, --carga_clase
 	NULL, --carga_include
-	NULL, --carga_dt
+	'4004', --carga_dt
 	NULL, --carga_consulta_php
 	NULL, --carga_sql
 	'nodos', --carga_fuente
-	'TECN,ADMI,MANT,SERV,PROF', --carga_lista
-	NULL, --carga_col_clave
-	NULL, --carga_col_desc
+	NULL, --carga_lista
+	'codc_agrup', --carga_col_clave
+	'descripcion', --carga_col_desc
 	NULL, --carga_maestros
 	'0', --carga_cascada_relaj
 	'0', --cascada_mantiene_estado
