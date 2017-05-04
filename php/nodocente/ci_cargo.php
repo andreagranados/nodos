@@ -51,8 +51,8 @@ class ci_cargo extends nodos_ci
 
 	function evt__form_cargo__baja()
 	{
-            $this->dep('datos')->tabla('cargo')->eliminar_todo();
-            $this->dep('datos')->tabla('cargo')->resetear();
+            $this->controlador()->dep('datos')->tabla('cargo')->eliminar_todo();
+            $this->controlador()->dep('datos')->tabla('cargo')->resetear();
             toba::notificacion()->agregar('El cargo se ha eliminado correctamente', 'info');
 	}
 
