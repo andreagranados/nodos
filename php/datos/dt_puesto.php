@@ -4,19 +4,13 @@ require_once 'dt_cargo.php';
 class dt_puesto extends toba_datos_tabla
 {
         function get_listado_puestos($filtro=array()){
-            $where="";
-            $concat=0;
+            $where=" WHERE 1=1 ";
+            
             if (isset($filtro['id_nodo'])) {
-                $where.= " WHERE id_nodo=".$filtro['id_nodo']['valor'];
-                $concat=1;
+                $where.= " and n.id_nodo=".$filtro['id_nodo']['valor'];
             }
             if (isset($filtro['categ'])) {
-                if($concat==1){
-                    $where.=" and categ='".$filtro['categ']['valor']."'";
-                }else{
-                    $where.=" WHERE categ='".$filtro['categ']['valor']."'";
-                }
-                
+                $where.=" and categ='".$filtro['categ']['valor']."'";
             }
            
 //            $sql="select p.id_puesto,p.categ,p.pertenece_a,n.id_nodo,n.descripcion as nodo,co.costo_basico
@@ -28,21 +22,26 @@ class dt_puesto extends toba_datos_tabla
 //                    left outer join costo_categoria co on (co.codigo_categ=sub.codigo_categ)
 //                    $where
 //                    order by nodo,id_puesto";
-            $sql="select p.id_puesto,p.categ,p.pertenece_a,n.id_nodo,n.descripcion as nodo,co.costo_basico,pe.apellido||','||pe.nombre||' '||pe.legajo||'('||no.descripcion ||')' as ocupado_por
+            $sql="                                 
+                    select p.id_puesto,p.categ,p.pertenece_a,n.id_nodo,n.descripcion as nodo,cc.costo_basico,pe.apellido||','||pe.nombre||' '||pe.legajo||'('||no.descripcion ||')' as ocupado_por
                     from puesto p
                     left outer join nodo n on (p.pertenece_a=n.id_nodo)
-                    left outer join (select codigo_categ,max(desde) as desde 
-                    			from costo_categoria
-                    			group by codigo_categ)sub on (sub.codigo_categ=p.categ)
-                    left outer join costo_categoria co on (co.codigo_categ=sub.codigo_categ)
+                    left outer join (select sub.*,costo_basico from 
+                                        (select codigo_categ,max(desde) as desde 
+                                        from costo_categoria
+                                        group by codigo_categ)sub
+                                      left outer join costo_categoria cc on (cc.codigo_categ=sub.codigo_categ and cc.desde=sub.desde )
+                                      ) cc on (cc.codigo_categ=p.categ)
+                    
                     left outer join (select ca.id_puesto,max(fec_alta)as desde
                     			 from cargo ca 
+                    			 where ca.id_puesto is not null
                     			 group by ca.id_puesto )c on (c.id_puesto=p.id_puesto)
                     left outer join cargo cr on (cr.id_puesto=p.id_puesto and cr.fec_alta=c.desde)			 
                     left outer join nodo no on (cr.pertenece_a=no.id_nodo)	
                     left outer join persona pe on (pe.id_persona=cr.id_persona)			
                     $where
-                    order by nodo,id_puesto";
+                    order by nodo,id_puesto   ";
             return toba::db('nodos')->consultar($sql);
         }
         function get_descripciones()
