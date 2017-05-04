@@ -57,15 +57,15 @@ class dt_cargo extends toba_datos_tabla
                 left outer join novedad n on (n.id_cargo=c.id_cargo and n.desde <='".$udia."' and (n.hasta>='".$pdia."' or n.hasta is null))
                 left outer join pase pa on (pa.id_cargo=c.id_cargo and '".$actual."' <=pa.hasta and '".$actual."'>=pa.desde )
                 left outer join nodo nod on (nod.id_nodo=pa.destino)
-                left outer join (select c.codigo_categ,c.desde,costo_basico from costo_categoria c,
-                                 (select codigo_categ,max(desde) as desde from costo_categoria
+                left outer join (	select sub.*,costo_basico from 
+				(select codigo_categ,max(desde) as desde from costo_categoria
                                  group by codigo_categ)sub
-                                 where c.codigo_categ=sub.codigo_categ)cos 
+                                 left outer join costo_categoria cc on (cc.codigo_categ=sub.codigo_categ and cc.desde=sub.desde ))cos 
                             on (p.categ=cos.codigo_categ)
-                 left outer join (select c.codigo_categ,c.desde,costo_basico from costo_categoria c,
-                                 (select codigo_categ,max(desde) as desde from costo_categoria
+                 left outer join (	select sub.*,costo_basico from 
+				(select codigo_categ,max(desde) as desde from costo_categoria
                                  group by codigo_categ)sub
-                                 where c.codigo_categ=sub.codigo_categ)coss 
+                                 left outer join costo_categoria cc on (cc.codigo_categ=sub.codigo_categ and cc.desde=sub.desde ))coss 
                             on (s.categ=coss.codigo_categ)                              
                                           
                 ".$where1
@@ -79,10 +79,10 @@ class dt_cargo extends toba_datos_tabla
                 left outer join novedad n on (n.id_cargo=c.id_cargo and n.desde <='".$udia."' and (n.hasta>='".$pdia."' or n.hasta is null))
                 left outer join pase pa on (pa.id_cargo=c.id_cargo and '".$actual."' <=pa.hasta and '".$actual."'>=pa.desde)
                 left outer join nodo nod on (nod.id_nodo=pa.destino)
-                left outer join (select c.codigo_categ,c.desde,costo_basico from costo_categoria c,
-                                 (select codigo_categ,max(desde) as desde from costo_categoria
+                left outer join (	select sub.*,costo_basico from 
+				(select codigo_categ,max(desde) as desde from costo_categoria
                                  group by codigo_categ)sub
-                                 where c.codigo_categ=sub.codigo_categ)cos 
+                                 left outer join costo_categoria cc on (cc.codigo_categ=sub.codigo_categ and cc.desde=sub.desde ))cos 
                             on (c.codc_categ=cos.codigo_categ)
                 "." WHERE ".                       
                 "  c.id_puesto is null 
@@ -203,15 +203,15 @@ class dt_cargo extends toba_datos_tabla
                     left outer join novedad n on (n.id_cargo=c.id_cargo and n.desde <='".$udia."' and (n.hasta>='".$pdia."' or n.hasta is null))
                     left outer join pase pa on (pa.id_cargo=c.id_cargo and pa.tipo='T' and '".$actual."' <=pa.hasta and '".$actual."'>=pa.desde)
                     left outer join nodo nod on (nod.id_nodo=pa.destino)
-                    left outer join (select c.codigo_categ,c.desde,costo_basico from costo_categoria c,
-                                 (select codigo_categ,max(desde) as desde from costo_categoria
+                    left outer join (	select sub.*,costo_basico from 
+				(select codigo_categ,max(desde) as desde from costo_categoria
                                  group by codigo_categ)sub
-                                 where c.codigo_categ=sub.codigo_categ)cos 
+                                 left outer join costo_categoria cc on (cc.codigo_categ=sub.codigo_categ and cc.desde=sub.desde ))cos 
                             on (p.categ=cos.codigo_categ)
-                 left outer join (select c.codigo_categ,c.desde,costo_basico from costo_categoria c,
-                                 (select codigo_categ,max(desde) as desde from costo_categoria
+                 left outer join (	select sub.*,costo_basico from 
+				(select codigo_categ,max(desde) as desde from costo_categoria
                                  group by codigo_categ)sub
-                                 where c.codigo_categ=sub.codigo_categ)coss 
+                                 left outer join costo_categoria cc on (cc.codigo_categ=sub.codigo_categ and cc.desde=sub.desde ))coss 
                             on (s.categ=coss.codigo_categ)".                        
                 $where1
                 
@@ -224,10 +224,10 @@ class dt_cargo extends toba_datos_tabla
                 left outer join novedad n on (n.id_cargo=c.id_cargo and n.desde <='".$udia."' and (n.hasta>='".$pdia."' or n.hasta is null))
                 left outer join pase pa on (pa.id_cargo=c.id_cargo and pa.tipo='T' and '".$actual."' <=pa.hasta and '".$actual."'>=pa.desde)
                 left outer join nodo nod on (nod.id_nodo=pa.destino)
-                left outer join (select c.codigo_categ,c.desde,costo_basico from costo_categoria c,
-                                 (select codigo_categ,max(desde) as desde from costo_categoria
+                left outer join (select sub.*,cc.costo_basico from 
+				(select codigo_categ,max(desde) as desde from costo_categoria
                                  group by codigo_categ)sub
-                                 where c.codigo_categ=sub.codigo_categ)cos 
+                                 left outer join costo_categoria cc on (cc.codigo_categ=sub.codigo_categ and cc.desde=sub.desde ))cos 
                             on (c.codc_categ=cos.codigo_categ)
                 "." WHERE ".                       
                 "  c.id_puesto is null 
@@ -241,13 +241,39 @@ class dt_cargo extends toba_datos_tabla
        
        
    }
-   function get_listado2($id_nodo=null){
+   function get_listado2($cond=null){
+      $id_nodo=null;
+        if(count($cond)>0){
+            if(isset($cond['id_nodo'])){
+                 $id_nodo=$cond['id_nodo']['valor'];
+             }
+            $where=" WHERE 1=1 ";
+            if (isset($cond['puesto'])) {
+                if($cond['puesto']['valor']=='Nulo'){
+                    $condicion=" =''";
+                }else{
+                    $condicion=" = '".$cond['puesto']['valor']."'";
+                }
+                $where.=" and puesto".$condicion;
+            }
+            if(isset($cond['codc_categ'])){
+                $where.=" and codc_categ='".$cond['codc_categ']['valor']."'";
+            }
+            if(isset($cond['categ'])){
+                $where.=" and categ='".$cond['categ']['valor']."'";
+            }
+        }else{
+            $where='';
+            }
+       
        $sql=dt_cargo::armar_consulta($id_nodo);
        $sql="select *,gasto+difer as gastotot from ("
                . "select *,case when costosub is not null then costosub-costo_basico else 0 end as difer,case when puesto='A' or puesto='P' or puesto='V' then costo_basico else 0 end as credito ,"
                . " case when ((puesto='A' and pase is null) or puesto ='') then costo_basico else 0 end as gasto"
                . " from (".$sql.") sub"
-               .") sub2";
+               .") sub2"
+               . $where;
+       
       //si el puesto es A y no tien pase temporal vigente entonces gasta
        //si el puesto es A y no tienen pase temporal vigente entonces gasta
        return toba::db('nodos')->consultar($sql);

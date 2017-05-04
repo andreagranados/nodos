@@ -22,6 +22,7 @@ class dt_categoria extends toba_datos_tabla
             return toba::db('nodos')->consultar($sql);
             
         }
+      
 
 }
 

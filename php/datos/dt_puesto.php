@@ -79,7 +79,7 @@ class dt_puesto extends toba_datos_tabla
 //                    . " left outer join cargo c on (c.fec_alta<='".$udia."' and (c.fec_baja is null or c.fec_baja>='".$pdia."') and c.id_puesto=p.id_puesto)".$where
 //                    ." order by descripcion";
             $sql="select sub.id_puesto,
-                case when alta is null then 'P_libre' else case when tipo=1 then 'P' else 'T' end ||sub.id_puesto||'_cat'||categ||'_'||pe.apellido||','||pe.nombre end as descripcion 
+                case when alta is null then 'P_'||sub.id_puesto||'_cat'||sub.categ||'_libre' else case when tipo=1 then 'P' else 'T' end ||sub.id_puesto||'_cat'||categ||'_'||pe.apellido||','||pe.nombre end as descripcion 
                     from 
                     (select p.id_puesto,p.tipo,p.categ,max(c.fec_alta) as alta
                         from puesto p 
