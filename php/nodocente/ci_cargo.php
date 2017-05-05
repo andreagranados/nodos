@@ -205,7 +205,7 @@ class ci_cargo extends nodos_ci
                 case 'pant_novedades':$this->dep('datos')->tabla('novedad')->resetear();$this->s__mostrar=1;break;
                 case 'pant_desempenio':$this->dep('datos')->tabla('desempenio')->resetear();$this->s__mostrar_d=1;break;
                 case 'pant_pases':$this->dep('datos')->tabla('pase')->resetear();$this->s__mostrar_p=1;break;
-                case 'pant_subrogancia':PRINT_R('GOLA');$this->dep('datos')->tabla('subroga')->resetear();$this->s__mostrar_s=1;break;
+                case 'pant_subrogancia':$this->dep('datos')->tabla('subroga')->resetear();$this->s__mostrar_s=1;break;
             }
         }
         //pantallas

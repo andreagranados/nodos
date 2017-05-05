@@ -342,7 +342,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'nodos', --objeto_cuadro_proyecto
 	'3987', --objeto_cuadro
 	'3972', --objeto_cuadro_col
-	'norma', --clave
+	'resol', --clave
 	'10', --orden
 	'Norma', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo

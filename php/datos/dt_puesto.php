@@ -49,7 +49,22 @@ class dt_puesto extends toba_datos_tabla
 		$sql = "SELECT id_puesto, categ FROM puesto ORDER BY categ";
 		return toba::db('nodos')->consultar($sql);
 	}
-        
+        //para cargar de que puesto depende la subrogancia
+        function get_todos_puestos()
+	{
+		$sql = "SELECT p.id_puesto, 'P'||p.id_puesto||'cat'||categ||'-'||case when n.desc_abrev is not null then n.desc_abrev else n.descripcion end ||'-'||case when sub.ultimo is not null then sub.ultimo else '' end as descripcion "
+                        . " FROM puesto p "
+                        . " left outer join nodo n on (n.id_nodo=p.pertenece_a)"
+                        . " left outer join (select d.id_puesto,pe.apellido||','||pe.nombre as ultimo from (select p.id_puesto,p.tipo,p.categ,max(c.fec_alta) as alta
+                        from puesto p 
+                        left outer join cargo c on (c.id_puesto=p.id_puesto)
+                        where c.id_cargo is not null
+                        group by p.id_puesto,tipo,categ)d    
+                        left outer join cargo c on (c.id_puesto=d.id_puesto and c.fec_alta=d.alta)                    
+                        left outer join persona pe on (pe.id_persona=c.id_persona)                    )sub on (p.id_puesto=sub.id_puesto)"
+                        . " ORDER BY categ";
+		return toba::db('nodos')->consultar($sql);
+	}
         //retorna los puestos del nodo que ingresa como argumento
         function get_puestos($id_nodo=null){
             $mes=  date("m"); 
@@ -121,6 +136,7 @@ class dt_puesto extends toba_datos_tabla
             //print_r($sql);exit();
             return toba::db('nodos')->consultar($sql);
         }
+        //quienes ocupan el puesto
         function get_ocupantes($id_puesto){
             $sql="select p.apellido,p.nombre,p.legajo,c.codc_categ,c.fec_alta,c.fec_baja,n.descripcion as nodo "
                     . " from cargo c"
