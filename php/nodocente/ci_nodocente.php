@@ -106,6 +106,7 @@ class ci_nodocente extends nodos_ci
 	}
 
         function evt__agregar(){
+            $this->dep('datos')->tabla('cargo')->resetear();
             $this->set_pantalla('pant_cargo');
         }
         function evt__volver(){
