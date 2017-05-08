@@ -128,8 +128,15 @@ class ci_categorias extends nodos_ci
              }
              if ($this->dep('datos')->tabla('costo_categoria')->esta_cargada()) {
                 $datos=$this->dep('datos')->tabla('costo_categoria')->get();
-                $form->set_datos($datos);
+                
 		}
+             if ($this->dep('datos')->tabla('categoria')->esta_cargada()) {
+                $cat=$this->dep('datos')->tabla('categoria')->get();
+                $datos['codigo_categ']=$cat['codigo_categ'];
+             }
+           
+             $form->set_datos($datos);
+                
 	}
 
 	function evt__form_cc__alta($datos)
