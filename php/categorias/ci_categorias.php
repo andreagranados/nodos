@@ -163,6 +163,8 @@ class ci_categorias extends nodos_ci
             $datos['codigo_categ']=$categ['codigo_categ'];
             $this->dep('datos')->tabla('costo_categoria')->set($datos);
             $this->dep('datos')->tabla('costo_categoria')->sincronizar();
+            toba::notificacion()->agregar('Se ha modificado el costo correctamente', 'info');
+            $this->s__mostrar_p=0;
 	}
 
 	function evt__form_cc__cancelar($datos)
