@@ -136,7 +136,7 @@ INSERT INTO apex_objeto_ei_filtro_col (objeto_ei_filtro_col, objeto_ei_filtro, o
 	'id_nodo', --nombre
 	'id_nodo', --expresion
 	'Nodo', --etiqueta
-	NULL, --descripcion
+	'Solo nodos presupuestarios', --descripcion
 	'0', --obligatorio
 	'1', --inicial
 	'1', --orden

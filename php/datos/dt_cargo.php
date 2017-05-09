@@ -169,12 +169,15 @@ class dt_cargo extends toba_datos_tabla
                 $where1=" WHERE (p.pertenece_a=".$id_nodo." or p.pertenece_a in (select id_nodo from auxiliar)"
                         . " or c.pertenece_a=".$id_nodo. " or c.pertenece_a in (select id_nodo from auxiliar))";
                 $where2=" and (c.pertenece_a=".$id_nodo." or c.pertenece_a in (select id_nodo from auxiliar))";
+                $where3=" WHERE (c.pertenece_a=".$id_nodo." or c.pertenece_a in (select id_nodo from auxiliar))";
+                
             }else{
                 $where1='';
                 $where2='';
+                $where3='';
             }
             //algunos puestos pueden no estar ocupados en el mes actual, por eso recupero la dependencia del puesto en algunos casos
-        $sql="select distinct * ,costosub-costo_basico as dif from (".
+        $sql="select distinct * ,case when costosub is not null then costosub-costo_basico else 0 end as difer from (".
 //             " select case when c.id_cargo is null then 'V' else case when n.id_novedad is not null then 'P' else 'A' end end as puesto,c.id_cargo,p.tipo,no.id_nodo,case when no.desc_abrev is null and no.descripcion is null then nop.descripcion else case when no.desc_abrev is not null then no.desc_abrev else no.descripcion end end as dep ,pe.legajo,pe.apellido,pe.nombre,p.id_puesto,p.categ as catpuesto,c.id_cargo,codc_categ,fec_alta,fec_baja,n.tipo_nov,s.categ, case when s.categ is not null then coss.costo_basico else null end as costosub,cos.costo_basico,case when nod.desc_abrev is null then nod.descripcion else nod.desc_abrev end as pase
 //                from puesto p
 //                left outer join cargo c on (p.id_puesto=c.id_puesto and  c.fec_alta <='".$udia."' and (c.fec_baja>='".$pdia."' or c.fec_baja is null))
@@ -195,7 +198,7 @@ class dt_cargo extends toba_datos_tabla
 //                                 group by codigo_categ)sub
 //                                 where c.codigo_categ=sub.codigo_categ)coss 
 //                            on (s.categ=coss.codigo_categ)".                              
-                  "select case when c.id_cargo is null or not(c.fec_alta <='".$udia."' and (c.fec_baja>='".$pdia."' or c.fec_baja is null)) then 'V' else case when n.id_novedad is not null then 'P' else 'A' end end as puesto,  c.id_cargo,p.tipo,no.id_nodo,case when no.desc_abrev is null and no.descripcion is null then nop.descripcion else case when no.desc_abrev is not null then no.desc_abrev else no.descripcion end end as dep ,pe.legajo,pe.apellido,pe.nombre,p.id_puesto,p.categ as catpuesto,c.id_cargo,codc_categ,fec_alta,fec_baja,n.tipo_nov,s.categ, case when s.categ is not null then coss.costo_basico else null end as costosub,cos.costo_basico,case when nod.desc_abrev is null then nod.descripcion else nod.desc_abrev end as pase
+                  "select case when c.id_cargo is null or not(c.fec_alta <='".$udia."' and (c.fec_baja>='".$pdia."' or c.fec_baja is null)) then 'V' else case when n.id_novedad is not null then 'P' else 'A' end end as puesto,  c.id_cargo,p.tipo,no.id_nodo,case when no.desc_abrev is null and no.descripcion is null then nop.descripcion else case when no.desc_abrev is not null then no.desc_abrev else no.descripcion end end as dep ,pe.legajo,pe.apellido,pe.nombre,p.id_puesto,p.categ as catpuesto,c.id_cargo,codc_categ,fec_alta,fec_baja,n.tipo_nov,s.categ, case when s.categ is not null then coss.costo_basico else null end as costosub,cos.costo_basico,cp.costo_basico as costo_basico_p,case when nod.desc_abrev is null then nod.descripcion else nod.desc_abrev end as pase
                     from
                     (select pu.id_puesto,pu.pertenece_a,pu.tipo,pu.categ,max(fec_alta) as alta from puesto pu 
                     left outer join cargo ca on (pu.id_puesto=ca.id_puesto)                         
@@ -212,16 +215,21 @@ class dt_cargo extends toba_datos_tabla
 				(select codigo_categ,max(desde) as desde from costo_categoria
                                  group by codigo_categ)sub
                                  left outer join costo_categoria cc on (cc.codigo_categ=sub.codigo_categ and cc.desde=sub.desde ))cos 
-                            on (p.categ=cos.codigo_categ)
+                            on (c.codc_categ=cos.codigo_categ)
                  left outer join (	select sub.*,costo_basico from 
 				(select codigo_categ,max(desde) as desde from costo_categoria
                                  group by codigo_categ)sub
                                  left outer join costo_categoria cc on (cc.codigo_categ=sub.codigo_categ and cc.desde=sub.desde ))coss 
-                            on (s.categ=coss.codigo_categ)".                        
+                            on (s.categ=coss.codigo_categ)
+                    left outer join (	select sub.*,costo_basico from 
+				(select codigo_categ,max(desde) as desde from costo_categoria
+                                 group by codigo_categ)sub
+                                 left outer join costo_categoria cc on (cc.codigo_categ=sub.codigo_categ and cc.desde=sub.desde ))cp 
+                            on (p.categ=cp.codigo_categ)        ".                        
                 $where1
                 
                 . " UNION "//cargos que no estan asociados a puestos
-                ."select '' as puesto,c.id_cargo,null as tipo,no.id_nodo,case when no.desc_abrev is not null then no.desc_abrev else no.descripcion end as dep,pe.legajo,pe.apellido,pe.nombre,null,codc_categ,c.id_cargo,codc_categ ,fec_alta,fec_baja,n.tipo_nov,s.categ,coss.costo_basico as costosub,cos.costo_basico,case when nod.desc_abrev is null then nod.descripcion else nod.descripcion end as pase
+                ."select '' as puesto,c.id_cargo,null as tipo,no.id_nodo,case when no.desc_abrev is not null then no.desc_abrev else no.descripcion end as dep,pe.legajo,pe.apellido,pe.nombre,null,codc_categ,c.id_cargo,codc_categ ,fec_alta,fec_baja,n.tipo_nov,s.categ,coss.costo_basico as costosub,cos.costo_basico,cos.costo_basico,case when nod.desc_abrev is null then nod.descripcion else nod.descripcion end as pase
                 from cargo c
                 left outer join nodo no on (no.id_nodo=c.pertenece_a)
                 left outer join persona pe on (pe.id_persona=c.id_persona)
@@ -242,10 +250,29 @@ class dt_cargo extends toba_datos_tabla
                 "." WHERE ".                       
                 "  c.id_puesto is null 
                 and c.fec_alta <='".$udia."' and (c.fec_baja>='".$pdia."' or c.fec_baja is null)".$where2
-                
-               
+                ." UNION "
+                ." select 'D' as puesto,c.id_cargo,null,c.pertenece_a,null,pe.legajo, pe.apellido,pe.nombre,null,null,null,null,null,null,null,null,null,null,co2.costo_basico -co.costo_basico,null
+                   from 
+                    (select c.id_cargo,c.id_persona,pertenece_a,c.codc_categ,s.categ 
+                    from cargo c, subroga s 
+                    where (c.id_cargo=s.id_cargo)
+                    and c.codc_categ>s.categ
+                    and s.desde <='".$udia."' and (s.hasta>='".$pdia."' or s.hasta is null)
+                    and motivo='CSER')c
+                    left outer join (select sub.*,costo_basico from 
+				(select codigo_categ,max(desde) as desde from costo_categoria
+                                 group by codigo_categ)sub
+                                 left outer join costo_categoria cc on (sub.codigo_categ=cc.codigo_categ))co on (c.codc_categ=co.codigo_categ)
+                    left outer join (select sub.*,costo_basico from 
+				(select codigo_categ,max(desde) as desde from costo_categoria
+                                 group by codigo_categ)sub
+                    left outer join costo_categoria cc on (sub.codigo_categ=cc.codigo_categ))co2 on (c.categ=co2.codigo_categ) 
+                    left outer join persona pe on (pe.id_persona=c.id_persona)
+                    left outer join nodo n on (n.id_nodo=c.pertenece_a)
+                    $where3"
                 . ")sub"
-                 ." order by apellido,nombre";
+               
+                 ." order by apellido,nombre,puesto";
 	
 	return $sql;
        
@@ -255,7 +282,7 @@ class dt_cargo extends toba_datos_tabla
       $id_nodo=null;
         if(count($cond)>0){
             if(isset($cond['id_nodo'])){
-                 $id_nodo=$cond['id_nodo']['valor'];
+                $id_nodo=$cond['id_nodo']['valor'];
              }
             $where=" WHERE 1=1 ";
             if (isset($cond['puesto'])) {
@@ -274,16 +301,18 @@ class dt_cargo extends toba_datos_tabla
             }
         }else{
             $where='';
+           
             }
        
+                
        $sql=dt_cargo::armar_consulta($id_nodo);
        $sql="select *,gasto+difer as gastotot from ("
-               . "select *,case when costosub is not null then costosub-costo_basico else 0 end as difer,case when puesto='A' or puesto='P' or puesto='V' then costo_basico else 0 end as credito ,"
+               . "select *,case when puesto='A' or puesto='P' or puesto='V' or puesto='D' then costo_basico_p else 0 end as credito ,"
                . " case when ((puesto='A' and pase is null) or puesto ='') then costo_basico else 0 end as gasto"
                . " from (".$sql.") sub"
                .") sub2"
                . $where;
-       
+      
       //si el puesto es A y no tien pase temporal vigente entonces gasta
        //si el puesto es A y no tienen pase temporal vigente entonces gasta
        return toba::db('nodos')->consultar($sql);

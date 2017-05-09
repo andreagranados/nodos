@@ -52,7 +52,8 @@ class dt_puesto extends toba_datos_tabla
         //para cargar de que puesto depende la subrogancia
         function get_todos_puestos()
 	{
-		$sql = "SELECT p.id_puesto, 'P'||p.id_puesto||'cat'||categ||'-'||case when n.desc_abrev is not null then n.desc_abrev else n.descripcion end ||'-'||case when sub.ultimo is not null then sub.ultimo else '' end as descripcion "
+		$sql = //"SELECT p.id_puesto, 'P'||p.id_puesto||'cat'||categ||'-'||case when n.desc_abrev is not null then n.desc_abrev else n.descripcion end ||'-'||case when sub.ultimo is not null then sub.ultimo else '' end as descripcion "
+                        "SELECT p.id_puesto, case when n.desc_abrev is not null then n.desc_abrev else n.descripcion end ||'-'||'P'||p.id_puesto||'cat'||categ||'-'||case when sub.ultimo is not null then sub.ultimo else '' end as descripcion "
                         . " FROM puesto p "
                         . " left outer join nodo n on (n.id_nodo=p.pertenece_a)"
                         . " left outer join (select d.id_puesto,pe.apellido||','||pe.nombre as ultimo from (select p.id_puesto,p.tipo,p.categ,max(c.fec_alta) as alta
@@ -62,7 +63,7 @@ class dt_puesto extends toba_datos_tabla
                         group by p.id_puesto,tipo,categ)d    
                         left outer join cargo c on (c.id_puesto=d.id_puesto and c.fec_alta=d.alta)                    
                         left outer join persona pe on (pe.id_persona=c.id_persona)                    )sub on (p.id_puesto=sub.id_puesto)"
-                        . " ORDER BY categ";
+                        . " ORDER BY n.desc_abrev,categ,p.id_puesto";
 		return toba::db('nodos')->consultar($sql);
 	}
         //retorna los puestos del nodo que ingresa como argumento

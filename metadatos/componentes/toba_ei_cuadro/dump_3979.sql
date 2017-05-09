@@ -344,7 +344,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'3947', --objeto_cuadro_col
 	'costo_basico', --clave
 	'15', --orden
-	'Costo Categ', --titulo
+	'Costo Categ del Cargo', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'4', --estilo
 	NULL, --ancho
@@ -561,7 +561,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'3954', --objeto_cuadro_col
 	'credito', --clave
 	'17', --orden
-	'Credito', --titulo
+	'Crédito', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'col-tex-p4', --estilo
 	NULL, --ancho
@@ -621,7 +621,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'nodos', --objeto_cuadro_proyecto
 	'3979', --objeto_cuadro
 	'3956', --objeto_cuadro_col
-	'dif', --clave
+	'difer', --clave
 	'19', --orden
 	'Diferencias', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
