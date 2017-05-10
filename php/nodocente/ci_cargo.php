@@ -172,7 +172,7 @@ class ci_cargo extends nodos_ci
 	{
             $car=$this->controlador()->dep('datos')->tabla('cargo')->get();
             $datos['id_cargo']=$car['id_cargo'];
-            if($datos['tipo_nov']=='BAJA' or $datos['tipo_nov']=='RENU' or $datos['tipo_nov']=='JUBI'){
+            if($datos['tipo_nov']=='BAJA' or $datos['tipo_nov']=='RENU' or $datos['tipo_nov']=='JUBI' or $datos['tipo_nov']=='FALL'){
                 $this->controlador()->dep('datos')->tabla('cargo')->modificar_baja($datos['id_cargo'],$datos['desde']);
                 toba::notificacion()->agregar('Se ha modificado la fecha de finalizacion del cargo', 'info');
                 $car=$this->controlador()->dep('datos')->tabla('cargo')->get();//vuelvo a recuperar el cargo

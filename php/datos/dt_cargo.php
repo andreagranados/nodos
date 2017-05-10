@@ -209,7 +209,7 @@ class dt_cargo extends toba_datos_tabla
                     left outer join nodo nop on (nop.id_nodo=p.pertenece_a)
                     left outer join subroga s on (s.id_cargo=c.id_cargo and s.desde <='".$udia."' and (s.hasta>='".$pdia."' or s.hasta is null))
                     left outer join novedad n on (n.id_cargo=c.id_cargo and n.desde <='".$udia."' and (n.hasta>='".$pdia."' or n.hasta is null))
-                    left outer join pase pa on (pa.id_cargo=c.id_cargo and pa.tipo='T' and '".$actual."' <=pa.hasta and '".$actual."'>=pa.desde)
+                    left outer join pase pa on (pa.id_cargo=c.id_cargo and pa.tipo='T' and ('".$actual."' <=pa.hasta or pa.hasta is null) and '".$actual."'>=pa.desde)
                     left outer join nodo nod on (nod.id_nodo=pa.destino)
                     left outer join (	select sub.*,costo_basico from 
 				(select codigo_categ,max(desde) as desde from costo_categoria

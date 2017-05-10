@@ -23,7 +23,7 @@ class dt_puesto extends toba_datos_tabla
 //                    $where
 //                    order by nodo,id_puesto";
             $sql="                                 
-                    select p.id_puesto,p.categ,p.pertenece_a,n.id_nodo,n.descripcion as nodo,cc.costo_basico,pe.apellido||','||pe.nombre||' '||pe.legajo||'('||no.descripcion ||')' as ocupado_por
+                    select p.id_puesto,p.categ,p.pertenece_a,n.id_nodo,n.descripcion as nodo,cc.costo_basico,pe.apellido||','||pe.nombre||' '||pe.legajo||'('||case when no.descripcion is not null then no.descripcion else '' end||')' as ocupado_por
                     from puesto p
                     left outer join nodo n on (p.pertenece_a=n.id_nodo)
                     left outer join (select sub.*,costo_basico from 

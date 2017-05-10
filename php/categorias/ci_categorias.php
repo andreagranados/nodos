@@ -92,7 +92,8 @@ class ci_categorias extends nodos_ci
             $this->s__mostrar_p=1;
         }
         function evt__volver(){
-            $this->set_pantalla('pant_inicial');              
+            $this->set_pantalla('pant_inicial');  
+            $this->s__mostrar_p=0;
         }
 	//-----------------------------------------------------------------------------------
 	//---- JAVASCRIPT -------------------------------------------------------------------
