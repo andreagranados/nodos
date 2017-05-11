@@ -55,7 +55,7 @@ INSERT INTO apex_objeto_cuadro (objeto_cuadro_proyecto, objeto_cuadro, titulo, s
 	'0', --clave_dbr
 	NULL, --archivos_callbacks
 	NULL, --ancho
-	'0', --ordenar
+	'1', --ordenar
 	'0', --paginar
 	NULL, --tamano_pagina
 	'P', --tipo_paginado
@@ -64,7 +64,7 @@ INSERT INTO apex_objeto_cuadro (objeto_cuadro_proyecto, objeto_cuadro, titulo, s
 	NULL, --eof_customizado
 	'0', --siempre_con_titulo
 	'0', --exportar_paginado
-	'0', --exportar
+	'1', --exportar
 	'0', --exportar_rtf
 	NULL, --pdf_propiedades
 	NULL, --pdf_respetar_paginacion
@@ -94,7 +94,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'nodos', --objeto_cuadro_proyecto
 	'3976', --objeto_cuadro
 	'3935', --objeto_cuadro_col
-	'nodo', --clave
+	'nodod', --clave
 	'1', --orden
 	'Nodo', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
@@ -129,7 +129,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'2', --orden
 	'Crédito', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
-	'0', --estilo
+	'col-num-p2', --estilo
 	NULL, --ancho
 	'2', --formateo
 	NULL, --vinculo_indice
@@ -160,7 +160,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'4', --orden
 	'Saldo', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
-	'0', --estilo
+	'col-num-p2', --estilo
 	NULL, --ancho
 	'2', --formateo
 	NULL, --vinculo_indice
@@ -169,7 +169,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	NULL, --mostrar_pdf
 	NULL, --pdf_propiedades
 	NULL, --desabilitado
-	'0', --total
+	'1', --total
 	NULL, --total_cc
 	'0', --usar_vinculo
 	NULL, --vinculo_carpeta
@@ -191,18 +191,18 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'3', --orden
 	'Gasto', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
-	'0', --estilo
+	'col-num-p2', --estilo
 	NULL, --ancho
 	'2', --formateo
 	NULL, --vinculo_indice
-	NULL, --no_ordenar
+	'0', --no_ordenar
 	NULL, --mostrar_xls
 	NULL, --mostrar_pdf
 	NULL, --pdf_propiedades
 	NULL, --desabilitado
-	NULL, --total
+	'1', --total
 	NULL, --total_cc
-	NULL, --usar_vinculo
+	'0', --usar_vinculo
 	NULL, --vinculo_carpeta
 	NULL, --vinculo_item
 	NULL, --vinculo_popup

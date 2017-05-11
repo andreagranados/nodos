@@ -121,19 +121,30 @@ class dt_puesto extends toba_datos_tabla
                     $udia=$anio."-".$mes."-"."28";
                     }
             }
-            $sql="
-                select n.descripcion as nodo, p.pertenece_a,sum(cos.costo_basico) as credito
+            $sql2=dt_cargo::armar_consulta();
+            $sql2="select origen_de(id_nodo)as nodo,sum(gastotot) as gasto,sum(credito-gastotot) as saldo from ("
+               . "select *,gasto+difer as gastotot from ("
+               . "select *,case when puesto='A' or puesto='P' or puesto='V' or puesto='D' then costo_basico_p else 0 end as credito ,"
+               . " case when ((puesto='A' and pase is null) or puesto ='') then costo_basico else 0 end as gasto"
+               . " from (".$sql2.") sub"
+               .") sub2"
+               . ") sub3 group by nodo";
+           // print_r($sql2);exit;
+            $sql="select * from (
+                    select n.descripcion as nodod, p.pertenece_a,sum(cos.costo_basico) as credito
                     from puesto p
-                    left outer join (select c.codigo_categ,c.desde,costo_basico from costo_categoria c,
-                                 (select codigo_categ,max(desde) as desde from costo_categoria
+                    left outer join (select sub.*,cc.costo_basico from 
+				(select codigo_categ,max(desde) as desde from costo_categoria
                                  group by codigo_categ)sub
-                                 where c.codigo_categ=sub.codigo_categ)cos 
+                                 left outer join costo_categoria cc on (cc.codigo_categ=sub.codigo_categ and cc.desde=sub.desde ))cos 
                             on (p.categ=cos.codigo_categ)
                     left outer join nodo n on (p.pertenece_a=n.id_nodo)                            
-                    group by n.descripcion,p.pertenece_a
+                    group by n.descripcion,p.pertenece_a)sub1
+                    left outer join (".$sql2.")sub3 on (sub3.nodo=sub1.pertenece_a)
                     ";
-            //$sql=dt_cargo::armar_consulta();
-            //$sql="select * from (".$sql.")";
+            
+            
+            
             //print_r($sql);exit();
             return toba::db('nodos')->consultar($sql);
         }

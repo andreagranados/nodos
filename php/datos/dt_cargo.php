@@ -306,11 +306,13 @@ class dt_cargo extends toba_datos_tabla
        
                 
        $sql=dt_cargo::armar_consulta($id_nodo);
-       $sql="select *,gasto+difer as gastotot from ("
+       $sql="select sub3.*,credito-gastotot as saldo from ("
+               . "select *,gasto+difer as gastotot from ("
                . "select *,case when puesto='A' or puesto='P' or puesto='V' or puesto='D' then costo_basico_p else 0 end as credito ,"
                . " case when ((puesto='A' and pase is null) or puesto ='') then costo_basico else 0 end as gasto"
                . " from (".$sql.") sub"
                .") sub2"
+               . ") sub3"
                . $where;
       
       //si el puesto es A y no tien pase temporal vigente entonces gasta
