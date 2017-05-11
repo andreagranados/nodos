@@ -39,9 +39,13 @@ class dt_subroga extends toba_datos_tabla
         if (isset($filtro['codc_categ'])) {
             $where.=" and sub.codc_categ='".$filtro['codc_categ']['valor']."'";
         }
-        $sql=" 
-            select sub.*,pe.apellido as ap,pe.nombre as nom,pe.legajo as leg from                
-            (select pe.apellido,pe.nombre,pe.legajo,c.codc_carac,c.codc_categ,s.categ,s.desde,s.hasta,s.motivo,s.resol,c.pertenece_a,surge_de,max(ca.fec_alta)as alta
+        
+        if (isset($filtro['motivo'])) {
+            $where.=" and sub.motivo='".$filtro['motivo']['valor']."'";
+        }
+        $sql=" select sub2.*,no.descripcion as nodo from (
+            select sub.*,pe.apellido as ap,pe.nombre as nom,pe.legajo as leg,origen_de(n.id_nodo)as nod  from                
+            (select  pe.apellido,pe.nombre,pe.legajo,c.codc_carac,c.codc_categ,s.categ,s.desde,s.hasta,s.motivo,s.resol,c.pertenece_a,surge_de,max(ca.fec_alta)as alta
             from subroga s
             left outer join cargo c on (c.id_cargo=s.id_cargo)                
             left outer join persona pe on (pe.id_persona=c.id_persona)                
@@ -50,7 +54,9 @@ class dt_subroga extends toba_datos_tabla
             )sub
             left outer join cargo c on (sub.alta=c.fec_alta and c.id_puesto=sub.surge_de)
             left outer join persona pe on (pe.id_persona=c.id_persona)
-            left outer join nodo n on (sub.pertenece_a=n.id_nodo)
+            left outer join nodo n on (n.id_nodo=sub.pertenece_a)
+            )sub2
+            left outer join nodo no on (no.id_nodo=nod)
             $where
             order by apellido,nombre";
          
