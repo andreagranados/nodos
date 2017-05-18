@@ -19,6 +19,21 @@ left outer join costo_categoria cca on (sub.codigo_categ=cca.codigo_categ and cc
                     . " ORDER BY descripcion";
             return toba::db('nodos')->consultar($sql);
 	}
+        function get_categorias_filtro()
+	{
+            $sql = "SELECT codigo_categ, descripcion "
+                    . " FROM categoria where codigo_categ in ('01','02','03','04','05','06','07')"
+                    
+                    . " UNION "
+                    . " select 'LS','Locaciones de Servicio'"
+                    . " UNION"
+                    . " select 'LO','Locaciones de Obra'"
+                    . " UNION"
+                    . " select 'SC','Sin Contratos'"
+                    . " ORDER BY descripcion";
+            
+            return toba::db('nodos')->consultar($sql);
+	}
         function get_se_subrogan()
         {
             $sql = "SELECT codigo_categ, descripcion "

@@ -293,8 +293,24 @@ class dt_cargo extends toba_datos_tabla
                 }
                 $where.=" and puesto".$condicion;
             }
+            
             if(isset($cond['codc_categ'])){
-                $where.=" and codc_categ='".$cond['codc_categ']['valor']."'";
+                
+                switch (trim($cond['codc_categ']['valor'])) {
+                    case '01': $where.=" and codc_categ='".$cond['codc_categ']['valor']."'";    break;
+                    case '02': $where.=" and codc_categ='".$cond['codc_categ']['valor']."'";    break;
+                    case '03': $where.=" and codc_categ='".$cond['codc_categ']['valor']."'";    break;
+                    case '04': $where.=" and codc_categ='".$cond['codc_categ']['valor']."'";    break;
+                    case '05': $where.=" and codc_categ='".$cond['codc_categ']['valor']."'";    break;
+                    case '06': $where.=" and codc_categ='".$cond['codc_categ']['valor']."'";    break;
+                    case '07': $where.=" and codc_categ='".$cond['codc_categ']['valor']."'";    break;
+                    case 'LS':   $where.=" and codc_categ like '".$cond['codc_categ']['valor']."%'";  break;
+                    case 'LO':  $where.=" and codc_categ like '".$cond['codc_categ']['valor']."%'";  break;
+                    case 'SC':  $where.=" and codc_categ in ('01','02','03','04','05','06','07')";  break;
+                    default:
+                        break;
+                }
+                //$where.=" and codc_categ='".$cond['codc_categ']['valor']."'";
             }
             if(isset($cond['categ'])){
                 $where.=" and categ='".$cond['categ']['valor']."'";
@@ -307,7 +323,6 @@ class dt_cargo extends toba_datos_tabla
            
             }
        
-                
        $sql=dt_cargo::armar_consulta($id_nodo);
        $sql="select sub3.*,credito-gastotot as saldo from ("
                . "select *,gasto+difer as gastotot from ("

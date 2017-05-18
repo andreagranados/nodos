@@ -259,7 +259,7 @@ INSERT INTO apex_objeto_ei_filtro_col (objeto_ei_filtro_col, objeto_ei_filtro, o
 	NULL, --estado_defecto
 	'0', --opciones_es_multiple
 	'ef_combo', --opciones_ef
-	'get_categorias_perm', --carga_metodo
+	'get_categorias_filtro', --carga_metodo
 	NULL, --carga_clase
 	NULL, --carga_include
 	'3931', --carga_dt
