@@ -16,6 +16,12 @@ class dt_costo_categoria extends nodos_datos_tabla
        
          return toba::db('nodos')->consultar($sql);
     }
+    function modificar_fecha_desde($categ,$desde,$nuevodesde){
+        $sql="update costo_categoria set desde ='".$nuevodesde."'"
+                . " where codigo_categ='".$categ."' and desde='".$desde."'";
+        toba::db('nodos')->consultar($sql);
+    }
+    
 }
 
 ?>

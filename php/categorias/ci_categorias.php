@@ -2,13 +2,41 @@
 class ci_categorias extends nodos_ci
 {
         protected $s__mostrar_p;
+        protected $s__datos_filtro;
+        protected $s__where;
+        
+        //-----------------------------------------------------------------------------------
+	//---- filtros ----------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------
+
+	function conf__filtros(toba_ei_filtro $filtro)
+	{
+            if (isset($this->s__datos_filtro)) {
+                $filtro->set_datos($this->s__datos_filtro);
+		}
+	}
+        function evt__filtros__filtrar($datos)
+	{
+            $this->s__datos_filtro = $datos;
+            $this->s__where = $this->dep('filtros')->get_sql_where();
+	}
+
+	function evt__filtros__cancelar()
+	{
+            unset($this->s__datos_filtro);
+            unset($this->s__where);
+	}
 	//-----------------------------------------------------------------------------------
 	//---- cuadro -----------------------------------------------------------------------
 	//-----------------------------------------------------------------------------------
 
 	function conf__cuadro(toba_ei_cuadro $cuadro)
 	{
-           $cuadro->set_datos( $this->dep('datos')->tabla('categoria')->get_descripciones()); 
+            if (isset ($this->s__datos_filtro)) {
+                $cuadro->set_datos( $this->dep('datos')->tabla('categoria')->get_descripciones_categorias($this->s__datos_filtro)); 
+            }else{
+                 $cuadro->set_datos( $this->dep('datos')->tabla('categoria')->get_descripciones_categorias()); 
+            }
 	}
 
 	function evt__cuadro__seleccion($seleccion)
@@ -19,8 +47,7 @@ class ci_categorias extends nodos_ci
         function evt__cuadro__det($seleccion)
         {
             $this->dep('datos')->tabla('categoria')->cargar($seleccion);
-            $this->set_pantalla('pant_detalle');
-            
+            $this->set_pantalla('pant_detalle');   
         }
 
 	//-----------------------------------------------------------------------------------
@@ -129,7 +156,6 @@ class ci_categorias extends nodos_ci
              }
              if ($this->dep('datos')->tabla('costo_categoria')->esta_cargada()) {
                 $datos=$this->dep('datos')->tabla('costo_categoria')->get();
-                
 		}
              if ($this->dep('datos')->tabla('categoria')->esta_cargada()) {
                 $cat=$this->dep('datos')->tabla('categoria')->get();
@@ -162,8 +188,11 @@ class ci_categorias extends nodos_ci
             //la categoria no se modifica
             $categ=$this->dep('datos')->tabla('categoria')->get();
             $datos['codigo_categ']=$categ['codigo_categ'];
+            $cost=$this->dep('datos')->tabla('costo_categoria')->get();
             $this->dep('datos')->tabla('costo_categoria')->set($datos);
             $this->dep('datos')->tabla('costo_categoria')->sincronizar();
+
+            $this->dep('datos')->tabla('costo_categoria')->modificar_fecha_desde($categ['codigo_categ'],$cost['desde'],$datos['desde']);
             toba::notificacion()->agregar('Se ha modificado el costo correctamente', 'info');
             $this->s__mostrar_p=0;
 	}

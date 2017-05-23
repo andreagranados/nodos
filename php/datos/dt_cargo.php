@@ -332,7 +332,7 @@ class dt_cargo extends toba_datos_tabla
                .") sub2"
                . ") sub3"
                . $where;
-      
+     
       //si el puesto es A y no tien pase temporal vigente entonces gasta
        //si el puesto es A y no tienen pase temporal vigente entonces gasta
        return toba::db('nodos')->consultar($sql);
