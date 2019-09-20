@@ -33,7 +33,6 @@ class ci_nodocente extends nodos_ci
 	function conf__form_persona(toba_ei_formulario $form)
 	{
           if (isset($this->s__datos_filtro)) {
-           
             $pers['id_persona']=$this->s__datos_filtro['id_persona'];
             $this->dep('datos')->tabla('persona')->cargar($pers);  
             if($this->dep('datos')->tabla('persona')->esta_cargada()){

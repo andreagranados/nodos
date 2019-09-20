@@ -20,9 +20,9 @@ class dt_cargo extends toba_datos_tabla
        $mes=  date("m"); 
        $anio=  date("Y"); 
        $pdia=$anio."-".$mes."-"."01";
-       if($mes=="01" or $mes=="03" or $mes=="05" or $mes=="07" or $mes=="09" or $mes=="11"){
+       if($mes=="01" or $mes=="03" or $mes=="05" or $mes=="07" or $mes=="08" or $mes=="10"){
            $udia=$anio."-".$mes."-"."31";
-       }else{if($mes=="04" or $mes="06" or $mes=="08" or $mes=="10"     ){
+       }else{if($mes=="04" or $mes="06" or $mes=="09" or $mes=="11"     ){
            $udia=$anio."-".$mes."-"."30";
             }
             else {
@@ -105,9 +105,9 @@ class dt_cargo extends toba_datos_tabla
        $mes=  date("m"); 
        $anio=  date("Y"); 
        $pdia=$anio."-".$mes."-"."01";
-       if($mes=="01" or $mes=="03" or $mes=="05" or $mes=="07" or $mes=="09" or $mes=="11"){
+       if($mes=="01" or $mes=="03" or $mes=="05" or $mes=="07" or $mes=="08" or $mes=="10"){
            $udia=$anio."-".$mes."-"."31";
-       }else{if($mes=="04" or $mes="06" or $mes=="08" or $mes=="10"     ){
+       }else{if($mes=="04" or $mes="06" or $mes=="09" or $mes=="11"     ){
            $udia=$anio."-".$mes."-"."30";
             }
             else {
@@ -149,9 +149,9 @@ class dt_cargo extends toba_datos_tabla
        $mes=  date("m"); 
        $anio=  date("Y"); 
        $pdia=$anio."-".$mes."-"."01";
-       if($mes=="01" or $mes=="03" or $mes=="05" or $mes=="07" or $mes=="09" or $mes=="11"){
+       if($mes=="01" or $mes=="03" or $mes=="05" or $mes=="07" or $mes=="08" or $mes=="10"){
            $udia=$anio."-".$mes."-"."31";
-       }else{if($mes=="04" or $mes="06" or $mes=="08" or $mes=="10"     ){
+       }else{if($mes=="04" or $mes="06" or $mes=="09" or $mes=="11"     ){
            $udia=$anio."-".$mes."-"."30";
             }
             else {
