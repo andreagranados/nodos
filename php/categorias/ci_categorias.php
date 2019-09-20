@@ -5,6 +5,12 @@ class ci_categorias extends nodos_ci
         protected $s__datos_filtro;
         protected $s__where;
         
+        function get_categoria(){
+             if($this->dep('datos')->tabla('categoria')->esta_cargada()){
+                $cat=$this->dep('datos')->tabla('categoria')->get();
+                return $cat['codigo_categ'];
+             }
+        }
         //-----------------------------------------------------------------------------------
 	//---- filtros ----------------------------------------------------------------------
 	//-----------------------------------------------------------------------------------
@@ -35,7 +41,7 @@ class ci_categorias extends nodos_ci
             if (isset ($this->s__datos_filtro)) {
                 $cuadro->set_datos( $this->dep('datos')->tabla('categoria')->get_descripciones_categorias($this->s__datos_filtro)); 
             }else{
-                 $cuadro->set_datos( $this->dep('datos')->tabla('categoria')->get_descripciones_categorias()); 
+                $cuadro->set_datos( $this->dep('datos')->tabla('categoria')->get_descripciones_categorias()); 
             }
 	}
 
@@ -149,21 +155,15 @@ class ci_categorias extends nodos_ci
 
 	function conf__form_cc(toba_ei_formulario $form)
 	{
-             if($this->s__mostrar_p==1){
-                  $this->dep('form_cc')->descolapsar();
-             }else{
-                 $this->dep('form_cc')->colapsar();
+            if($this->s__mostrar_p==1){
+                $this->dep('form_cc')->descolapsar();
+            }else{
+                $this->dep('form_cc')->colapsar();
              }
-             if ($this->dep('datos')->tabla('costo_categoria')->esta_cargada()) {
+            if ($this->dep('datos')->tabla('costo_categoria')->esta_cargada()) {
                 $datos=$this->dep('datos')->tabla('costo_categoria')->get();
-		}
-             if ($this->dep('datos')->tabla('categoria')->esta_cargada()) {
-                $cat=$this->dep('datos')->tabla('categoria')->get();
-                $datos['codigo_categ']=$cat['codigo_categ'];
-             }
-           
-             $form->set_datos($datos);
-                
+                $form->set_datos($datos);
+            }
 	}
 
 	function evt__form_cc__alta($datos)
@@ -172,7 +172,7 @@ class ci_categorias extends nodos_ci
             $datos['codigo_categ']=$categ['codigo_categ'];
             $this->dep('datos')->tabla('costo_categoria')->set($datos);
             $this->dep('datos')->tabla('costo_categoria')->sincronizar();
-            toba::notificacion()->agregar('Se ha agregado un nuevo costo correctamente', 'info');
+            toba::notificacion()->agregar('Se ha agregado un nuevo costo para la categoria', 'info');
             $this->s__mostrar_p=0;
 	}
 
@@ -181,6 +181,7 @@ class ci_categorias extends nodos_ci
             $this->dep('datos')->tabla('costo_categoria')->eliminar_todo();
             $this->dep('datos')->tabla('costo_categoria')->resetear();
             toba::notificacion()->agregar('Se ha eliminado correctamente', 'info');
+            $this->s__mostrar_p=0;
 	}
 
 	function evt__form_cc__modificacion($datos)

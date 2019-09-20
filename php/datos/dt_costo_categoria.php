@@ -12,7 +12,8 @@ class dt_costo_categoria extends nodos_datos_tabla
     function get_costos($cat){
          $sql="select c.codigo_categ,c.desde,costo_basico 
              from costo_categoria c
-             where codigo_categ='".$cat."'";
+             where codigo_categ='".$cat."'"
+                 . " order by c.desde desc";
        
          return toba::db('nodos')->consultar($sql);
     }
