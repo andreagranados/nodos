@@ -105,7 +105,7 @@ class dt_cargo extends toba_datos_tabla
        $mes=  date("m"); 
        $anio=  date("Y"); 
        $pdia=$anio."-".$mes."-"."01";
-       if($mes=="01" or $mes=="03" or $mes=="05" or $mes=="07" or $mes=="08" or $mes=="10"){
+       if($mes=="01" or $mes=="03" or $mes=="05" or $mes=="07" or $mes=="08" or $mes=="10" or $mes=="12"){
            $udia=$anio."-".$mes."-"."31";
        }else{if($mes=="04" or $mes="06" or $mes=="09" or $mes=="11"     ){
            $udia=$anio."-".$mes."-"."30";
@@ -149,7 +149,7 @@ class dt_cargo extends toba_datos_tabla
        $mes=  date("m"); 
        $anio=  date("Y"); 
        $pdia=$anio."-".$mes."-"."01";
-       if($mes=="01" or $mes=="03" or $mes=="05" or $mes=="07" or $mes=="08" or $mes=="10"){
+       if($mes=="01" or $mes=="03" or $mes=="05" or $mes=="07" or $mes=="08" or $mes=="10" or $mes=="12"){
            $udia=$anio."-".$mes."-"."31";
        }else{if($mes=="04" or $mes="06" or $mes=="09" or $mes=="11"     ){
            $udia=$anio."-".$mes."-"."30";
@@ -198,7 +198,7 @@ class dt_cargo extends toba_datos_tabla
 //                                 group by codigo_categ)sub
 //                                 where c.codigo_categ=sub.codigo_categ)coss 
 //                            on (s.categ=coss.codigo_categ)".                              
-                  "select case when c.id_cargo is null or not(c.fec_alta <='".$udia."' and (c.fec_baja>='".$pdia."' or c.fec_baja is null)) then 'V' else case when n.id_novedad is not null then 'P' else 'A' end end as puesto,  c.id_cargo,p.tipo,no.id_nodo,case when no.desc_abrev is null and no.descripcion is null then nop.descripcion else case when no.desc_abrev is not null then no.desc_abrev else no.descripcion end end as dep ,pe.legajo,pe.apellido,pe.nombre,p.id_puesto,p.categ as catpuesto,c.id_cargo,codc_categ,fec_alta,fec_baja,n.tipo_nov,s.categ, case when s.categ is not null then coss.costo_basico else null end as costosub,cos.costo_basico,cp.costo_basico as costo_basico_p,case when nod.desc_abrev is null then nod.descripcion else nod.desc_abrev end as pase
+                  "select case when c.id_cargo is null or not(c.fec_alta <='".$udia."' and (c.fec_baja>='".$pdia."' or c.fec_baja is null)) then 'V' else case when n.id_novedad is not null then 'P' else 'A' end end as puesto,  c.id_cargo,p.tipo,no.id_nodo,case when no.desc_abrev is null and no.descripcion is null then nop.desc_abrev else case when no.desc_abrev is not null then no.desc_abrev else no.descripcion end end as dep ,pe.legajo,pe.apellido,pe.nombre,p.id_puesto,p.categ as catpuesto,c.id_cargo,codc_categ,fec_alta,fec_baja,n.tipo_nov,s.categ, case when s.categ is not null then coss.costo_basico else null end as costosub,cos.costo_basico,cp.costo_basico as costo_basico_p,case when nod.desc_abrev is null then nod.descripcion else nod.desc_abrev end as pase
                     from
                     (select pu.id_puesto,pu.pertenece_a,pu.tipo,pu.categ,max(fec_alta) as alta from puesto pu 
                     left outer join cargo ca on (pu.id_puesto=ca.id_puesto)                         
