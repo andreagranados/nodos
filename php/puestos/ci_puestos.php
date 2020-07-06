@@ -36,8 +36,8 @@ class ci_puestos extends nodos_ci
                 $cuadro->set_datos($this->dep('datos')->tabla('puesto')->get_listado_puestos()) ;        
            }
            $res=$this->dep('datos')->tabla('puesto')->hay_superposicion();
-           if($res==1){
-               $this->pantalla('pant_inicial')->agregar_notificacion('El porcentaje total debe sumar 100','error');    
+           if($res!=''){
+               $this->pantalla('pant_inicial')->agregar_notificacion('Los siguientes puestos tienen superposicion de cargos: '.$res,'error');    
            }
            
 	}

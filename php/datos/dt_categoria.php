@@ -41,7 +41,7 @@ left outer join costo_categoria cca on (sub.codigo_categ=cca.codigo_categ and cc
                     
                 }
                 
-            $sql = "SELECT c.codigo_categ, c.descripcion,sub2.costo_basico"
+            $sql = "SELECT c.codigo_categ,  c.descripcion,c.tipo_cat,sub2.costo_basico"
                     . " FROM categoria c"
                     . " left outer join (select sub.codigo_categ,cca.costo_basico from 
 (select codigo_categ,max(desde) as alta from costo_categoria cc

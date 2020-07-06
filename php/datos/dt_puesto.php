@@ -71,7 +71,7 @@ class dt_puesto extends toba_datos_tabla
             $mes=  date("m"); 
             $anio=  date("Y"); 
             $pdia=$anio."-".$mes."-"."01";
-            if($mes=="01" or $mes=="03" or $mes=="05" or $mes=="07" or $mes=="08" or $mes=="10"){
+            if($mes=="01" or $mes=="03" or $mes=="05" or $mes=="07" or $mes=="08" or $mes=="10" or $mes=="12"){
                 $udia=$anio."-".$mes."-"."31";
             }else{if($mes=="04" or $mes="06" or $mes=="09" or $mes=="11"     ){
                     $udia=$anio."-".$mes."-"."30";
@@ -159,11 +159,11 @@ class dt_puesto extends toba_datos_tabla
           
             return toba::db('nodos')->consultar($sql);
         }
-        function hay_superposicion(){
+        function hay_superposicion(){//hay mas de un cargo vigente que ocupa el mismo puesto
             $mes=  date("m"); 
             $anio=  date("Y"); 
             $pdia=$anio."-".$mes."-"."01";
-            if($mes=="01" or $mes=="03" or $mes=="05" or $mes=="07" or $mes=="08" or $mes=="10"){
+            if($mes=="01" or $mes=="03" or $mes=="05" or $mes=="07" or $mes=="08" or $mes=="10" or $mes=="12"){
                 $udia=$anio."-".$mes."-"."31";
             }else{if($mes=="04" or $mes="06" or $mes=="09" or $mes=="11"     ){
                     $udia=$anio."-".$mes."-"."30";
@@ -180,18 +180,19 @@ class dt_puesto extends toba_datos_tabla
                     . " group by p.id_puesto)sub"
                     . " where cant>1";
             $resul=toba::db('nodos')->consultar($sql);
-            if(count($resul)>0){
-                return 1;
-            }else{
-                return 0;
+            $mensaje='';
+            foreach ($resul as $key => $value) {
+                $mensaje.=$value['id_puesto'].', ';    
             }
+
+            return $mensaje;
         }
         function hay_superposicion_con($cargo,$puesto,$desde,$hasta){
-            
             $mes=  date("m"); 
             $anio=  date("Y"); 
+            $where='';
            
-            if($mes=="01" or $mes=="03" or $mes=="05" or $mes=="07" or $mes=="08" or $mes=="10"){
+            if($mes=="01" or $mes=="03" or $mes=="05" or $mes=="07" or $mes=="08" or $mes=="10" or $mes=="12"){
                 $udia=$anio."-".$mes."-"."31";
             }else{if($mes=="04" or $mes="06" or $mes=="09" or $mes=="11"     ){
                     $udia=$anio."-".$mes."-"."30";
@@ -205,10 +206,13 @@ class dt_puesto extends toba_datos_tabla
             }else{
                 $fin=$hasta;
             }
+            if($cargo!=0){
+                $where=" and id_cargo <>".$cargo;
+            }
             $sql="select * from cargo "
                     . " where id_puesto=".$puesto
                     ." and fec_alta<='".$fin."' and (fec_baja is null or fec_baja>='".$desde."')"
-                    . " and id_cargo <>".$cargo
+                    . $where
                     ;
            
             $resul=toba::db('nodos')->consultar($sql);
