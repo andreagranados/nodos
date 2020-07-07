@@ -353,7 +353,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'3912', --objeto_cuadro_col
 	'costo_basico', --clave
 	'10', --orden
-	'Costo Categ', --titulo
+	'Costo Categ del Cargo', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'4', --estilo
 	NULL, --ancho
@@ -475,7 +475,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'nodos', --objeto_cuadro_proyecto
 	'3925', --objeto_cuadro
 	'3930', --objeto_cuadro_col
-	'dif', --clave
+	'difer', --clave
 	'12', --orden
 	'Dif', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
