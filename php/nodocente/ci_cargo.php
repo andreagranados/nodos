@@ -51,6 +51,7 @@ class ci_cargo extends nodos_ci
 	{
             $this->controlador()->dep('datos')->tabla('cargo')->eliminar_todo();
             $this->controlador()->dep('datos')->tabla('cargo')->resetear();
+            $this->controlador()->set_pantalla('pant_cargos');
             toba::notificacion()->agregar('El cargo se ha eliminado correctamente', 'info');
 	}
 
@@ -429,7 +430,7 @@ class ci_cargo extends nodos_ci
 
 	function evt__volver()
 	{
-            $this->controlador()->set_pantalla('pant_inicial');
+            $this->controlador()->set_pantalla('pant_cargos');
 	}
 
 }

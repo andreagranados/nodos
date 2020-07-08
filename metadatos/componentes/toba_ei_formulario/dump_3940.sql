@@ -764,7 +764,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'cuil', --identificador
 	'ef_cuit', --elemento_formulario
 	'cuil', --columnas
-	'0', --obligatorio
+	'1', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'8', --orden
 	'Cuil', --etiqueta
@@ -844,7 +844,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'estado', --identificador
 	'ef_combo', --elemento_formulario
 	'estado', --columnas
-	'0', --obligatorio
+	'1', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'9', --orden
 	'Estado', --etiqueta
