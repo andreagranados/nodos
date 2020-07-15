@@ -45,23 +45,52 @@ class ci_nodocente extends nodos_ci
                $this->dep('form_persona')->colapsar();
           }
 	}
-
+       
 	function evt__form_persona__baja()
 	{
-            $this->dep('datos')->tabla('novedad')->eliminar_todo();
-            $this->dep('datos')->tabla('novedad')->resetear();
-            $this->s__mostrar=0;
-            toba::notificacion()->agregar('La novedad se ha eliminado correctamente', 'info');
+            $this->dep('datos')->tabla('persona')->eliminar_todo();
+            $this->dep('datos')->tabla('persona')->resetear();
+            unset($this->s__datos_filtro);
+            toba::notificacion()->agregar('La persona se ha eliminado correctamente', 'info');
 	}
 
 	function evt__form_persona__modificacion($datos)
 	{
-            $this->dep('datos')->tabla('persona')->set($datos);
-            $this->dep('datos')->tabla('persona')->sincronizar();
-            $auxi=$this->dep('datos')->tabla('persona')->get();
-            $nod['id_persona']=$auxi['id_persona'];
-            $this->dep('datos')->tabla('persona')->cargar($nod);
-            toba::notificacion()->agregar(utf8_decode('Los datos se guardaron correctamente'), 'info');
+            if(($this->dep('datos')->tabla('persona')->esta_cargada())){//es una modificacion
+                $pers=$this->dep('datos')->tabla('persona')->get();  
+                $band=$this->dep('datos')->tabla('persona')->repite_cuil_modif($datos['cuil'],$pers['nro_cuil1'],$pers['nro_cuil'],$pers['nro_cuil2']);
+                $band2='';
+                if(isset($datos['legajo'])){
+                    $band2=$this->dep('datos')->tabla('persona')->repite_legajo_modif($datos['legajo'],$pers['legajo']);
+                }
+               
+            }else{//es un alta nueva
+                $band=$this->dep('datos')->tabla('persona')->repite_cuil($datos['cuil']);
+                $band2='';
+            }
+       
+            if($band==''){
+                if($band2==''){
+                        if(isset($datos['cuil'])){
+                            $datos['nro_cuil1']=substr($datos['cuil'], 0, 2);
+                            $datos['nro_cuil']=substr($datos['cuil'], 2, 8);
+                            $datos['nro_cuil2']=substr($datos['cuil'], 10, 1);
+                        }
+                        $datos['apellido']=mb_strtoupper($datos['apellido'],'LATIN1');//convierte a mayusculas
+                        $datos['nombre']=mb_strtoupper($datos['nombre'],'LATIN1');//convierte a mayusculas
+                        $this->dep('datos')->tabla('persona')->set($datos);
+                        $this->dep('datos')->tabla('persona')->sincronizar();
+                        $auxi=$this->dep('datos')->tabla('persona')->get();
+                        $nod['id_persona']=$auxi['id_persona'];
+                        $this->dep('datos')->tabla('persona')->cargar($nod);
+                        toba::notificacion()->agregar(utf8_decode('Los datos se guardaron correctamente'), 'info');
+                }else{
+                        throw new toba_error('Ya existe una persona con ese legajo: '.$band2);
+                }
+            }else{
+               throw new toba_error('Ya existe una persona con ese cuil: '.$band);
+            }
+           
 	}
 
 	function evt__form_persona__cancelar()
@@ -76,15 +105,19 @@ class ci_nodocente extends nodos_ci
 
 	function conf__form_botones(nodos_ei_formulario $form)
 	{
-            if (!isset($this->s__datos_filtro)) {
+//            if (!isset($this->s__datos_filtro)) {
+//                $form->eliminar_evento('cargos');
+//            }
+            if(!($this->dep('datos')->tabla('persona')->esta_cargada())){
                 $form->eliminar_evento('cargos');
             }
 	}
 
 	function evt__form_botones__cargos($datos)
 	{
-            $this->set_pantalla('pant_cargos');
-            
+            if($this->dep('datos')->tabla('persona')->esta_cargada()){
+                 $this->set_pantalla('pant_cargos');  
+              }
 	}
 
 	//-----------------------------------------------------------------------------------
@@ -103,7 +136,11 @@ class ci_nodocente extends nodos_ci
             $this->dep('datos')->tabla('cargo')->cargar($seleccion);
             $this->set_pantalla('pant_cargo');
 	}
-
+        
+        function evt__agregar_persona(){
+            $this->dep('datos')->tabla('persona')->resetear();    
+            $this->s__datos_filtro['id_persona']=0;
+        }
         function evt__agregar(){
             $this->dep('datos')->tabla('cargo')->resetear();
             $this->set_pantalla('pant_cargo');

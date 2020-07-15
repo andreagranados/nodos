@@ -41,10 +41,8 @@ class ci_cargo extends nodos_ci
                    $this->pantalla()->tab("pant_desempenio")->desactivar();	
                    $this->pantalla()->tab("pant_novedades")->desactivar();	
                    $this->pantalla()->tab("pant_subrogancia")->desactivar();	
-                   $this->pantalla()->tab("pant_pases")->desactivar();	
-                  
-              }
-             
+                   $this->pantalla()->tab("pant_pases")->desactivar();	   
+              } 
 	}
         
 	function evt__form_cargo__baja()
@@ -137,8 +135,6 @@ class ci_cargo extends nodos_ci
                 $this->dep('form_nov')->colapsar();
                 
             }
-            
-                
 	}
 
 	function evt__form_nov__modificacion($datos)
@@ -359,6 +355,8 @@ class ci_cargo extends nodos_ci
             $datos['id_cargo']=$car['id_cargo'];
             $this->dep('datos')->tabla('subroga')->set($datos);
             $this->dep('datos')->tabla('subroga')->sincronizar();
+            toba::notificacion()->agregar('Se ha guardado correctamente', 'info');
+            $this->s__mostrar_s=0;
 	}
         function evt__form_sub__baja()
 	{

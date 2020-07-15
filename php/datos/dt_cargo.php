@@ -129,17 +129,8 @@ class dt_cargo extends toba_datos_tabla
         if (isset($filtro['id_persona'])) {
 	   $where.= " WHERE id_persona=".$filtro['id_persona'];
          }
-       
-        
-//        $sql="select c.id_cargo,c.codc_carac,c.codc_categ ,c.codc_agrup,c.fec_alta,c.fec_baja,case when c.chkstopliq=0 then 'NO' else 'SI' end as chkstopliq ,n.descripcion as pertenece_a,case when p.tipo=1 then 'P_' else 'T_' end ||p.id_puesto||'_categ'|| p.categ as puesto,nod.descripcion as pase"
-//                . " from cargo c"
-//                . " left outer join puesto p on (c.id_puesto=p.id_puesto)"
-//                . " left outer join nodo n on (c.pertenece_a=n.id_nodo)"
-//                . " left outer join pase pa on (pa.id_cargo=c.id_cargo and pa.tipo='T' and '".$actual."' <=pa.hasta and '".$actual."'>=pa.desde)"
-//                . " left outer join nodo nod on (nod.id_nodo=pa.destino)"
-//                .$where
-//                ." order by fec_alta desc";
-        $sql="select sub.*,s.categ as subroga,nod.descripcion as pase from (
+      
+        $sql="select sub.*,sub3.categ as subroga,nod.descripcion as pase from (
                 select c.id_persona,c.id_cargo,c.codc_carac,c.codc_categ ,c.codc_agrup,c.fec_alta,c.fec_baja,c.resol,case when c.chkstopliq=0 then 'NO' else 'SI' end as chkstopliq ,n.descripcion as pertenece_a,case when p.tipo=1 then 'P_' else 'T_' end ||p.id_puesto||'_categ'|| p.categ as puesto,max(pa.desde) as pase_desde
                  from cargo c
                  left outer join puesto p on (c.id_puesto=p.id_puesto)
@@ -148,9 +139,16 @@ class dt_cargo extends toba_datos_tabla
                  group by c.id_persona,c.id_cargo,codc_carac,codc_categ,codc_agrup,fec_alta,fec_baja,c.resol,c.chkstopliq,n.descripcion ,c.pertenece_a, puesto
                  )sub
                 left outer join pase p on (sub.id_cargo=p.id_cargo and p.desde=sub.pase_desde)                                       
-                left outer join nodo nod on (nod.id_nodo=p.destino)                      
-                left outer join subroga s on (s.id_cargo=sub.id_cargo and s.desde <='".$udia."' and (s.hasta>='".$pdia."' or s.hasta is null))                      
-                    $where
+                left outer join nodo nod on (nod.id_nodo=p.destino) ".                     
+                "left outer join (select s.id_cargo,max(desde) as desde from subroga s
+                                    where 
+                                    s.desde <='".$udia."' and (s.hasta>='".$actual."' or s.hasta is null)
+                                    group by s.id_cargo    )sub2 on (sub2.id_cargo=sub.id_cargo)
+                 left outer join (select s.id_cargo,s.desde,s.categ  from subroga s
+                                    where
+                                    s.desde <='".$udia."' and (s.hasta>='".$actual."' or s.hasta is null) )sub3 on (sub2.id_cargo=sub3.id_cargo and sub2.desde=sub3.desde)                 "
+                //por si tiene dos subrogancias y las dos abiertas, tomo la de mayor fecha desde
+                ."    $where
                 order by fec_alta desc";
         return toba::db('nodos')->consultar($sql);
     }
@@ -216,9 +214,17 @@ class dt_cargo extends toba_datos_tabla
                     left outer join cargo c on (c.fec_alta=p.alta and c.id_puesto=p.id_puesto)
                     left outer join persona pe on (pe.id_persona=c.id_persona)
                     left outer join nodo no on (no.id_nodo=c.pertenece_a)
-                    left outer join nodo nop on (nop.id_nodo=p.pertenece_a)
-                    left outer join subroga s on (s.id_cargo=c.id_cargo and s.desde <='".$udia."' and (s.hasta>='".$pdia."' or s.hasta is null))
-                    left outer join novedad n on (n.id_cargo=c.id_cargo and n.desde <='".$udia."' and (n.hasta>='".$pdia."' or n.hasta is null))
+                    left outer join nodo nop on (nop.id_nodo=p.pertenece_a)"
+                    //"left outer join subroga s on (s.id_cargo=c.id_cargo and s.desde <='".$udia."' and (s.hasta>='".$pdia."' or s.hasta is null))
+                    //por si tiene dos subrogancias y las dos abiertas (sin baja), tomo la de mayor fecha desde
+                    ." left outer join (select s.id_cargo,max(desde) as desde from subroga s
+                                    where 
+                                    s.desde <='".$udia."' and (s.hasta>='".$pdia."' or s.hasta is null)
+                                    group by s.id_cargo    )sub2 on (sub2.id_cargo=c.id_cargo)
+                        left outer join (select s.id_cargo,s.desde,s.categ  from subroga s
+                                    where
+                                    s.desde <='".$udia."' and (s.hasta>='".$pdia."' or s.hasta is null) )s on (sub2.id_cargo=s.id_cargo and sub2.desde=s.desde)                 "
+                    . " left outer join novedad n on (n.id_cargo=c.id_cargo and n.desde <='".$udia."' and (n.hasta>='".$pdia."' or n.hasta is null))
                     left outer join pase pa on (pa.id_cargo=c.id_cargo and pa.tipo='T' and ('".$actual."' <=pa.hasta or pa.hasta is null) and '".$actual."'>=pa.desde)
                     left outer join nodo nod on (nod.id_nodo=pa.destino)
                     left outer join (	select sub.*,costo_basico from 
@@ -344,7 +350,6 @@ class dt_cargo extends toba_datos_tabla
                . $where;
      
       //si el puesto es A y no tien pase temporal vigente entonces gasta
-       //si el puesto es A y no tienen pase temporal vigente entonces gasta
        return toba::db('nodos')->consultar($sql);
    }
    function agregar_cargo($datos=array()){
