@@ -227,9 +227,9 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'nodos', --objeto_cuadro_proyecto
 	'3925', --objeto_cuadro
 	'3855', --objeto_cuadro_col
-	'catpuesto', --clave
+	'codc_categ', --clave
 	'6', --orden
-	'Categoria', --titulo
+	'Categoria del Cargo', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'4', --estilo
 	NULL, --ancho
@@ -260,7 +260,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'3856', --objeto_cuadro_col
 	'categ', --clave
 	'7', --orden
-	'Sub', --titulo
+	'Subroga', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'4', --estilo
 	NULL, --ancho
