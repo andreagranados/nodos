@@ -99,7 +99,7 @@ class dt_cargo extends toba_datos_tabla
 //	
         $sql=dt_cargo::armar_consulta($id_nodo);
         $sql=
-               "select *,gasto+difer as gastotot from ("
+               "select *,case when gasto>0 then gasto+difer else 0 end as gastotot from ("
                . "select *,case when puesto='A' or puesto='P' or puesto='V' or puesto='D' then costo_basico_p else 0 end as credito ,"
                . " case when ((puesto='A' and pase is null) or ((puesto ='' or puesto is null) and pase is null and tipo_nov is null)) then costo_basico else 0 end as gasto"
                . " from (".$sql.") sub"
@@ -340,7 +340,7 @@ class dt_cargo extends toba_datos_tabla
        
        $sql=dt_cargo::armar_consulta($id_nodo);
        $sql="select sub3.*,credito-gastotot as saldo from ("
-               . "select *,gasto+difer as gastotot from ("
+               . "select *,case when gasto>0 then gasto+difer else 0 end as gastotot from ("
                . "select *,case when puesto='A' or puesto='P' or puesto='V' or puesto='D' then costo_basico_p else 0 end as credito ,"
                . " case when ((puesto='A' and pase is null) or ((puesto ='' or puesto is null) and pase is null and tipo_nov is null)) then costo_basico else 0 end as gasto"
                . " from (".$sql.") sub"
