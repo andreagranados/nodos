@@ -274,7 +274,7 @@ class ci_cargo extends nodos_ci
                 $nuevo_cargo['pertenece_a']=$datos['destino'];
                 $nuevo_cargo['generado_x_pase']=$pase_nuevo['id_pase'];        
                 $res=$this->controlador()->dep('datos')->tabla('cargo')->agregar_cargo($nuevo_cargo);
-                if($res=1){
+                if($res==1){
                     toba::notificacion()->agregar('Se ha creado un nuevo cargo en el destino del pase', 'info');
                 }
             

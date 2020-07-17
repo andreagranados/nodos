@@ -104,7 +104,7 @@ class dt_cargo extends toba_datos_tabla
                . " case when ((puesto='A' and pase is null) or ((puesto ='' or puesto is null) and pase is null)) then costo_basico else 0 end as gasto"
                . " from (".$sql.") sub"
                .") sub2"
-                . " where (puesto='A' or puesto is null or puesto='') and pase is null"
+                . " where (puesto='A' or puesto='P' or puesto is null or puesto='') and pase is null"
                ;
 	return toba::db('nodos')->consultar($sql);
     }
