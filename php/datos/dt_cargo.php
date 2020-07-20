@@ -273,30 +273,30 @@ class dt_cargo extends toba_datos_tabla
                             on (s.categ=coss.codigo_categ)
                 "." WHERE ".                       
                 "  c.id_puesto is null 
-                and c.fec_alta <='".$udia."' and (c.fec_baja>='".$pdia."' or c.fec_baja is null)".$where2
-                ." UNION "
-                ." select 'D' as puesto,c.chkstopliq,pe.estado,c.id_cargo,null,c.pertenece_a,null,pe.legajo, pe.apellido,pe.nombre,null,null,null,null,null,null,null,null,null,null,co2.costo_basico -co.costo_basico,null
-                   from 
-                    (select c.id_cargo,c.chkstopliq ,c.id_persona,pertenece_a,c.codc_categ,s.categ 
-                    from cargo c, subroga s 
-                    where (c.id_cargo=s.id_cargo)
-                    and c.codc_categ>s.categ
-                    and s.desde <='".$udia."' and (s.hasta>='".$pdia."' or s.hasta is null)
-                    and motivo='CSER')c
-                    left outer join (select sub.*,costo_basico from 
-				(select codigo_categ,max(desde) as desde from costo_categoria
-                                 group by codigo_categ)sub
-                                 left outer join costo_categoria cc on (sub.codigo_categ=cc.codigo_categ))co on (c.codc_categ=co.codigo_categ)
-                    left outer join (select sub.*,costo_basico from 
-				(select codigo_categ,max(desde) as desde from costo_categoria
-                                 group by codigo_categ)sub
-                    left outer join costo_categoria cc on (sub.codigo_categ=cc.codigo_categ))co2 on (c.categ=co2.codigo_categ) 
-                    left outer join persona pe on (pe.id_persona=c.id_persona)
-                    left outer join nodo n on (n.id_nodo=c.pertenece_a)
-                    $where3"
-                . ")sub"
-               
-                 ." order by apellido,nombre,puesto";
+                and c.fec_alta <='".$udia."' and (c.fec_baja>='".$pdia."' or c.fec_baja is null)".$where2;
+//                ." UNION "
+//                ." select 'D' as puesto,c.chkstopliq,pe.estado,c.id_cargo,null,c.pertenece_a,null,pe.legajo, pe.apellido,pe.nombre,null,null,null,null,null,null,null,null,null,null,co2.costo_basico -co.costo_basico,null
+//                   from 
+//                    (select c.id_cargo,c.chkstopliq ,c.id_persona,pertenece_a,c.codc_categ,s.categ 
+//                    from cargo c, subroga s 
+//                    where (c.id_cargo=s.id_cargo)
+//                    and c.codc_categ>s.categ
+//                    and s.desde <='".$udia."' and (s.hasta>='".$pdia."' or s.hasta is null)
+//                    and motivo='CSER')c
+//                    left outer join (select sub.*,costo_basico from 
+//				(select codigo_categ,max(desde) as desde from costo_categoria
+//                                 group by codigo_categ)sub
+//                                 left outer join costo_categoria cc on (sub.codigo_categ=cc.codigo_categ))co on (c.codc_categ=co.codigo_categ)
+//                    left outer join (select sub.*,costo_basico from 
+//				(select codigo_categ,max(desde) as desde from costo_categoria
+//                                 group by codigo_categ)sub
+//                    left outer join costo_categoria cc on (sub.codigo_categ=cc.codigo_categ))co2 on (c.categ=co2.codigo_categ) 
+//                    left outer join persona pe on (pe.id_persona=c.id_persona)
+//                    left outer join nodo n on (n.id_nodo=c.pertenece_a)
+//                    $where3"
+//                . ")sub"
+//               
+//                 ." order by apellido,nombre,puesto";
 	
 	return $sql;
        
