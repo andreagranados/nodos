@@ -23,7 +23,7 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	'Arbol - cuadro_int', --nombre
 	NULL, --titulo
 	'0', --colapsable
-	NULL, --descripcion
+	'Si el cargo tiene un stop entonces no genera gasto. Si la persona esta Pasiva tampoco genera gasto.', --descripcion
 	NULL, --fuente_datos_proyecto
 	NULL, --fuente_datos
 	NULL, --solicitud_registrar

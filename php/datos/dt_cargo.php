@@ -101,7 +101,8 @@ class dt_cargo extends toba_datos_tabla
         $sql=
                "select *,case when gasto>0 then gasto+difer else 0 end as gastotot from ("
                . "select *,case when puesto='A' or puesto='P' or puesto='V' or puesto='D' then costo_basico_p else 0 end as credito ,"
-               . " case when ((puesto='A' and pase is null) or ((puesto ='' or puesto is null) and pase is null and tipo_nov is null)) then costo_basico else 0 end as gasto"
+               //. " case when ((puesto='A' and pase is null) or ((puesto ='' or puesto is null) and pase is null and tipo_nov is null)) and (chkstopliq=0 or chkstopliq is null) and estado<>'P'  then costo_basico else 0 end as gasto"
+                ." case when (puesto='A' or (puesto ='' or puesto is null)) and pase is null and tipo_nov is null and (chkstopliq=0 or chkstopliq is null) and estado<>'P'  then costo_basico else 0 end as gasto"
                . " from (".$sql.") sub"
                .") sub2"
                 . " where (puesto='A' or puesto='P' or puesto is null or puesto='') and pase is null"
@@ -205,7 +206,7 @@ class dt_cargo extends toba_datos_tabla
 //                                 group by codigo_categ)sub
 //                                 where c.codigo_categ=sub.codigo_categ)coss 
 //                            on (s.categ=coss.codigo_categ)".                              
-                  "select case when c.id_cargo is null or not(c.fec_alta <='".$udia."' and (c.fec_baja>='".$pdia."' or c.fec_baja is null)) then 'V' else case when n.id_novedad is not null then 'P' else 'A' end end as puesto,  c.id_cargo,p.tipo,no.id_nodo,case when no.desc_abrev is null and no.descripcion is null then nop.desc_abrev else case when no.desc_abrev is not null then no.desc_abrev else no.descripcion end end as dep ,pe.legajo,pe.apellido,pe.nombre,p.id_puesto,p.categ as catpuesto,c.id_cargo,codc_categ,fec_alta,fec_baja,n.tipo_nov,s.categ, case when s.categ is not null then coss.costo_basico else null end as costosub,cos.costo_basico,cp.costo_basico as costo_basico_p,case when nod.desc_abrev is null then nod.descripcion else nod.desc_abrev end as pase
+                  "select case when c.id_cargo is null or not(c.fec_alta <='".$udia."' and (c.fec_baja>='".$pdia."' or c.fec_baja is null)) then 'V' else case when c.id_cargo is not null and (n.id_novedad is not null or c.chkstopliq=1 or pe.estado='P') then 'P' else 'A' end end as puesto, c.chkstopliq ,pe.estado, c.id_cargo,p.tipo,no.id_nodo,case when no.desc_abrev is null and no.descripcion is null then nop.desc_abrev else case when no.desc_abrev is not null then no.desc_abrev else no.descripcion end end as dep ,pe.legajo,pe.apellido,pe.nombre,p.id_puesto,p.categ as catpuesto,c.id_cargo,codc_categ,fec_alta,fec_baja,n.tipo_nov,s.categ, case when s.categ is not null then coss.costo_basico else null end as costosub,cos.costo_basico,cp.costo_basico as costo_basico_p,case when nod.desc_abrev is null then nod.descripcion else nod.desc_abrev end as pase
                     from
                     (select pu.id_puesto,pu.pertenece_a,pu.tipo,pu.categ,max(fec_alta) as alta from puesto pu 
                     left outer join cargo ca on (pu.id_puesto=ca.id_puesto)                         
@@ -244,12 +245,20 @@ class dt_cargo extends toba_datos_tabla
                 $where1
                 
                 . " UNION "//cargos que no estan asociados a puestos
-                ."select '' as puesto,c.id_cargo,null as tipo,no.id_nodo,case when no.desc_abrev is not null then no.desc_abrev else no.descripcion end as dep,pe.legajo,pe.apellido,pe.nombre,null,null catpuesto,c.id_cargo,codc_categ ,fec_alta,fec_baja,n.tipo_nov,s.categ,coss.costo_basico as costosub,cos.costo_basico,cos.costo_basico,case when nod.desc_abrev is null then nod.descripcion else nod.descripcion end as pase
+                ."select '' as puesto,c.chkstopliq,pe.estado,c.id_cargo,null as tipo,no.id_nodo,case when no.desc_abrev is not null then no.desc_abrev else no.descripcion end as dep,pe.legajo,pe.apellido,pe.nombre,null,null catpuesto,c.id_cargo,codc_categ ,fec_alta,fec_baja,n.tipo_nov,s.categ,coss.costo_basico as costosub,cos.costo_basico,cos.costo_basico,case when nod.desc_abrev is null then nod.descripcion else nod.descripcion end as pase
                 from cargo c
                 left outer join nodo no on (no.id_nodo=c.pertenece_a)
-                left outer join persona pe on (pe.id_persona=c.id_persona)
-                left outer join subroga s on (s.id_cargo=c.id_cargo and s.desde <='".$udia."' and (s.hasta>='".$pdia."' or s.hasta is null))
-                left outer join novedad n on (n.id_cargo=c.id_cargo and n.desde <='".$udia."' and (n.hasta>='".$pdia."' or n.hasta is null))
+                left outer join persona pe on (pe.id_persona=c.id_persona)"
+                //."left outer join subroga s on (s.id_cargo=c.id_cargo and s.desde <='".$udia."' and (s.hasta>='".$pdia."' or s.hasta is null))
+                //por si tiene dos subrogancias y las dos abiertas (sin baja), tomo la de mayor fecha desde
+                  ." left outer join (select s.id_cargo,max(desde) as desde from subroga s
+                                    where 
+                                    s.desde <='".$udia."' and (s.hasta>='".$pdia."' or s.hasta is null)
+                                    group by s.id_cargo    )sub2 on (sub2.id_cargo=c.id_cargo)
+                        left outer join (select s.id_cargo,s.desde,s.categ  from subroga s
+                                    where
+                                    s.desde <='".$udia."' and (s.hasta>='".$pdia."' or s.hasta is null) )s on (sub2.id_cargo=s.id_cargo and sub2.desde=s.desde)                 "
+                ." left outer join novedad n on (n.id_cargo=c.id_cargo and n.desde <='".$udia."' and (n.hasta>='".$pdia."' or n.hasta is null))
                 left outer join pase pa on (pa.id_cargo=c.id_cargo and pa.tipo='T' and ('".$actual."' <=pa.hasta or pa.hasta is null) and '".$actual."'>=pa.desde)
                 left outer join nodo nod on (nod.id_nodo=pa.destino)
                 left outer join (select sub.*,cc.costo_basico from 
@@ -266,9 +275,9 @@ class dt_cargo extends toba_datos_tabla
                 "  c.id_puesto is null 
                 and c.fec_alta <='".$udia."' and (c.fec_baja>='".$pdia."' or c.fec_baja is null)".$where2
                 ." UNION "
-                ." select 'D' as puesto,c.id_cargo,null,c.pertenece_a,null,pe.legajo, pe.apellido,pe.nombre,null,null,null,null,null,null,null,null,null,null,co2.costo_basico -co.costo_basico,null
+                ." select 'D' as puesto,c.chkstopliq,pe.estado,c.id_cargo,null,c.pertenece_a,null,pe.legajo, pe.apellido,pe.nombre,null,null,null,null,null,null,null,null,null,null,co2.costo_basico -co.costo_basico,null
                    from 
-                    (select c.id_cargo,c.id_persona,pertenece_a,c.codc_categ,s.categ 
+                    (select c.id_cargo,c.chkstopliq ,c.id_persona,pertenece_a,c.codc_categ,s.categ 
                     from cargo c, subroga s 
                     where (c.id_cargo=s.id_cargo)
                     and c.codc_categ>s.categ
@@ -342,7 +351,8 @@ class dt_cargo extends toba_datos_tabla
        $sql="select sub3.*,credito-gastotot as saldo from ("
                . "select *,case when gasto>0 then gasto+difer else 0 end as gastotot from ("
                . "select *,case when puesto='A' or puesto='P' or puesto='V' or puesto='D' then costo_basico_p else 0 end as credito ,"
-               . " case when ((puesto='A' and pase is null) or ((puesto ='' or puesto is null) and pase is null and tipo_nov is null)) then costo_basico else 0 end as gasto"
+               //. " case when ((puesto='A' and pase is null) or ((puesto ='' or puesto is null) and pase is null and tipo_nov is null)) and (chkstopliq=0 or chkstopliq is null)  then costo_basico else 0 end as gasto"
+               ." case when (puesto='A' or (puesto ='' or puesto is null)) and pase is null and tipo_nov is null and (chkstopliq=0 or chkstopliq is null) and estado<>'P'  then costo_basico else 0 end as gasto"
                . " from (".$sql.") sub"
                .") sub2"
                . ") sub3"

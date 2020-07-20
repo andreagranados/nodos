@@ -112,7 +112,7 @@ class dt_puesto extends toba_datos_tabla
             $mes=  date("m"); 
             $anio=  date("Y"); 
             $pdia=$anio."-".$mes."-"."01";
-            if($mes=="01" or $mes=="03" or $mes=="05" or $mes=="07" or $mes=="08" or $mes=="10"){
+            if($mes=="01" or $mes=="03" or $mes=="05" or $mes=="07" or $mes=="08" or $mes=="10" or $mes=="12"){
                 $udia=$anio."-".$mes."-"."31";
             }else{if($mes=="04" or $mes="06" or $mes=="09" or $mes=="11"     ){
                     $udia=$anio."-".$mes."-"."30";
@@ -123,9 +123,10 @@ class dt_puesto extends toba_datos_tabla
             }
             $sql2=dt_cargo::armar_consulta();
             $sql2="select origen_de(id_nodo)as nodo,sum(gastotot) as gasto,sum(credito-gastotot) as saldo from ("
-               . "select *,gasto+difer as gastotot from ("
+               . "select *,case when gasto>0 then gasto+difer else 0 end as gastotot from ("
                . "select *,case when puesto='A' or puesto='P' or puesto='V' or puesto='D' then costo_basico_p else 0 end as credito ,"
-               . " case when ((puesto='A' and pase is null) or puesto ='') then costo_basico else 0 end as gasto"
+               //. " case when ((puesto='A' and pase is null) or puesto ='') then costo_basico else 0 end as gasto"
+                    ." case when (puesto='A' or (puesto ='' or puesto is null)) and pase is null and tipo_nov is null and (chkstopliq=0 or chkstopliq is null) and estado<>'P'  then costo_basico else 0 end as gasto"
                . " from (".$sql2.") sub"
                .") sub2"
                . ") sub3 group by nodo";

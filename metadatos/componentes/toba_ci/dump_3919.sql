@@ -269,7 +269,7 @@ INSERT INTO apex_objeto_ci_pantalla (objeto_ci_proyecto, objeto_ci, pantalla, id
 	'pant_integrantes', --identificador
 	'3', --orden
 	'Integrantes', --etiqueta
-	NULL, --descripcion
+	'Si el cargo tiene un stop  o la persona esta en estado (P) Pasivo entonces no genera gasto', --descripcion
 	NULL, --tip
 	'apex', --imagen_recurso_origen
 	NULL, --imagen
