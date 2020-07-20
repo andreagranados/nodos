@@ -125,22 +125,22 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'nodos', --objeto_cuadro_proyecto
 	'3979', --objeto_cuadro
 	'3940', --objeto_cuadro_col
-	'agente', --clave
-	'7', --orden
+	'nombre', --clave
+	'8', --orden
 	'Nombre', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'4', --estilo
 	NULL, --ancho
 	'1', --formateo
 	NULL, --vinculo_indice
-	NULL, --no_ordenar
+	'0', --no_ordenar
 	NULL, --mostrar_xls
 	NULL, --mostrar_pdf
 	NULL, --pdf_propiedades
 	NULL, --desabilitado
-	NULL, --total
+	'0', --total
 	NULL, --total_cc
-	NULL, --usar_vinculo
+	'0', --usar_vinculo
 	NULL, --vinculo_carpeta
 	NULL, --vinculo_item
 	NULL, --vinculo_popup
@@ -188,7 +188,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'3979', --objeto_cuadro
 	'3943', --objeto_cuadro_col
 	'fec_alta', --clave
-	'8', --orden
+	'9', --orden
 	'Desde', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'4', --estilo
@@ -219,7 +219,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'3979', --objeto_cuadro
 	'3944', --objeto_cuadro_col
 	'fec_baja', --clave
-	'9', --orden
+	'10', --orden
 	'Hasta', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'4', --estilo
@@ -250,7 +250,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'3979', --objeto_cuadro
 	'3945', --objeto_cuadro_col
 	'tipo_nov', --clave
-	'12', --orden
+	'13', --orden
 	'Nove', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'4', --estilo
@@ -281,7 +281,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'3979', --objeto_cuadro
 	'3946', --objeto_cuadro_col
 	'costosub', --clave
-	'15', --orden
+	'16', --orden
 	'Costo Subrogancia', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'4', --estilo
@@ -312,7 +312,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'3979', --objeto_cuadro
 	'3947', --objeto_cuadro_col
 	'costo_basico', --clave
-	'14', --orden
+	'15', --orden
 	'Costo Categ del Cargo', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'4', --estilo
@@ -343,7 +343,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'3979', --objeto_cuadro
 	'3948', --objeto_cuadro_col
 	'categ', --clave
-	'11', --orden
+	'12', --orden
 	'Categ Subro', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'4', --estilo
@@ -436,7 +436,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'3979', --objeto_cuadro
 	'3951', --objeto_cuadro_col
 	'codc_categ', --clave
-	'10', --orden
+	'11', --orden
 	'Categoría del Cargo', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'4', --estilo
@@ -529,7 +529,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'3979', --objeto_cuadro
 	'3954', --objeto_cuadro_col
 	'credito', --clave
-	'16', --orden
+	'17', --orden
 	'Crédito', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'col-tex-p4', --estilo
@@ -560,7 +560,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'3979', --objeto_cuadro
 	'3955', --objeto_cuadro_col
 	'gasto', --clave
-	'17', --orden
+	'18', --orden
 	'Gasto A ó CONT', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'0', --estilo
@@ -591,7 +591,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'3979', --objeto_cuadro
 	'3956', --objeto_cuadro_col
 	'difer', --clave
-	'18', --orden
+	'19', --orden
 	'Diferencias', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'4', --estilo
@@ -622,7 +622,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'3979', --objeto_cuadro
 	'3957', --objeto_cuadro_col
 	'gastotot', --clave
-	'19', --orden
+	'20', --orden
 	'Gasto Total', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'col-tex-p4', --estilo
@@ -653,7 +653,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'3979', --objeto_cuadro
 	'3958', --objeto_cuadro_col
 	'pase', --clave
-	'13', --orden
+	'14', --orden
 	'Pase Temp a:', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'4', --estilo
@@ -684,7 +684,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'3979', --objeto_cuadro
 	'3998', --objeto_cuadro_col
 	'saldo', --clave
-	'20', --orden
+	'21', --orden
 	'Saldo', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'col-cen-s2', --estilo
@@ -699,6 +699,37 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'1', --total
 	NULL, --total_cc
 	'0', --usar_vinculo
+	NULL, --vinculo_carpeta
+	NULL, --vinculo_item
+	NULL, --vinculo_popup
+	NULL, --vinculo_popup_param
+	NULL, --vinculo_target
+	NULL, --vinculo_celda
+	NULL, --vinculo_servicio
+	'0', --permitir_html
+	NULL, --grupo
+	NULL  --evento_asociado
+);
+INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro, objeto_cuadro_col, clave, orden, titulo, estilo_titulo, estilo, ancho, formateo, vinculo_indice, no_ordenar, mostrar_xls, mostrar_pdf, pdf_propiedades, desabilitado, total, total_cc, usar_vinculo, vinculo_carpeta, vinculo_item, vinculo_popup, vinculo_popup_param, vinculo_target, vinculo_celda, vinculo_servicio, permitir_html, grupo, evento_asociado) VALUES (
+	'nodos', --objeto_cuadro_proyecto
+	'3979', --objeto_cuadro
+	'4666', --objeto_cuadro_col
+	'apellido', --clave
+	'7', --orden
+	'Apellido', --titulo
+	'ei-cuadro-col-tit', --estilo_titulo
+	'4', --estilo
+	NULL, --ancho
+	'1', --formateo
+	NULL, --vinculo_indice
+	NULL, --no_ordenar
+	NULL, --mostrar_xls
+	NULL, --mostrar_pdf
+	NULL, --pdf_propiedades
+	NULL, --desabilitado
+	NULL, --total
+	NULL, --total_cc
+	NULL, --usar_vinculo
 	NULL, --vinculo_carpeta
 	NULL, --vinculo_item
 	NULL, --vinculo_popup
