@@ -142,11 +142,8 @@ class dt_puesto extends toba_datos_tabla
                     left outer join nodo n on (p.pertenece_a=n.id_nodo)                            
                     group by n.descripcion,p.pertenece_a)sub1
                     left outer join (".$sql2.")sub3 on (sub3.nodo=sub1.pertenece_a)
-                    ";
-            
-            
-            
-            //print_r($sql);exit();
+                    order by nodod";
+ 
             return toba::db('nodos')->consultar($sql);
         }
         //quienes ocupan el puesto

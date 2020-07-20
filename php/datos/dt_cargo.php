@@ -99,7 +99,7 @@ class dt_cargo extends toba_datos_tabla
 //	
         $sql=dt_cargo::armar_consulta($id_nodo);
         $sql=
-               "select *,case when gasto>0 then gasto+difer else 0 end as gastotot from ("
+               "select *,case when gasto>0 then gasto+difer else 0 end as gastotot, trim(nombre)||', '|| trim(apellido) as agente from ("
                . "select *,case when puesto='A' or puesto='P' or puesto='V' or puesto='D' then costo_basico_p else 0 end as credito ,"
                //. " case when ((puesto='A' and pase is null) or ((puesto ='' or puesto is null) and pase is null and tipo_nov is null)) and (chkstopliq=0 or chkstopliq is null) and estado<>'P'  then costo_basico else 0 end as gasto"
                 ." case when (puesto='A' or (puesto ='' or puesto is null)) and pase is null and tipo_nov is null and (chkstopliq=0 or chkstopliq is null) and estado<>'P'  then costo_basico else 0 end as gasto"
