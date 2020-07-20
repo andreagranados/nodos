@@ -185,7 +185,7 @@ class dt_cargo extends toba_datos_tabla
                 $where3='';
             }
             //algunos puestos pueden no estar ocupados en el mes actual, por eso recupero la dependencia del puesto en algunos casos
-        $sql="select distinct * ,case when costosub is not null then costosub-costo_basico else 0 end as difer from (".
+        $sql="select distinct *, case when costosub is not null then costosub-costo_basico else 0 end as difer from (".
 //             " select case when c.id_cargo is null then 'V' else case when n.id_novedad is not null then 'P' else 'A' end end as puesto,c.id_cargo,p.tipo,no.id_nodo,case when no.desc_abrev is null and no.descripcion is null then nop.descripcion else case when no.desc_abrev is not null then no.desc_abrev else no.descripcion end end as dep ,pe.legajo,pe.apellido,pe.nombre,p.id_puesto,p.categ as catpuesto,c.id_cargo,codc_categ,fec_alta,fec_baja,n.tipo_nov,s.categ, case when s.categ is not null then coss.costo_basico else null end as costosub,cos.costo_basico,case when nod.desc_abrev is null then nod.descripcion else nod.desc_abrev end as pase
 //                from puesto p
 //                left outer join cargo c on (p.id_puesto=c.id_puesto and  c.fec_alta <='".$udia."' and (c.fec_baja>='".$pdia."' or c.fec_baja is null))
@@ -273,7 +273,7 @@ class dt_cargo extends toba_datos_tabla
                             on (s.categ=coss.codigo_categ)
                 "." WHERE ".                       
                 "  c.id_puesto is null 
-                and c.fec_alta <='".$udia."' and (c.fec_baja>='".$pdia."' or c.fec_baja is null)".$where2;
+                and c.fec_alta <='".$udia."' and (c.fec_baja>='".$pdia."' or c.fec_baja is null)".$where2
 //                ." UNION "
 //                ." select 'D' as puesto,c.chkstopliq,pe.estado,c.id_cargo,null,c.pertenece_a,null,pe.legajo, pe.apellido,pe.nombre,null,null,null,null,null,null,null,null,null,null,co2.costo_basico -co.costo_basico,null
 //                   from 
@@ -294,9 +294,9 @@ class dt_cargo extends toba_datos_tabla
 //                    left outer join persona pe on (pe.id_persona=c.id_persona)
 //                    left outer join nodo n on (n.id_nodo=c.pertenece_a)
 //                    $where3"
-//                . ")sub"
-//               
-//                 ." order by apellido,nombre,puesto";
+                . ")sub"
+               
+                 ." order by apellido,nombre,puesto";
 	
 	return $sql;
        
@@ -348,7 +348,7 @@ class dt_cargo extends toba_datos_tabla
             }
        
        $sql=dt_cargo::armar_consulta($id_nodo);
-       $sql="select sub3.*,credito-gastotot as saldo from ("
+       $sql="select sub3.*,credito-gastotot as saldo,trim(nombre)||', '|| trim(apellido) as agente from ("
                . "select *,case when gasto>0 then gasto+difer else 0 end as gastotot from ("
                . "select *,case when puesto='A' or puesto='P' or puesto='V' or puesto='D' then costo_basico_p else 0 end as credito ,"
                //. " case when ((puesto='A' and pase is null) or ((puesto ='' or puesto is null) and pase is null and tipo_nov is null)) and (chkstopliq=0 or chkstopliq is null)  then costo_basico else 0 end as gasto"
