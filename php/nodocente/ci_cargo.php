@@ -279,9 +279,12 @@ class ci_cargo extends nodos_ci
                 }
             
                 }else{//pase definitivo entonces tengo que modificar la fecha del cargo en la unidad destino con la fecha de alta del definitivo
+                    $nuevafecha = strtotime ( '-1 day' , strtotime ( $datos['desde'] ) ) ;
+                    $nuevafecha = date ( 'Y-m-d' , $nuevafecha );
+                    //print_r($nuevafecha);exit;
                     $salida=$this->controlador()->dep('datos')->tabla('cargo')->modificar_alta($datos['id_cargo'],$datos['destino'],$datos['desde']);
                     //le coloca fecha de baja al cargo de la unidad origen
-                    $this->controlador()->dep('datos')->tabla('cargo')->finaliza_cargo($datos['id_cargo'],$datos['desde']);
+                    $this->controlador()->dep('datos')->tabla('cargo')->finaliza_cargo($datos['id_cargo'],$nuevafecha);
                     if($salida==1){
                         toba::notificacion()->agregar('Se ha modificado la fecha del cargo generado a partir del pase temporal', 'info');
                     }
@@ -350,11 +353,18 @@ class ci_cargo extends nodos_ci
             $datos=$this->dep('datos')->tabla('subroga')->resetear();
 	}
         function evt__form_sub__modificacion($datos)
-	{
+	{//no me modifica el desde por ser parte de la clave
+            if($this->dep('datos')->tabla('subroga')->esta_cargada()){//es modificacion
+                $sub=$this->dep('datos')->tabla('subroga')->get();
+                if($datos['desde']!=$sub['desde']){
+                    $this->dep('datos')->tabla('subroga')->modif_desde($datos['desde'],$sub['id_cargo'],$sub['desde']);
+                }
+            }  
             $car=$this->controlador()->dep('datos')->tabla('cargo')->get();
             $datos['id_cargo']=$car['id_cargo'];
             $this->dep('datos')->tabla('subroga')->set($datos);
             $this->dep('datos')->tabla('subroga')->sincronizar();
+           
             toba::notificacion()->agregar('Se ha guardado correctamente', 'info');
             $this->s__mostrar_s=0;
 	}
