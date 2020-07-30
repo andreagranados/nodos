@@ -62,7 +62,7 @@ class dt_subroga extends toba_datos_tabla
             (select pe.apellido,pe.nombre,pe.legajo,subc.codc_carac,subc.codc_categ,s.categ,s.desde,s.hasta,s.motivo,s.resol,subc.pertenece_a,surge_de,max(ca.fec_alta)as alta
                from (select c.id_cargo,c.id_persona,c.codc_carac,c.codc_categ,c.pertenece_a,max(s.desde) as desde
             		from cargo c
-            		left outer join subroga s on (c.id_cargo=s.id_cargo)  
+            		inner join subroga s on (c.id_cargo=s.id_cargo)  
             		where c.fec_alta <='".$udia."' and (c.fec_baja>='".$pdia."' or c.fec_baja is null) 
             		group by c.id_cargo,c.id_persona,codc_carac,c.codc_categ,c.pertenece_a
             	    ) subc
