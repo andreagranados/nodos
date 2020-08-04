@@ -24,7 +24,7 @@ class consultas_mapuche
           )cons 
           inner join mapuche.dh03 b on (b.nro_cargo=cons.nro_cargo)
           inner join mapuche.dh01 e on (cons.nro_legaj=e.nro_legaj)
-          left outer join mapuche.dh18 sub on (sub.nro_cargo=b.nro_cargo and sub.fec_desde <=udia and (sub.fec_hasta>=pdia or sub.fec_hasta is null))
+          left outer join mapuche.dh18 sub on (sub.nro_cargo=b.nro_cargo and sub.fec_desde <='".$udia."' and (sub.fec_hasta>='".$pdia."' or sub.fec_hasta is null))
           order by desc_appat,desc_nombr;";
  	
  		
