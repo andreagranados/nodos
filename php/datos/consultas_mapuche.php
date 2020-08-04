@@ -7,7 +7,7 @@ class consultas_mapuche
  function get_cargos($udia,$pdia){
 
         $sql="select distinct b.codc_uacad,cons.nro_legaj,
-            e.desc_appat,e.desc_nombr,e.tipo_estad, b.codc_carac,b.codc_categ,b.codc_agrup,b.chkstopliq,sub.codc_categ as categsub
+            e.desc_appat,e.desc_nombr,e.tipo_estad, b.fec_alta,b.fec_baja,b.codc_carac,b.codc_categ,b.codc_agrup,b.chkstopliq,sub.codc_categ as categsub
     from  ( select b.nro_legaj, max(b.nro_cargo) as nro_cargo
               from mapuche.dh03 b  inner join  mapuche.dh11 c on b.codc_categ=c.codc_categ
               where 
