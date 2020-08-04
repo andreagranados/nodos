@@ -1,4 +1,5 @@
 <?php
+require_once 'consultas_mapuche.php';
 class dt_cargo extends toba_datos_tabla
 {
      function get_subrogancias(){
@@ -406,6 +407,77 @@ class dt_cargo extends toba_datos_tabla
    function abrir($id_cargo){//elimina el cargo o los cargos generados por el pase
        $sql="update cargo set fec_baja=null where id_cargo=".$id_cargo;
        toba::db('nodos')->consultar($sql);
+   }
+   function get_comparacion(){
+       $actual=date("Y-m-d");
+       $mes=  date("m"); 
+       $anio=  date("Y"); 
+       $pdia=$anio."-".$mes."-"."01";
+       if($mes=="01" or $mes=="03" or $mes=="05" or $mes=="07" or $mes=="08" or $mes=="10" or $mes=="12"){
+           $udia=$anio."-".$mes."-"."31";
+       }else{if($mes=="04" or $mes="06" or $mes=="09" or $mes=="11"     ){
+           $udia=$anio."-".$mes."-"."30";
+            }
+            else {
+                $udia=$anio."-".$mes."-"."28";
+            }
+       }
+        //recupero los cargos de mapuche de ese periodo y esa ua
+        $datos_mapuche = consultas_mapuche::get_cargos($udia,$pdia);
+        $sql="CREATE LOCAL TEMP TABLE mapu
+            (       
+              codc_uacad	character(4),
+              legajo		integer,  
+              apellido 		character(30),
+              nombre 		character(30),
+              estado		character(1),
+              fec_alta 		date,
+              fec_baja 		date,
+              codc_carac 		character(4),
+              codc_categ 		character(4),
+              codc_agrup 		character(4),
+              chkstopliq 		integer NOT NULL DEFAULT 0,
+              categsub		character(4)
+
+              );";
+
+        toba::db('nodos')->consultar($sql);
+        foreach ($datos_mapuche as $valor) {
+            if(isset($valor['fec_baja'])){
+                $baja="'".$valor['fec_baja']."'";
+            }else{
+                $baja="null";
+            }
+            if(isset($valor['categsub'])){
+                $catsub="'".$valor['categsub']."'";
+            }else{
+                $catsub="null";
+            }
+            $sql=" insert into mapu values ('".$valor['codc_uacad']."',".$filtro['nro_legaj']['valor'].",'".$valor['desc_appat']."','".$valor['desc_nombr']."','". $valor['tipo_estad']."','".$valor['fec_alta']."',".$baja.",'".$valor['codc_carac']."','".$valor['codc_categ']."','".$valor['codc_agrup']."',".$valor['chkstopliq'].",".$catsub.")";
+
+            toba::db('nodos')->consultar($sql);
+        }
+          //------------------------------------------------------
+        
+        $sql="select sub.* from (
+                select apellido||', '||nombre as agente,p.legajo,p.estado,c.codc_categ,c.codc_carac,c.codc_agrup,c.fec_alta,c.fec_baja,s.categ as categsub,c.chkstopliq,n.desc_abrev as ua
+                from cargo c 
+                inner join persona p on c.id_persona=p.id_persona
+                left outer join (select s.id_cargo,max(desde) as desde 
+                                 from subroga s
+                                 where s.desde <='".$udia."'  and (s.hasta>='".$pdia."' or s.hasta is null)
+                                 group by s.id_cargo    )sub2 on (sub2.id_cargo=c.id_cargo)
+                left outer join (select s.id_cargo,s.desde,s.categ  from subroga s
+                                where s.desde <='".$udia."'  and (s.hasta>='".$pdia."' or s.hasta is null) )s 
+                                on (sub2.id_cargo=s.id_cargo and sub2.desde=s.desde)                 
+                left outer join nodo n on (c.pertenece_a=n.id_nodo)
+                left outer join novedad no on (no.id_cargo=c.id_cargo and no.desde <='".$udia."' and (no.hasta>='".$actual."' or no.hasta is null))
+                where c.fec_alta <='".$udia."' and (c.fec_baja>='".$pdia."' or c.fec_baja is null)
+                --and c.chkstopliq=0
+                --and no.id_novedad is null
+                )sub
+                full outer join mapu subm on (sub.legajo=subm.legajo)";
+        return toba::db('nodos')->consultar($sql);;
    }
 }
 
