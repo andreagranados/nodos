@@ -13,7 +13,7 @@ class consultas_mapuche
               where 
                c.tipo_escal='N'
               and b.fec_alta <='".$udia."'  and (b.fec_baja>='".$pdia."'  or b.fec_baja is null)
-              and (b.codc_categ='01' or b.codc_categ='02' or b.codc_categ='03' or b.codc_categ='04' or b.codc_categ='05' or b.codc_categ='06' or b.codc_categ='07' )
+              and (b.codc_categ='01' or b.codc_categ='02' or b.codc_categ='03' or b.codc_categ='04' or b.codc_categ='05' or b.codc_categ='06' or b.codc_categ='07' or b.codc_categ='CONT')
 
               --no tiene licencia no remunerada en julio 
               and not exists (select * from  mapuche.dh05 l,mapuche.dl02 m 

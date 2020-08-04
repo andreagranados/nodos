@@ -461,21 +461,25 @@ class dt_cargo extends toba_datos_tabla
         
         $sql="select sub.*,subm.apellido||', '||subm.nombre as agentem,subm.legajo as legajom,subm.estado as estadom,subm.codc_categ as codc_categm,subm.fec_alta as fec_altam,subm.fec_baja as fec_bajam,subm.chkstopliq as chkstopliqm,subm.codc_uacad as uam,subm.categsub as categsubm
               from (
-                select apellido||', '||nombre as agente,p.legajo,p.estado,c.codc_categ,c.codc_carac,c.codc_agrup,c.fec_alta,c.fec_baja,s.categ as categsub,c.chkstopliq,n.desc_abrev as ua
-                from cargo c 
-                inner join persona p on c.id_persona=p.id_persona
-                left outer join (select s.id_cargo,max(desde) as desde 
-                                 from subroga s
-                                 where s.desde <='".$udia."'  and (s.hasta>='".$pdia."' or s.hasta is null)
-                                 group by s.id_cargo    )sub2 on (sub2.id_cargo=c.id_cargo)
-                left outer join (select s.id_cargo,s.desde,s.categ  from subroga s
-                                where s.desde <='".$udia."'  and (s.hasta>='".$pdia."' or s.hasta is null) )s 
-                                on (sub2.id_cargo=s.id_cargo and sub2.desde=s.desde)                 
-                left outer join nodo n on (c.pertenece_a=n.id_nodo)
-                left outer join novedad no on (no.id_cargo=c.id_cargo and no.desde <='".$udia."' and (no.hasta>='".$actual."' or no.hasta is null))
-                where c.fec_alta <='".$udia."' and (c.fec_baja>='".$pdia."' or c.fec_baja is null)
-                --and c.chkstopliq=0
-                --and no.id_novedad is null
+                select apellido,nombre,p.legajo,cc.codc_categ,s.categ,n.descripcion
+                   from (select id_persona,max(fec_alta) as alta 
+                           from cargo
+                           where fec_alta <='".$udia."' and (fec_baja>='".$pdia."' or fec_baja is null)
+                           group by id_persona
+                          )c 
+                    inner join cargo cc on (c.id_persona=cc.id_persona and c.alta=cc.fec_alta)
+                    inner join persona p on cc.id_persona=p.id_persona
+
+                    left outer join (select s.id_cargo,max(desde) as desde from subroga s
+                                                        where 
+                                                        s.desde <='".$udia."' and (s.hasta>='".$pdia."' or s.hasta is null)
+                                                        group by s.id_cargo    )sub2 on (sub2.id_cargo=cc.id_cargo)
+                    left outer join (select s.id_cargo,s.desde,s.categ  from subroga s
+                                                        where
+                                                        s.desde <='".$udia."' and (s.hasta>='".$pdia."' or s.hasta is null) )s on (sub2.id_cargo=s.id_cargo and sub2.desde=s.desde)                 
+                    left outer join nodo n on (cc.pertenece_a=n.id_nodo)
+                    left outer join novedad no on (no.id_cargo=cc.id_cargo and no.desde <='".$udia."' and (no.hasta>='".$actual."' or no.hasta is null))
+                    order by apellido,nombre
                 )sub
                 full outer join mapu subm on (sub.legajo=subm.legajo)";
         return toba::db('nodos')->consultar($sql);;
