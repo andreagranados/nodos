@@ -453,7 +453,7 @@ class dt_cargo extends toba_datos_tabla
             }else{
                 $catsub="null";
             }
-            $sql=" insert into mapu values ('".$valor['codc_uacad']."',".$valor['nro_legaj']['valor'].",'".$valor['desc_appat']."','".$valor['desc_nombr']."','". $valor['tipo_estad']."','".$valor['fec_alta']."',".$baja.",'".$valor['codc_carac']."','".$valor['codc_categ']."','".$valor['codc_agrup']."',".$valor['chkstopliq'].",".$catsub.")";
+            $sql=" insert into mapu values ('".$valor['codc_uacad']."',".$valor['nro_legaj'].",'".$valor['desc_appat']."','".$valor['desc_nombr']."','". $valor['tipo_estad']."','".$valor['fec_alta']."',".$baja.",'".$valor['codc_carac']."','".$valor['codc_categ']."','".$valor['codc_agrup']."',".$valor['chkstopliq'].",".$catsub.")";
 
             toba::db('nodos')->consultar($sql);
         }
