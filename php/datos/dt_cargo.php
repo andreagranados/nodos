@@ -459,7 +459,7 @@ class dt_cargo extends toba_datos_tabla
         }
           //------------------------------------------------------
         
-        $sql="select sub.*,subm.apellido||', '||subm.nombre as agentem,subm.legajo as legajom,subm.estado as estadom,subm.codc_categ as codc_categm,subm.fec_alta as fec_altam,subm.fec_baja as fec_bajam,subm.chkstopliq as chkstopliqm,subm.codc_uacad as uam,subm.categsub as categsubm
+        $sql="select sub.*,subm.apellido||', '||subm.nombre as agentem,subm.legajo as legajom,subm.estado as estadom,subm.codc_categ as codc_categm,subm.codc_carac as codc_caracm,subm.codc_agrupm,subm.fec_alta as fec_altam,subm.fec_baja as fec_bajam,subm.chkstopliq as chkstopliqm,subm.codc_uacad as uam,subm.categsub as categsubm
               from (
                 select apellido||', '||nombre as agente,p.legajo,p.estado,cc.codc_categ,cc.codc_carac,cc.codc_agrup,cc.fec_alta,cc.fec_baja,s.categ as categsub,cc.chkstopliq,n.desc_abrev as ua
                    from (select id_persona,max(fec_alta) as alta 
