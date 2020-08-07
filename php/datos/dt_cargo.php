@@ -412,11 +412,39 @@ class dt_cargo extends toba_datos_tabla
        $where=' where 1=1 ';
        if (isset($filtro['categ'])) {
                     if($filtro['categ']['valor']==1){//igual categ
-                        $where.=" and subm.codc_categm  = sub.codc_categ";
+                        $where.=" and subm.codc_categ  = sub.codc_categ";
                     }else{//distinta categ
-                        $where.=" and subm.codc_categm <> sub.codc_categ";
+                        $where.=" and subm.codc_categ <> sub.codc_categ";
                     }	
                 }
+        if (isset($filtro['categsub'])) {
+            if($filtro['categsub']['valor']==1){//igual categsub
+                $where.=" and subm.categsub  = sub.categsub";
+            }else{//distinta categsub
+                $where.=" and subm.categsub <> sub.categsub";
+            }	
+        }
+        if (isset($filtro['estado'])) {
+            if($filtro['estado']['valor']==1){//igual estado
+                $where.=" and subm.estado  = sub.estado";
+            }else{//distinta estado
+                $where.=" and subm.estado <> sub.estado";
+            }	
+        }
+        if (isset($filtro['check'])) {
+            if($filtro['check']['valor']==1){//igual estado
+                $where.=" and subm.chkstopliq  = sub.chkstopliq";
+            }else{//distinta estado
+                $where.=" and subm.chkstopliq <> sub.chkstopliq";
+            }	
+        }
+        if (isset($filtro['ua'])) {
+            if($filtro['ua']['valor']==1){//igual 
+                $where.=" and subm.codc_uacad  = sub.ua";
+            }else{//distinta 
+                $where.=" and subm.codc_uacad <> sub.ua and subm.codc_uacad<>'RECT '";
+            }	
+        }
        $actual=date("Y-m-d");
        $mes=  date("m"); 
        $anio=  date("Y"); 
