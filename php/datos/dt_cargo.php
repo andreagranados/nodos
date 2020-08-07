@@ -488,7 +488,7 @@ class dt_cargo extends toba_datos_tabla
                     order by apellido,nombre
                 )sub
                 full outer join mapu subm on (sub.legajo=subm.legajo)";
-        return toba::db('nodos')->consultar($sql);;
+        return toba::db('nodos')->consultar($sql);
    }
 }
 
