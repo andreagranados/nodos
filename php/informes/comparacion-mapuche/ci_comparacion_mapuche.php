@@ -2,19 +2,19 @@
 class ci_comparacion_mapuche extends toba_ci
 {
        protected $s__datos_filtro;
-       function conf__filtros_cargo(toba_ei_filtro $filtro)
+       function conf__filtros(toba_ei_filtro $filtro)
 	{
             if (isset($this->s__datos_filtro)) {
 		$filtro->set_datos($this->s__datos_filtro);
             }
 	}
 
-	function evt__filtros_cargo__filtrar($datos)
+	function evt__filtros__filtrar($datos)
 	{
 	    $this->s__datos_filtro = $datos;
         }
 
-	function evt__filtros_cargo__cancelar()
+	function evt__filtros__cancelar()
 	{
 		unset($this->s__datos_filtro);
 	}

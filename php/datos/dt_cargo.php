@@ -410,7 +410,6 @@ class dt_cargo extends toba_datos_tabla
    }
    function get_comparacion($filtro=array()){
        $where=' where 1=1 ';
-       print_r($filtro);
        if (isset($filtro['categ'])) {
                     if($filtro['categ']['valor']==1){//igual categ
                         $where.=" and subm.codc_categm  = sub.codc_categ";
