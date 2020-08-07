@@ -437,7 +437,8 @@ class dt_cargo extends toba_datos_tabla
               codc_categ 		character(4),
               codc_agrup 		character(4),
               chkstopliq 		integer NOT NULL DEFAULT 0,
-              categsub		character(4)
+              categsub		character(4),
+              lsgh              character(4)
 
               );";
 
@@ -453,15 +454,20 @@ class dt_cargo extends toba_datos_tabla
             }else{
                 $catsub="null";
             }
-            $sql=" insert into mapu values ('".$valor['codc_uacad']."',".$valor['nro_legaj'].",'".str_replace('\'','',$valor['desc_appat'])."','".$valor['desc_nombr']."','". $valor['tipo_estad']."','".$valor['fec_alta']."',".$baja.",'".$valor['codc_carac']."','".$valor['codc_categ']."','".$valor['codc_agrup']."',".$valor['chkstopliq'].",".$catsub.")";
+            if(isset($valor['lsgh'])){
+                $lic="'".$valor['lsgh']."'";
+            }else{
+                $lic="null";
+            }
+            $sql=" insert into mapu values ('".$valor['codc_uacad']."',".$valor['nro_legaj'].",'".str_replace('\'','',$valor['desc_appat'])."','".$valor['desc_nombr']."','". $valor['tipo_estad']."','".$valor['fec_alta']."',".$baja.",'".$valor['codc_carac']."','".$valor['codc_categ']."','".$valor['codc_agrup']."',".$valor['chkstopliq'].",".$catsub.",".$lic.")";
 
             toba::db('nodos')->consultar($sql);
         }
           //------------------------------------------------------
         
-        $sql="select sub.*,subm.apellido||', '||subm.nombre as agentem,subm.legajo as legajom,subm.estado as estadom,subm.codc_categ as codc_categm,subm.codc_carac as codc_caracm,subm.codc_agrup as codc_agrupm,subm.fec_alta as fec_altam,subm.fec_baja as fec_bajam,subm.chkstopliq as chkstopliqm,subm.codc_uacad as uam,subm.categsub as categsubm
+        $sql="select sub.*,subm.apellido||', '||subm.nombre as agentem,subm.legajo as legajom,subm.estado as estadom,subm.codc_categ as codc_categm,subm.codc_carac as codc_caracm,subm.codc_agrup as codc_agrupm,subm.fec_alta as fec_altam,subm.fec_baja as fec_bajam,subm.chkstopliq as chkstopliqm,subm.codc_uacad as uam,subm.categsub as categsubm,subm.lic as novem
               from (
-                select apellido||', '||nombre as agente,p.legajo,p.estado,cc.codc_categ,cc.codc_carac,cc.codc_agrup,cc.fec_alta,cc.fec_baja,s.categ as categsub,cc.chkstopliq,n.desc_abrev as ua
+                select apellido||', '||nombre as agente,p.legajo,p.estado,cc.codc_categ,cc.codc_carac,cc.codc_agrup,cc.fec_alta,cc.fec_baja,s.categ as categsub,cc.chkstopliq,n.desc_abrev as ua,no.tipo_nov as nove
                    from (select id_persona,max(fec_alta) as alta 
                            from cargo
                            where fec_alta <='".$udia."' and (fec_baja>='".$pdia."' or fec_baja is null)
