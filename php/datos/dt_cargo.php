@@ -408,7 +408,15 @@ class dt_cargo extends toba_datos_tabla
        $sql="update cargo set fec_baja=null where id_cargo=".$id_cargo;
        toba::db('nodos')->consultar($sql);
    }
-   function get_comparacion(){
+   function get_comparacion($filtro=array()){
+       $where=' where 1=1 ';
+       if (isset($filtro['categ'])) {
+                    if($filtro['categ']['valor']==1){//activo
+                        $where.=" and subm.codc_categm <> sub.codc_categ";
+                    }else{//no activo
+                        $where.=" and subm.codc_categm = sub.codc_categ";
+                    }	
+                }
        $actual=date("Y-m-d");
        $mes=  date("m"); 
        $anio=  date("Y"); 
@@ -487,7 +495,8 @@ class dt_cargo extends toba_datos_tabla
                     left outer join novedad no on (no.id_cargo=cc.id_cargo and no.desde <='".$udia."' and (no.hasta>='".$actual."' or no.hasta is null))
                     order by apellido,nombre
                 )sub
-                full outer join mapu subm on (sub.legajo=subm.legajo)";
+                full outer join mapu subm on (sub.legajo=subm.legajo)
+                $where";
         return toba::db('nodos')->consultar($sql);
    }
 }
