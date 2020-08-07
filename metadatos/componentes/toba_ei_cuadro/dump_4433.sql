@@ -776,9 +776,9 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'nodos', --objeto_cuadro_proyecto
 	'4433', --objeto_cuadro
 	'4689', --objeto_cuadro_col
-	'novem', --clave
+	'lsgh', --clave
 	'23', --orden
-	'NoveM', --titulo
+	'LSGH', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'4', --estilo
 	NULL, --ancho
