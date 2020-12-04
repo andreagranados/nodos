@@ -4,7 +4,7 @@ class consultas_mapuche
 {
  function get_consulta(){
      $sql="select distinct cons.per_liano,cons.per_limes,
-                 cons.nro_cargo,b.codc_uacad, b.codc_categ
+                 cons.nro_cargo,b.codc_uacad, b.codc_categ,b.fec_alta
                 ,h.codn_area,h.codn_subar,cons.nro_legaj,
                   e.desc_appat||', '||e.desc_nombr as nombre,e.nro_cuil1||'-'||e.nro_cuil||'-'||e.nro_cuil2 as cuil,
                   CASE WHEN sub.codc_categ is null THEN b.codc_categ ELSE sub.codc_categ  END as categsub,
@@ -32,7 +32,7 @@ class consultas_mapuche
                 left outer join mapuche.dh18 sub on sub.nro_cargo=b.nro_cargo and (c.fec_ultap<sub.fec_hasta or sub.fec_hasta is null) and c.fec_ultap>sub.fec_desde  
                 where h.codn_fuent=11
                 group by cons.per_liano,cons.per_limes,
-                 cons.nro_cargo,b.codc_uacad, b.codc_categ
+                 cons.nro_cargo,b.codc_uacad, b.codc_categ,b.fec_alta
                 ,h.codn_area,h.codn_subar,cons.nro_legaj,
                   e.desc_appat,e.desc_nombr,e.nro_cuil1,e.nro_cuil,e.nro_cuil2,categsub
                   ";
