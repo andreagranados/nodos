@@ -2,7 +2,41 @@
 
 class consultas_mapuche
 {
-  
+ function get_consulta(){
+     $sql="select distinct cons.per_liano,cons.per_limes,
+                 cons.nro_cargo,b.codc_uacad, b.codc_categ
+                ,h.codn_area,h.codn_subar,cons.nro_legaj,
+                  e.desc_appat||', '||e.desc_nombr as nombre,e.nro_cuil1||'-'||e.nro_cuil||'-'||e.nro_cuil2 as cuil,
+                  CASE WHEN sub.codc_categ is null THEN b.codc_categ ELSE sub.codc_categ  END as categsobra,
+                  sum(case when codn_conce IN (89) then nov1_conce  else 0 end) as catjub,
+                  sum(case when codn_conce IN (-51, -52, -53, -56) then impp_conce  else 0 end) as imp_bruto,
+                  sum(case when codn_conce = -55 then impp_conce else 0 end) as imp_aporte,
+                  sum(case when codn_conce IN (-51, -52, -53, -56, -55) then impp_conce  else 0 end) as imp_total
+                   from  (
+                        select distinct c.per_liano,c.per_limes, a.nro_liqui,a.nro_legaj,b.nro_cargo
+                        from mapuche.dh21h a 
+                        inner join mapuche.dh03 b on (a.nro_cargo=b.nro_cargo)
+                        inner join mapuche.dh22 c on (a.nro_liqui=c.nro_liqui)
+                        where 
+                        codigoescalafon='NODO'
+                        and 
+                                                  c.per_limes in (11) and
+                                                  c.per_liano=2020 and 
+                                                  c.sino_aguin=true and
+                                              a.codn_fuent=11
+                )cons 
+                inner join mapuche.dh21h h on (h.nro_liqui=cons.nro_liqui and h.nro_cargo=cons.nro_cargo)
+                inner join mapuche.dh22 c on (cons.nro_liqui=c.nro_liqui)
+                inner join mapuche.dh03 b on (b.nro_cargo=cons.nro_cargo)
+                inner join mapuche.dh01 e on (cons.nro_legaj=e.nro_legaj)
+                left outer join mapuche.dh18 sub on sub.nro_cargo=b.nro_cargo and (c.fec_ultap<sub.fec_hasta or sub.fec_hasta is null) and c.fec_ultap>sub.fec_desde  
+                where h.codn_fuent=11
+                group by cons.per_liano,cons.per_limes,
+                 cons.nro_cargo,b.codc_uacad, b.codc_categ
+                ,h.codn_area,h.codn_subar,cons.nro_legaj,
+                  e.desc_appat,e.desc_nombr,e.nro_cuil1,e.nro_cuil,e.nro_cuil2,categ";
+     return toba::db('mapuche')->consultar($sql);
+ } 
  //recupero los cargos nodocentes correspondientes al mes
  function get_cargos($udia,$pdia){
 
