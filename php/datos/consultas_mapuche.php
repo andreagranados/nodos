@@ -35,22 +35,20 @@ class consultas_mapuche
                  cons.nro_cargo,b.codc_uacad, b.codc_categ,b.fec_alta
                 ,cons.nro_legaj,e.desc_appat,e.desc_nombr,e.nro_cuil1,e.nro_cuil,e.nro_cuil2,categsub,sub.fec_desde
                   UNION
-                  SELECT * FROM 
-(select distinct sub.nro_cargo,sub.codc_uacad,sub.codc_categ,sub.fec_alta,sub.nro_legaj,sub.nombre,case when l.nro_licencia is not null then 'L' else '' end as lic,f.codc_categ as subroga
+     select distinct sub.nro_cargo,sub.codc_uacad,sub.codc_categ,sub.fec_alta,sub.nro_legaj,sub.nombre,case when l.nro_licencia is not null then 'L' else '' end as lic,f.codc_categ as subroga
 ,f.fec_desde, 8,8,8,8
 from 
 (select b.desc_appat||','||b.desc_nombr as nombre,b.nro_legaj,a.nro_cargo,a.codc_categ,a.fec_alta,a.codc_uacad ,a.chkstopliq
 from mapuche.dh03 a, mapuche.dh01 b, mapuche.dh11 c
 where a.fec_alta <= '2020-12-31' and (a.fec_baja >= '2020-12-01' or a.fec_baja is null)
 and a.nro_legaj=b.nro_legaj
-and c.codc_categ=a.codc_categ) sub
+and c.codc_categ=a.codc_categ
+and tipo_escal='N'
+and tipo_estad<>'P') sub
 left outer join mapuche.dh18 f on (sub.nro_cargo=f.nro_cargo and (f.fec_hasta>'2020-12-04' or f.fec_hasta is null))
 left outer join mapuche.dh05 l on ((sub.nro_cargo=l.nro_cargo or sub.nro_legaj=l.nro_legaj ) and l.fec_desde <= '2020-12-31' and (l.fec_hasta >= '2020-12-01' or l.fec_hasta is null))
 left outer join mapuche.dl02 m on ( l.nrovarlicencia = m.nrovarlicencia and m.es_remunerada=false )
-)
-SUB
-WHERE tipo_escal='N'
-and e.tipo_estad<>'P'
+
 ";
      return toba::db('mapuche')->consultar($sql);
  } 
