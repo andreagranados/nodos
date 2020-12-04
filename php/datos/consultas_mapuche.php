@@ -7,7 +7,7 @@ class consultas_mapuche
                  cons.nro_cargo,b.codc_uacad, b.codc_categ
                 ,h.codn_area,h.codn_subar,cons.nro_legaj,
                   e.desc_appat||', '||e.desc_nombr as nombre,e.nro_cuil1||'-'||e.nro_cuil||'-'||e.nro_cuil2 as cuil,
-                  CASE WHEN sub.codc_categ is null THEN b.codc_categ ELSE sub.codc_categ  END as categsobra,
+                  CASE WHEN sub.codc_categ is null THEN b.codc_categ ELSE sub.codc_categ  END as categsub,
                   sum(case when codn_conce IN (89) then nov1_conce  else 0 end) as catjub,
                   sum(case when codn_conce IN (-51, -52, -53, -56) then impp_conce  else 0 end) as imp_bruto,
                   sum(case when codn_conce = -55 then impp_conce else 0 end) as imp_aporte,
@@ -34,7 +34,7 @@ class consultas_mapuche
                 group by cons.per_liano,cons.per_limes,
                  cons.nro_cargo,b.codc_uacad, b.codc_categ
                 ,h.codn_area,h.codn_subar,cons.nro_legaj,
-                  e.desc_appat,e.desc_nombr,e.nro_cuil1,e.nro_cuil,e.nro_cuil2,categ";
+                  e.desc_appat,e.desc_nombr,e.nro_cuil1,e.nro_cuil,e.nro_cuil2,categsub";
      return toba::db('mapuche')->consultar($sql);
  } 
  //recupero los cargos nodocentes correspondientes al mes
