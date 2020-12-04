@@ -51,7 +51,7 @@ order by desc_appat,nro_legaj)
 SUB
 WHERE tipo_escal='N'
 and e.tipo_estad<>'P'
-order by desc_appat,desc_nombr";
+";
      return toba::db('mapuche')->consultar($sql);
  } 
  //recupero los cargos nodocentes correspondientes al mes
