@@ -280,7 +280,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'nodos', --objeto_cuadro_proyecto
 	'4444', --objeto_cuadro
 	'4721', --objeto_cuadro_col
-	'categsobra', --clave
+	'categsub', --clave
 	'7', --orden
 	'categsobra', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
