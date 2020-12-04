@@ -3,11 +3,11 @@
 class consultas_mapuche
 {
  function get_consulta(){
-     $sql="select distinct cons.per_liano,cons.per_limes,
+     $sql="select distinct 
                  cons.nro_cargo,b.codc_uacad, b.codc_categ,b.fec_alta
-                ,h.codn_area,h.codn_subar,cons.nro_legaj,
+                ,cons.nro_legaj,
                   e.desc_appat||', '||e.desc_nombr as nombre,e.nro_cuil1||'-'||e.nro_cuil||'-'||e.nro_cuil2 as cuil,
-                  CASE WHEN sub.codc_categ is null THEN b.codc_categ ELSE sub.codc_categ  END as categsub,sub.fec_desde,
+                  sub.codc_categ as categsub,sub.fec_desde,
                   sum(case when codn_conce IN (89) then nov1_conce  else 0 end) as catjub,
                   sum(case when codn_conce IN (-51, -52, -53, -56) then impp_conce  else 0 end) as imp_bruto,
                   sum(case when codn_conce = -55 then impp_conce else 0 end) as imp_aporte,
@@ -31,11 +31,27 @@ class consultas_mapuche
                 inner join mapuche.dh01 e on (cons.nro_legaj=e.nro_legaj)
                 left outer join mapuche.dh18 sub on sub.nro_cargo=b.nro_cargo and (c.fec_ultap<sub.fec_hasta or sub.fec_hasta is null) and c.fec_ultap>sub.fec_desde  
                 where h.codn_fuent=11
-                group by cons.per_liano,cons.per_limes,
+                group by 
                  cons.nro_cargo,b.codc_uacad, b.codc_categ,b.fec_alta
-                ,h.codn_area,h.codn_subar,cons.nro_legaj,
-                  e.desc_appat,e.desc_nombr,e.nro_cuil1,e.nro_cuil,e.nro_cuil2,categsub,sub.fec_desde
-                  ";
+                ,cons.nro_legaj,e.desc_appat,e.desc_nombr,e.nro_cuil1,e.nro_cuil,e.nro_cuil2,categsub,sub.fec_desde
+                  UNION
+                  SELECT * FROM 
+(select distinct a.nro_cargo,a.codc_uacad,a.codc_categ,a.fec_alta,sub.nro_legaj,sub.nombre,case when l.nro_licencia is not null then 'L' else '' end as lic,f.codc_categ as subroga
+,f.fec_desde, 8,8,8,8
+from 
+(select b.desc_appat||','||b.desc_nombr as nombre,b.nro_legaj,a.nro_cargo,a.codc_categ,a.fec_alta,a.codc_uacad ,a.chkstopliq
+from mapuche.dh03 a, mapuche.dh01 b, mapuche.dh11 c
+where a.fec_alta <= '2020-12-31' and (a.fec_baja >= '2020-12-01' or a.fec_baja is null)
+and a.nro_legaj=b.nro_legaj
+and c.codc_categ=a.codc_categ) sub
+left outer join mapuche.dh18 f on (sub.nro_cargo=f.nro_cargo and (f.fec_hasta>'2020-12-04' or f.fec_hasta is null))
+left outer join mapuche.dh05 l on ((sub.nro_cargo=l.nro_cargo or sub.nro_legaj=l.nro_legaj ) and l.fec_desde <= '2020-12-31' and (l.fec_hasta >= '2020-12-01' or l.fec_hasta is null))
+left outer join mapuche.dl02 m on ( l.nrovarlicencia = m.nrovarlicencia and m.es_remunerada=false )
+order by desc_appat,nro_legaj)
+SUB
+WHERE tipo_escal='N'
+and e.tipo_estad<>'P'
+order by desc_appat,desc_nombr";
      return toba::db('mapuche')->consultar($sql);
  } 
  //recupero los cargos nodocentes correspondientes al mes
