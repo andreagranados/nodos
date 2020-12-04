@@ -35,7 +35,7 @@ class consultas_mapuche
                  cons.nro_cargo,b.codc_uacad, b.codc_categ
                 ,h.codn_area,h.codn_subar,cons.nro_legaj,
                   e.desc_appat,e.desc_nombr,e.nro_cuil1,e.nro_cuil,e.nro_cuil2,categsub
-                  order by b.codc_uacad,e.desc_appat,e.desc_nombr";
+                  ";
      return toba::db('mapuche')->consultar($sql);
  } 
  //recupero los cargos nodocentes correspondientes al mes
