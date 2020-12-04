@@ -36,7 +36,7 @@ class consultas_mapuche
                 ,cons.nro_legaj,e.desc_appat,e.desc_nombr,e.nro_cuil1,e.nro_cuil,e.nro_cuil2,categsub,sub.fec_desde
                   UNION
                   SELECT * FROM 
-(select distinct a.nro_cargo,a.codc_uacad,a.codc_categ,a.fec_alta,sub.nro_legaj,sub.nombre,case when l.nro_licencia is not null then 'L' else '' end as lic,f.codc_categ as subroga
+(select distinct sub.nro_cargo,sub.codc_uacad,sub.codc_categ,sub.fec_alta,sub.nro_legaj,sub.nombre,case when l.nro_licencia is not null then 'L' else '' end as lic,f.codc_categ as subroga
 ,f.fec_desde, 8,8,8,8
 from 
 (select b.desc_appat||','||b.desc_nombr as nombre,b.nro_legaj,a.nro_cargo,a.codc_categ,a.fec_alta,a.codc_uacad ,a.chkstopliq
