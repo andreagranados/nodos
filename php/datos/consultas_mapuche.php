@@ -46,8 +46,8 @@ and c.codc_categ=a.codc_categ
 and tipo_escal='N'
 and tipo_estad<>'P') sub
 left outer join mapuche.dh18 f on (sub.nro_cargo=f.nro_cargo and (f.fec_hasta>'2021-02-11' or f.fec_hasta is null))
-left outer join mapuche.dh05 l on ((sub.nro_cargo=l.nro_cargo or sub.nro_legaj=l.nro_legaj ) and l.fec_desde <= '2021-02-28' and (l.fec_hasta >= '2021-02-01' or l.fec_hasta is null))
-left outer join mapuche.dl02 m on ( l.nrovarlicencia = m.nrovarlicencia and m.es_remunerada=false )
+inner join mapuche.dh05 l on ((sub.nro_cargo=l.nro_cargo or sub.nro_legaj=l.nro_legaj ) and l.fec_desde <= '2021-02-28' and (l.fec_hasta >= '2021-02-01' or l.fec_hasta is null))
+inner join mapuche.dl02 m on ( l.nrovarlicencia = m.nrovarlicencia and m.es_remunerada=false )
 
 ";
      return toba::db('mapuche')->consultar($sql);
