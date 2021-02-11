@@ -20,8 +20,8 @@ class consultas_mapuche
                         where 
                         codigoescalafon='NODO'
                         and 
-                                                  c.per_limes in (11) and
-                                                  c.per_liano=2020 and 
+                                                  c.per_limes in (1) and
+                                                  c.per_liano=2021 and 
                                                   c.sino_aguin=true and
                                               a.codn_fuent=11
                 )cons 
@@ -40,13 +40,13 @@ class consultas_mapuche
 from 
 (select b.desc_appat||','||b.desc_nombr as nombre,b.nro_legaj,a.nro_cargo,a.codc_categ,a.fec_alta,a.codc_uacad ,a.chkstopliq
 from mapuche.dh03 a, mapuche.dh01 b, mapuche.dh11 c
-where a.fec_alta <= '2020-12-31' and (a.fec_baja >= '2020-12-01' or a.fec_baja is null)
+where a.fec_alta <= '2021-02-28' and (a.fec_baja >= '2021-02-01' or a.fec_baja is null)
 and a.nro_legaj=b.nro_legaj
 and c.codc_categ=a.codc_categ
 and tipo_escal='N'
 and tipo_estad<>'P') sub
-left outer join mapuche.dh18 f on (sub.nro_cargo=f.nro_cargo and (f.fec_hasta>'2020-12-04' or f.fec_hasta is null))
-left outer join mapuche.dh05 l on ((sub.nro_cargo=l.nro_cargo or sub.nro_legaj=l.nro_legaj ) and l.fec_desde <= '2020-12-31' and (l.fec_hasta >= '2020-12-01' or l.fec_hasta is null))
+left outer join mapuche.dh18 f on (sub.nro_cargo=f.nro_cargo and (f.fec_hasta>'2021-02-11' or f.fec_hasta is null))
+left outer join mapuche.dh05 l on ((sub.nro_cargo=l.nro_cargo or sub.nro_legaj=l.nro_legaj ) and l.fec_desde <= '2021-02-28' and (l.fec_hasta >= '2021-02-01' or l.fec_hasta is null))
 left outer join mapuche.dl02 m on ( l.nrovarlicencia = m.nrovarlicencia and m.es_remunerada=false )
 
 ";
