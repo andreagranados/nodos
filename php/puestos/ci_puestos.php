@@ -39,7 +39,6 @@ class ci_puestos extends nodos_ci
            if($res!=''){
                $this->pantalla('pant_inicial')->agregar_notificacion('Los siguientes puestos tienen superposicion de cargos: '.$res,'error');    
            }
-           
 	}
 
 	
