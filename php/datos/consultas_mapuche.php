@@ -20,35 +20,35 @@ class consultas_mapuche
                         where 
                         codigoescalafon='NODO'
                         and 
-                                                  c.per_limes in (1) and
-                                                  c.per_liano=2021 and 
+                                                  c.per_limes in (8) and
+                                                  c.per_liano=2022 and 
                                                   c.sino_aguin=true and
                                               a.codn_fuent=11
-                )cons 
-                inner join mapuche.dh21h h on (h.nro_liqui=cons.nro_liqui and h.nro_cargo=cons.nro_cargo)
-                inner join mapuche.dh22 c on (cons.nro_liqui=c.nro_liqui)
-                inner join mapuche.dh03 b on (b.nro_cargo=cons.nro_cargo)
-                inner join mapuche.dh01 e on (cons.nro_legaj=e.nro_legaj)
-                left outer join mapuche.dh18 sub on sub.nro_cargo=b.nro_cargo and (c.fec_ultap<sub.fec_hasta or sub.fec_hasta is null) and c.fec_ultap>sub.fec_desde  
-                where h.codn_fuent=11
-                group by 
-                 cons.nro_cargo,b.codc_uacad, b.codc_categ,b.fec_alta
-                ,cons.nro_legaj,e.desc_appat,e.desc_nombr,e.nro_cuil1,e.nro_cuil,e.nro_cuil2,categsub,sub.fec_desde
+                    )cons 
+                    inner join mapuche.dh21h h on (h.nro_liqui=cons.nro_liqui and h.nro_cargo=cons.nro_cargo)
+                    inner join mapuche.dh22 c on (cons.nro_liqui=c.nro_liqui)
+                    inner join mapuche.dh03 b on (b.nro_cargo=cons.nro_cargo)
+                    inner join mapuche.dh01 e on (cons.nro_legaj=e.nro_legaj)
+                    left outer join mapuche.dh18 sub on sub.nro_cargo=b.nro_cargo and (c.fec_ultap<sub.fec_hasta or sub.fec_hasta is null) and c.fec_ultap>sub.fec_desde  
+                    where h.codn_fuent=11
+                    group by 
+                     cons.nro_cargo,b.codc_uacad, b.codc_categ,b.fec_alta
+                    ,cons.nro_legaj,e.desc_appat,e.desc_nombr,e.nro_cuil1,e.nro_cuil,e.nro_cuil2,categsub,sub.fec_desde
                   UNION
-     select distinct sub.nro_cargo,sub.codc_uacad,sub.codc_categ,sub.fec_alta,sub.nro_legaj,sub.nombre,case when l.nro_licencia is not null then 'L' else '' end as lic,f.codc_categ as subroga
-,f.fec_desde, 8,8,8,8
-from 
-(select b.desc_appat||','||b.desc_nombr as nombre,b.nro_legaj,a.nro_cargo,a.codc_categ,a.fec_alta,a.codc_uacad ,a.chkstopliq
-from mapuche.dh03 a, mapuche.dh01 b, mapuche.dh11 c
-where a.fec_alta <= '2021-02-28' and (a.fec_baja >= '2021-02-01' or a.fec_baja is null)
-and a.nro_legaj=b.nro_legaj
-and c.codc_categ=a.codc_categ
-and tipo_escal='N'
-and tipo_estad<>'P') sub
-left outer join mapuche.dh18 f on (sub.nro_cargo=f.nro_cargo and (f.fec_hasta>'2021-02-11' or f.fec_hasta is null))
-inner join mapuche.dh05 l on ((sub.nro_cargo=l.nro_cargo or sub.nro_legaj=l.nro_legaj ) and l.fec_desde <= '2021-02-28' and (l.fec_hasta >= '2021-02-01' or l.fec_hasta is null))
+                  select distinct sub.nro_cargo,sub.codc_uacad,sub.codc_categ,sub.fec_alta,sub.nro_legaj,sub.nombre,case when l.nro_licencia is not null then 'L' else '' end as lic,f.codc_categ as subroga
+                  ,f.fec_desde, 8,8,8,8
+                  from 
+                  (select b.desc_appat||','||b.desc_nombr as nombre,b.nro_legaj,a.nro_cargo,a.codc_categ,a.fec_alta,a.codc_uacad ,a.chkstopliq
+                  from mapuche.dh03 a, mapuche.dh01 b, mapuche.dh11 c
+                  where a.fec_alta <= '2022-08-31' and (a.fec_baja >= '2022-08-01' or a.fec_baja is null)
+                  and a.nro_legaj=b.nro_legaj
+                  and c.codc_categ=a.codc_categ
+                  and tipo_escal='N'
+                  and tipo_estad<>'P'
+                  ) sub
+left outer join mapuche.dh18 f on (sub.nro_cargo=f.nro_cargo and (f.fec_hasta>'2022-09-16' or f.fec_hasta is null))
+inner join mapuche.dh05 l on ((sub.nro_cargo=l.nro_cargo or sub.nro_legaj=l.nro_legaj ) and l.fec_desde <= '2022-08-31' and (l.fec_hasta >= '2022-08-01' or l.fec_hasta is null))
 inner join mapuche.dl02 m on ( l.nrovarlicencia = m.nrovarlicencia and m.es_remunerada=false )
-
 ";
      return toba::db('mapuche')->consultar($sql);
  } 
