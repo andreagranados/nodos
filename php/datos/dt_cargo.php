@@ -178,9 +178,9 @@ class dt_cargo extends toba_datos_tabla
                 toba::db('nodos')->consultar($sql);
                 $sql="select depende_de(".$id_nodo.");";
                 toba::db('nodos')->consultar($sql);
-                
-                $where1=" WHERE (p.pertenece_a=".$id_nodo." or p.pertenece_a in (select id_nodo from auxiliar)"
-                        . " or c.pertenece_a=".$id_nodo. " or c.pertenece_a in (select id_nodo from auxiliar))";
+                $where1=" WHERE (p.pertenece_a=".$id_nodo." or p.pertenece_a in (select id_nodo from auxiliar))";
+                //$where1=" WHERE (p.pertenece_a=".$id_nodo." or p.pertenece_a in (select id_nodo from auxiliar)"
+                 //       . " or c.pertenece_a=".$id_nodo. " or c.pertenece_a in (select id_nodo from auxiliar))";
                 $where2=" and (c.pertenece_a=".$id_nodo." or c.pertenece_a in (select id_nodo from auxiliar))";
                 $where3=" WHERE (c.pertenece_a=".$id_nodo." or c.pertenece_a in (select id_nodo from auxiliar))";
                 

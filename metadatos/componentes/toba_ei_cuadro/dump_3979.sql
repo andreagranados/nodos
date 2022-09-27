@@ -468,7 +468,7 @@ INSERT INTO apex_objeto_ei_cuadro_columna (objeto_cuadro_proyecto, objeto_cuadro
 	'3952', --objeto_cuadro_col
 	'dep', --clave
 	'1', --orden
-	'Dep', --titulo
+	'Dep Cargo', --titulo
 	'ei-cuadro-col-tit', --estilo_titulo
 	'4', --estilo
 	NULL, --ancho

@@ -9,7 +9,7 @@ INSERT INTO apex_fuente_datos (proyecto, fuente_datos, descripcion, descripcion_
 	NULL, --descripcion_corta
 	NULL, --fuente_datos_motor
 	NULL, --host
-	NULL, --punto_montaje
+	'24', --punto_montaje
 	NULL, --subclase_archivo
 	NULL, --subclase_nombre
 	NULL, --orden
@@ -17,7 +17,7 @@ INSERT INTO apex_fuente_datos (proyecto, fuente_datos, descripcion, descripcion_
 	NULL, --instancia_id
 	NULL, --administrador
 	NULL, --link_instancia
-	'0', --tiene_auditoria
+	'1', --tiene_auditoria
 	'0', --parsea_errores
 	'0', --permisos_por_tabla
 	NULL, --usuario
@@ -31,7 +31,7 @@ INSERT INTO apex_fuente_datos (proyecto, fuente_datos, descripcion, descripcion_
 	'nodos', --descripcion_corta
 	'postgres7', --fuente_datos_motor
 	NULL, --host
-	NULL, --punto_montaje
+	'24', --punto_montaje
 	NULL, --subclase_archivo
 	NULL, --subclase_nombre
 	NULL, --orden
