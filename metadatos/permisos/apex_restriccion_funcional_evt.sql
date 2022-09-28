@@ -219,3 +219,24 @@ INSERT INTO apex_restriccion_funcional_evt (proyecto, restriccion_funcional, ite
 	'3191', --evento_id
 	'1'  --no_visible
 );
+INSERT INTO apex_restriccion_funcional_evt (proyecto, restriccion_funcional, item, evento_id, no_visible) VALUES (
+	'nodos', --proyecto
+	'62', --restriccion_funcional
+	'3763', --item
+	'3141', --evento_id
+	'1'  --no_visible
+);
+INSERT INTO apex_restriccion_funcional_evt (proyecto, restriccion_funcional, item, evento_id, no_visible) VALUES (
+	'nodos', --proyecto
+	'62', --restriccion_funcional
+	'3763', --item
+	'3144', --evento_id
+	'1'  --no_visible
+);
+INSERT INTO apex_restriccion_funcional_evt (proyecto, restriccion_funcional, item, evento_id, no_visible) VALUES (
+	'nodos', --proyecto
+	'62', --restriccion_funcional
+	'3763', --item
+	'3147', --evento_id
+	'1'  --no_visible
+);

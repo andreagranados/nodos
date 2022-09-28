@@ -22,4 +22,10 @@ INSERT INTO apex_restriccion_funcional (proyecto, restriccion_funcional, descrip
 	'no_edita_puesto', --descripcion
 	'0'  --permite_edicion
 );
+INSERT INTO apex_restriccion_funcional (proyecto, restriccion_funcional, descripcion, permite_edicion) VALUES (
+	'nodos', --proyecto
+	'62', --restriccion_funcional
+	'no_edita_arbol', --descripcion
+	'0'  --permite_edicion
+);
 --- FIN Grupo de desarrollo 0

@@ -122,28 +122,46 @@ class dt_puesto extends toba_datos_tabla
                     }
             }
             $sql2=dt_cargo::armar_consulta();
-            $sql2="select origen_de(id_nodo)as nodo,sum(gastotot) as gasto,sum(credito-gastotot) as saldo from ("
-               . "select *,case when gasto>0 then gasto+difer else 0 end as gastotot from ("
-               . "select *,case when puesto='A' or puesto='P' or puesto='V' or puesto='D' then costo_basico_p else 0 end as credito ,"
-               //. " case when ((puesto='A' and pase is null) or puesto ='') then costo_basico else 0 end as gasto"
-                    ." case when (puesto='A' or (puesto ='' or puesto is null)) and pase is null and tipo_nov is null and (chkstopliq=0 or chkstopliq is null) and estado<>'P'  then costo_basico else 0 end as gasto"
-               . " from (".$sql2.") sub"
-               .") sub2"
-               . ") sub3 group by nodo";
+            $sql2="select sub4.*,descripcion from (".
+                    "select origen_de(id_nodo)as nodo,sum(gastotot) as gasto,sum(credito-gastotot) as saldo "
+                    . " from ("
+                            . "select *,case when gasto>0 then gasto+difer else 0 end as gastotot "
+                            . " from ("
+                            . " select *,case when puesto='A' or puesto='P' or puesto='V' or puesto='D' then costo_basico_p else 0 end as credito ,"
+                            //. " case when ((puesto='A' and pase is null) or puesto ='') then costo_basico else 0 end as gasto"
+                            .  " case when (puesto='A' or (puesto ='' or puesto is null)) and pase is null and tipo_nov is null and (chkstopliq=0 or chkstopliq is null) and estado<>'P'  then costo_basico else 0 end as gasto"
+                            . " from (".$sql2.") sub"
+                            .") sub2"
+                    . ") sub3 "
+                    . " group by nodo )sub4"
+                    . " left outer join nodo n on (n.id_nodo=sub4.nodo)";
+                    
+                    
            // print_r($sql2);exit;
-            $sql="select * from (
+//            $sql="select * from (
+//                    select n.descripcion as nodod, p.pertenece_a,sum(cos.costo_basico) as credito
+//                    from puesto p
+//                    left outer join (select sub.*,cc.costo_basico from 
+//				(select codigo_categ,max(desde) as desde from costo_categoria
+//                                 group by codigo_categ)sub
+//                                 left outer join costo_categoria cc on (cc.codigo_categ=sub.codigo_categ and cc.desde=sub.desde ))cos 
+//                            on (p.categ=cos.codigo_categ)
+//                    left outer join nodo n on (p.pertenece_a=n.id_nodo)                            
+//                    group by n.descripcion,p.pertenece_a)sub1
+//                    left outer join (".$sql2.")sub3 on (sub3.nodo=sub1.pertenece_a)
+//                    order by nodod";
+             $sql="select case when nodod is null then sub3.descripcion else nodod end as nodod,credito,gasto,saldo from (
                     select n.descripcion as nodod, p.pertenece_a,sum(cos.costo_basico) as credito
                     from puesto p
                     left outer join (select sub.*,cc.costo_basico from 
 				(select codigo_categ,max(desde) as desde from costo_categoria
                                  group by codigo_categ)sub
-                                 left outer join costo_categoria cc on (cc.codigo_categ=sub.codigo_categ and cc.desde=sub.desde ))cos 
-                            on (p.categ=cos.codigo_categ)
+                                 left outer join costo_categoria cc on (cc.codigo_categ=sub.codigo_categ and cc.desde=sub.desde )
+                                 )cos on (p.categ=cos.codigo_categ)
                     left outer join nodo n on (p.pertenece_a=n.id_nodo)                            
                     group by n.descripcion,p.pertenece_a)sub1
-                    left outer join (".$sql2.")sub3 on (sub3.nodo=sub1.pertenece_a)
+                    full outer join (".$sql2.")sub3 on (sub3.nodo=sub1.pertenece_a)
                     order by nodod";
- 
             return toba::db('nodos')->consultar($sql);
         }
         //quienes ocupan el puesto

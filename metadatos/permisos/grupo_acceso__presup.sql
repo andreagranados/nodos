@@ -92,3 +92,8 @@ INSERT INTO apex_grupo_acc_restriccion_funcional (proyecto, usuario_grupo_acc, r
 	'presup', --usuario_grupo_acc
 	'61'  --restriccion_funcional
 );
+INSERT INTO apex_grupo_acc_restriccion_funcional (proyecto, usuario_grupo_acc, restriccion_funcional) VALUES (
+	'nodos', --proyecto
+	'presup', --usuario_grupo_acc
+	'62'  --restriccion_funcional
+);
