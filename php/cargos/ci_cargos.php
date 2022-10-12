@@ -36,6 +36,9 @@ class ci_cargos extends nodos_ci
             if (isset($this->s__datos_filtro)) {
                 $cuadro->set_datos($this->dep('datos')->tabla('cargo')->get_listado2($this->s__datos_filtro)); 
              }
+//            if (isset($this->s__where)) {
+//                $cuadro->set_datos($this->dep('datos')->tabla('cargo')->get_listado2($this->s__where)); 
+//             }
 	}
 
 	

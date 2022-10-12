@@ -44,16 +44,27 @@ class dt_subroga extends toba_datos_tabla
            $where.=" and (id_nodo=".$filtro['id_nodo']['valor']." or id_nodo in (select id_nodo from auxiliar)) ";
            
 		}
-        if (isset($filtro['categ'])) {
-            $where.=" and categ='".$filtro['categ']['valor']."'";
+        //subroga
+        if (isset($filtro['categ']['valor'])) {
+             switch ($filtro['categ']['condicion']) {
+                    case 'es_distinto_de':$where.=" and categ  !='".$filtro['categ']['valor']."'";break;
+                    case 'es_igual_a':$where.=" and categ = '".$filtro['categ']['valor']."'";break;
+                }
             
-        }        
-        if (isset($filtro['codc_categ'])) {
-            $where.=" and sub.codc_categ='".$filtro['codc_categ']['valor']."'";
+        }  
+        //categoria de revista
+        if (isset($filtro['codc_categ']['valor'])) {
+            switch ($filtro['codc_categ']['condicion']) {
+                    case 'es_distinto_de':$where.=" and sub2.codc_categ  !='".$filtro['codc_categ']['valor']."'";break;
+                    case 'es_igual_a':$where.=" and sub2.codc_categ = '".$filtro['codc_categ']['valor']."'";break;
+                }
         }
-        
-        if (isset($filtro['motivo'])) {
-            $where.=" and sub.motivo='".$filtro['motivo']['valor']."'";
+        //motivo por el que subroga
+        if (isset($filtro['motivo']['valor'])) {
+             switch ($filtro['motivo']['condicion']) {
+                    case 'es_distinto_de':$where.=" and sub2.motivo != '".$filtro['motivo']['valor']."'";break;
+                    case 'es_igual_a':$where.=" and sub2.motivo = '".$filtro['motivo']['valor']."'";break;
+                }
         }
 
         $sql=" select sub2.*,no.descripcion as nodo from (
@@ -79,6 +90,7 @@ class dt_subroga extends toba_datos_tabla
             left outer join nodo no on (no.id_nodo=nod)
             $where
             order by nodo,apellido,nombre ";
+        
         return toba::db('nodos')->consultar($sql);
     }
     function modif_desde($desde_nuevo,$id_cargo,$desde){

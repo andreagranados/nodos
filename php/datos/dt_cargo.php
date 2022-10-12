@@ -308,48 +308,55 @@ class dt_cargo extends toba_datos_tabla
        
    }
    function get_listado2($cond=null){
-      $id_nodo=null;
+        $id_nodo=null;
         if(count($cond)>0){
             if(isset($cond['id_nodo'])){
                 $id_nodo=$cond['id_nodo']['valor'];
              }
             $where=" WHERE 1=1 ";
-            if (isset($cond['puesto'])) {
+            //estado del puesto
+            if (isset($cond['puesto']['valor'])) {
                 if($cond['puesto']['valor']=='Nulo'){
-                    $condicion=" =''";
+                    $condicion="''";
                 }else{
-                    $condicion=" = '".$cond['puesto']['valor']."'";
+                    $condicion="'".$cond['puesto']['valor']."'";
                 }
-                $where.=" and puesto".$condicion;
+                switch ($cond['puesto']['condicion']) {
+                    case 'es_distinto_de':$where.=" and puesto  !=".$condicion;break;
+                    case 'es_igual_a':$where.=" and puesto = ".$condicion;break;
+                }
             }
-            
-            if(isset($cond['codc_categ'])){
-                
-                switch (trim($cond['codc_categ']['valor'])) {
-                    case '01': $where.=" and codc_categ='".$cond['codc_categ']['valor']."'";    break;
-                    case '02': $where.=" and codc_categ='".$cond['codc_categ']['valor']."'";    break;
-                    case '03': $where.=" and codc_categ='".$cond['codc_categ']['valor']."'";    break;
-                    case '04': $where.=" and codc_categ='".$cond['codc_categ']['valor']."'";    break;
-                    case '05': $where.=" and codc_categ='".$cond['codc_categ']['valor']."'";    break;
-                    case '06': $where.=" and codc_categ='".$cond['codc_categ']['valor']."'";    break;
-                    case '07': $where.=" and codc_categ='".$cond['codc_categ']['valor']."'";    break;
-                    case 'LS':   $where.=" and codc_categ like '".$cond['codc_categ']['valor']."%'";  break;
-                    case 'LO':  $where.=" and codc_categ like '".$cond['codc_categ']['valor']."%'";  break;
-                    case 'SC':  $where.=" and codc_categ in ('01','02','03','04','05','06','07')";  break;
-                    default:
+            //categ del cargo
+            if(isset($cond['codc_categ']['valor'])){
+                switch ($cond['codc_categ']['condicion']) {
+                        case 'es_distinto_de': if(trim($cond['codc_categ']['valor'])=='SC'){
+                                                  $where.=" and codc_categ not in ('01','02','03','04','05','06','07')";}
+                                               else{$where.=" and codc_categ not like '".$cond['codc_categ']['valor']."'";};
                         break;
-                }
+                        case 'es_igual_a': if(trim($cond['codc_categ']['valor'])=='SC'){
+                                                  $where.=" and codc_categ in ('01','02','03','04','05','06','07')";}
+                                               else{$where.=" and codc_categ like '".$cond['codc_categ']['valor']."'";};
+                        break;
+                    }
                 //$where.=" and codc_categ='".$cond['codc_categ']['valor']."'";
             }
-            if(isset($cond['categ'])){
-                $where.=" and categ='".$cond['categ']['valor']."'";
+            //categ subroga
+            if(isset($cond['categ']['valor'])){
+                switch ($cond['categ']['condicion']) {
+                        case 'es_distinto_de':$where.=" and categ!='".$cond['categ']['valor']."'";break;
+                        case 'es_igual_a':$where.=" and categ='".$cond['categ']['valor']."'";break;
+                    }
             }
-            if(isset($cond['catpuesto'])){
-                $where.=" and catpuesto='".$cond['catpuesto']['valor']."'";
+             //categ puesto
+            if(isset($cond['catpuesto']['valor'])){
+                switch ($cond['catpuesto']['condicion']) {
+                        case 'es_distinto_de':$where.=" and catpuesto!='".$cond['catpuesto']['valor']."'";break;
+                        case 'es_igual_a':$where.=" and catpuesto='".$cond['catpuesto']['valor']."'";break;
+                    }
             }
+
         }else{
             $where='';
-           
             }
        
        $sql=dt_cargo::armar_consulta($id_nodo);
