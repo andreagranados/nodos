@@ -3,25 +3,13 @@ require_once 'dt_cargo.php';
 
 class dt_puesto extends toba_datos_tabla
 {
-        function get_listado_puestos($filtro=array()){
-            $where=" WHERE 1=1 ";
-            
-            if (isset($filtro['id_nodo'])) {
-                $where.= " and n.id_nodo=".$filtro['id_nodo']['valor'];
-            }
-            if (isset($filtro['categ'])) {
-                $where.=" and categ='".$filtro['categ']['valor']."'";
-            }
+        function get_listado_puestos($filtro=null){
            
-//            $sql="select p.id_puesto,p.categ,p.pertenece_a,n.id_nodo,n.descripcion as nodo,co.costo_basico
-//                    from puesto p
-//                    left outer join nodo n on (p.pertenece_a=n.id_nodo)
-//                    left outer join (select codigo_categ,max(desde) as desde 
-//                                    from costo_categoria
-//                                    group by codigo_categ)sub on (sub.codigo_categ=p.categ)
-//                    left outer join costo_categoria co on (co.codigo_categ=sub.codigo_categ)
-//                    $where
-//                    order by nodo,id_puesto";
+            if(!is_null($filtro)){
+              $where.=' WHERE '.$filtro;
+            }else{
+               $where='';
+            }
             $sql="                                 
                     select p.id_puesto,p.categ,p.pertenece_a,n.id_nodo,n.descripcion as nodo,cc.costo_basico,pe.apellido||','||pe.nombre||' '||pe.legajo||'('||case when no.descripcion is not null then no.descripcion else '' end||')' as ocupado_por
                     from puesto p

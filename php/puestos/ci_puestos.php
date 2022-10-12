@@ -30,8 +30,8 @@ class ci_puestos extends nodos_ci
 
 	function conf__cuadro(toba_ei_cuadro $cuadro)
 	{
-            if (isset($this->s__datos_filtro)) {
-                $cuadro->set_datos($this->dep('datos')->tabla('puesto')->get_listado_puestos($this->s__datos_filtro)) ;        
+           if (isset($this->s__where)) {
+                $cuadro->set_datos($this->dep('datos')->tabla('puesto')->get_listado_puestos($this->s__where)) ;        
            }else{
                 $cuadro->set_datos($this->dep('datos')->tabla('puesto')->get_listado_puestos()) ;        
            }

@@ -134,7 +134,7 @@ INSERT INTO apex_objeto_ei_filtro_col (objeto_ei_filtro_col, objeto_ei_filtro, o
 	'nodos', --objeto_ei_filtro_proyecto
 	'opciones', --tipo
 	'id_nodo', --nombre
-	'id_nodo', --expresion
+	'n.id_nodo', --expresion
 	'Nodo', --etiqueta
 	NULL, --descripcion
 	'0', --obligatorio

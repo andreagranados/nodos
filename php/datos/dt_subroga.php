@@ -35,15 +35,17 @@ class dt_subroga extends toba_datos_tabla
         }
         $where = " WHERE 1=1 ";
         
-        if (isset($filtro['id_nodo'])) {
+        if (isset($filtro['id_nodo']['valor'])) {
            $sql ="CREATE LOCAL TEMP TABLE auxiliar(
                id_nodo	integer );";    
            toba::db('nodos')->consultar($sql);
            $sql="select depende_de(".$filtro['id_nodo']['valor'].");";
            toba::db('nodos')->consultar($sql);
-           $where.=" and (id_nodo=".$filtro['id_nodo']['valor']." or id_nodo in (select id_nodo from auxiliar)) ";
-           
-		}
+           switch ($filtro['id_nodo']['condicion']) {
+                    case 'es_distinto_de':$where.=" and (id_nodo!=".$filtro['id_nodo']['valor']." and id_nodo not in (select id_nodo from auxiliar)) ";;break;
+                    case 'es_igual_a':$where.=" and (id_nodo=".$filtro['id_nodo']['valor']." or id_nodo in (select id_nodo from auxiliar)) ";break;
+                }
+        }
         //subroga
         if (isset($filtro['categ']['valor'])) {
              switch ($filtro['categ']['condicion']) {
