@@ -530,7 +530,10 @@ class dt_cargo extends toba_datos_tabla
                     left outer join (select s.id_cargo,s.desde,s.categ  from subroga s
                                                         where
                                                         s.desde <='".$udia."' and (s.hasta>='".$pdia."' or s.hasta is null) )s on (sub2.id_cargo=s.id_cargo and sub2.desde=s.desde)                 
-                    left outer join nodo n on (cc.pertenece_a=n.id_nodo)
+                    left outer join (select nod.id_nodo,origen_de(nod.id_nodo) as padre 
+                                     from nodo nod
+                                     ) orig on (cc.pertenece_a=orig.id_nodo)
+                    left outer join nodo n on (orig.padre=n.id_nodo)
                     left outer join novedad no on (no.id_cargo=cc.id_cargo and no.desde <='".$udia."' and (no.hasta>='".$actual."' or no.hasta is null))
                     order by apellido,nombre
                 )sub
