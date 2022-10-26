@@ -430,9 +430,9 @@ class dt_cargo extends toba_datos_tabla
                 }
         if (isset($filtro['categsub'])) {
             if($filtro['categsub']['valor']==1){//igual categsub
-                $where.=" and subm.categsub  = sub.categsub";
+                $where.=" and subm.categsub  = sub.categsub ";
             }else{//distinta categsub
-                $where.=" and subm.categsub <> sub.categsub";
+                $where.=" and ((subm.categsub <> sub.categsub) or (subm.categsub is null and sub.categsub is not null ) or (subm.categsub is not null and sub.categsub is null ) )";
             }	
         }
         if (isset($filtro['estado'])) {
