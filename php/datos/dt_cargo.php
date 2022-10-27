@@ -453,7 +453,14 @@ class dt_cargo extends toba_datos_tabla
             if($filtro['ua']['valor']==1){//igual 
                 $where.=" and subm.codc_uacad  = sub.ua";
             }else{//distinta 
-                $where.=" and subm.codc_uacad <> sub.ua and subm.codc_uacad<>'RECT '";
+                $where.=" and (subm.codc_uacad <> sub.ua or not(subm.codc_uacad='RECT ' and sub.tipo=1))";//si en mapuche es RECT y en nodos es Secretaria entonces no marca distinto
+            }	
+        }
+        if (isset($filtro['fec_alta'])) {
+            if($filtro['fec_alta']['valor']==1){//igual 
+                $where.=" and subm.fec_altam  = sub.fec_alta";
+            }else{//distinta 
+                $where.=" and subm.fec_altam <> sub.fec_alta";
             }	
         }
        $actual=date("Y-m-d");
@@ -514,7 +521,7 @@ class dt_cargo extends toba_datos_tabla
         
         $sql="select sub.*,subm.apellido||', '||subm.nombre as agentem,subm.legajo as legajom,subm.estado as estadom,subm.codc_categ as codc_categm,subm.codc_carac as codc_caracm,subm.codc_agrup as codc_agrupm,subm.fec_alta as fec_altam,subm.fec_baja as fec_bajam,subm.chkstopliq as chkstopliqm,subm.codc_uacad as uam,subm.categsub as categsubm,subm.lsgh as lsgh
               from (
-                select apellido||', '||nombre as agente,p.legajo,p.estado,cc.codc_categ,cc.codc_carac,cc.codc_agrup,cc.fec_alta,cc.fec_baja,s.categ as categsub,cc.chkstopliq,n.desc_abrev as ua,no.tipo_nov as nove
+                select apellido||', '||nombre as agente,p.legajo,p.estado,cc.codc_categ,cc.codc_carac,cc.codc_agrup,cc.fec_alta,cc.fec_baja,s.categ as categsub,cc.chkstopliq,n.desc_abrev as ua,n.tipo,no.tipo_nov as nove
                    from (select id_persona,max(fec_alta) as alta 
                            from cargo
                            where fec_alta <='".$udia."' and (fec_baja>='".$pdia."' or fec_baja is null)
