@@ -458,9 +458,9 @@ class dt_cargo extends toba_datos_tabla
         }
         if (isset($filtro['fec_alta'])) {
             if($filtro['fec_alta']['valor']==1){//igual 
-                $where.=" and subm.fec_altam  = sub.fec_alta";
+                $where.=" and subm.fec_alta  = sub.fec_alta";
             }else{//distinta 
-                $where.=" and subm.fec_altam <> sub.fec_alta";
+                $where.=" and subm.fec_alta <> sub.fec_alta";
             }	
         }
        $actual=date("Y-m-d");
