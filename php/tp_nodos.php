@@ -8,10 +8,10 @@
 	function barra_superior()
 	{ 
 		echo "<div align=center>";
-		echo toba_recurso::imagen_proyecto('logo_designa.png', true);
+		echo "<div>".toba_recurso::imagen_proyecto('logo_nodos.png', true,'100','100')."</div>";
                 echo "<br>";
 		echo "<div style='font-size:15px;font-family:Verdana,Helvetica;color:#660033;font-weight:bold;'>";
-		echo "M&oacute;dulo Nodos";
+		echo "M&Oacute;DULO NODOS";
 		echo "</div>";
 		//echo "<div>versi&oacute;n ".toba::proyecto()->get_version();
 		echo "</div>";
